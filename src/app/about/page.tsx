@@ -1,6 +1,7 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
+import { IMAGES } from '@/constants/images'
 
 export default function AboutPage() {
    return (
@@ -9,7 +10,16 @@ export default function AboutPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700">
+            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.ABOUT 사용 */}
+            <section
+               className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.ABOUT})`, // 실제 이미지로 교체 시 사용
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
+            >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">협회 소개</h1>
@@ -29,12 +39,12 @@ export default function AboutPage() {
                            <p>앞으로도 회원 여러분과 함께 생활가전 유지관리 분야의 발전을 위해 최선을 다하겠습니다. 많은 관심과 참여 부탁드립니다.</p>
                            <div className="mt-6">
                               <p className="font-semibold text-gray-900">한국생활가전유지관리협회 회장</p>
-                              <p className="text-blue-900 font-bold text-xl">김 회 장</p>
+                              <p className="text-blue-900 font-bold text-xl">김윤채</p>
                            </div>
                         </div>
                      </div>
                      <div>
-                        <div className="h-96 bg-cover bg-center rounded-xl shadow-lg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&crop=face)' }} />
+                        <div className="h-200 bg-cover bg-center rounded-xl shadow-lg" style={{ backgroundImage: `url(${IMAGES.EXECUTIVES.PRESIDENT})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
                      </div>
                   </div>
                </div>
@@ -50,7 +60,7 @@ export default function AboutPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                      <Card hover className="text-center">
-                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                            </svg>
@@ -60,7 +70,7 @@ export default function AboutPage() {
                      </Card>
 
                      <Card hover className="text-center">
-                        <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path
                                  strokeLinecap="round"
@@ -75,7 +85,7 @@ export default function AboutPage() {
                      </Card>
 
                      <Card hover className="text-center">
-                        <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path
                                  strokeLinecap="round"
@@ -111,7 +121,7 @@ export default function AboutPage() {
                               </svg>
                               <div>
                                  <p className="font-medium text-gray-900">주소</p>
-                                 <p className="text-gray-600">서울특별시 강남구 테헤란로 123길 45</p>
+                                 <p className="text-gray-600">인천광역시 서구 청라한내로72번길 13 (청라동) 203호</p>
                               </div>
                            </div>
                            <div className="flex items-start">
@@ -124,8 +134,26 @@ export default function AboutPage() {
                                  />
                               </svg>
                               <div>
-                                 <p className="font-medium text-gray-900">전화번호</p>
-                                 <p className="text-gray-600">02-1234-5678</p>
+                                 <p className="font-medium text-gray-900">대표번호</p>
+                                 <p className="text-gray-600">1566-3321</p>
+                              </div>
+                           </div>
+                           <div className="flex items-start">
+                              <svg className="w-5 h-5 text-blue-900 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                              <div>
+                                 <p className="font-medium text-gray-900">대표자명</p>
+                                 <p className="text-gray-600">김윤채</p>
+                              </div>
+                           </div>
+                           <div className="flex items-start">
+                              <svg className="w-5 h-5 text-blue-900 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              <div>
+                                 <p className="font-medium text-gray-900">사업자등록번호</p>
+                                 <p className="text-gray-600">714-88-00785</p>
                               </div>
                            </div>
                            <div className="flex items-start">
@@ -134,7 +162,7 @@ export default function AboutPage() {
                               </svg>
                               <div>
                                  <p className="font-medium text-gray-900">이메일</p>
-                                 <p className="text-gray-600">info@khama.or.kr</p>
+                                 <p className="text-gray-600">haan@hanallcompany.com</p>
                               </div>
                            </div>
                            <div className="flex items-start">

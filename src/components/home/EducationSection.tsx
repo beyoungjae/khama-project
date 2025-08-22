@@ -6,7 +6,6 @@ export default function EducationSection() {
          title: '창업교육',
          description: '예비 창업자를 위한 체계적 교육',
          image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-         color: 'from-blue-500 to-blue-700',
       },
       {
          title: '전문가교육',
@@ -35,7 +34,7 @@ export default function EducationSection() {
                   <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden hover-lift">
                      <div className="relative h-48">
                         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${program.image})` }} />
-                        <div className={`absolute inset-0 bg-gradient-to-r ${program.color} opacity-80`} />
+                        <div className="absolute inset-0 bg-blue-900/60" />
                         <div className="absolute inset-0 flex items-center justify-center text-center text-white">
                            <div>
                               <h3 className="text-2xl font-bold mb-2">{program.title}</h3>

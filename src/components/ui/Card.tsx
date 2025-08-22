@@ -1,13 +1,13 @@
-import { ReactNode } from 'react'
+import { ReactNode, HTMLAttributes } from 'react'
 
-interface CardProps {
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
    children: ReactNode
    className?: string
    hover?: boolean
    padding?: 'none' | 'sm' | 'md' | 'lg'
 }
 
-export default function Card({ children, className = '', hover = false, padding = 'md' }: CardProps) {
+export default function Card({ children, className = '', hover = false, padding = 'md', ...props }: CardProps) {
    const paddingClasses = {
       none: '',
       sm: 'p-4',
@@ -22,5 +22,9 @@ export default function Card({ children, className = '', hover = false, padding 
     ${className}
   `.trim()
 
-   return <div className={classes}>{children}</div>
+   return (
+      <div className={classes} {...props}>
+         {children}
+      </div>
+   )
 }

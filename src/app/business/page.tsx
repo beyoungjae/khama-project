@@ -1,10 +1,27 @@
+'use client'
+
+import { useState } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
+import CertificationModal from '@/components/business/CertificationModal'
 
 export default function BusinessPage() {
+   const [selectedCertification, setSelectedCertification] = useState<unknown>(null)
+   const [isModalOpen, setIsModalOpen] = useState(false)
+
+   const handleCertificationClick = (cert: unknown) => {
+      setSelectedCertification(cert)
+      setIsModalOpen(true)
+   }
+
+   const closeModal = () => {
+      setIsModalOpen(false)
+      setSelectedCertification(null)
+   }
+
    const certifications = [
       {
          id: 1,
@@ -21,12 +38,11 @@ export default function BusinessPage() {
             passingScore: '과목당 60점 이상, 평균 60점 이상',
          },
          cost: {
-            application: '50,000원',
-            certificate: '30,000원',
-            total: '80,000원',
+            application: '별도 문의',
+            certificate: '별도 문의',
+            total: '별도 문의',
          },
          image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
-         color: 'from-blue-500 to-blue-700',
       },
       {
          id: 2,
@@ -43,12 +59,11 @@ export default function BusinessPage() {
             passingScore: '과목당 60점 이상, 평균 60점 이상',
          },
          cost: {
-            application: '50,000원',
-            certificate: '30,000원',
-            total: '80,000원',
+            application: '별도 문의',
+            certificate: '별도 문의',
+            total: '별도 문의',
          },
          image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
-         color: 'from-emerald-500 to-emerald-700',
       },
       {
          id: 3,
@@ -65,12 +80,11 @@ export default function BusinessPage() {
             passingScore: '과목당 60점 이상, 평균 60점 이상',
          },
          cost: {
-            application: '50,000원',
-            certificate: '30,000원',
-            total: '80,000원',
+            application: '별도 문의',
+            certificate: '별도 문의',
+            total: '별도 문의',
          },
          image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
-         color: 'from-orange-500 to-orange-700',
       },
       {
          id: 4,
@@ -87,42 +101,11 @@ export default function BusinessPage() {
             passingScore: '과목당 60점 이상, 평균 60점 이상',
          },
          cost: {
-            application: '50,000원',
-            certificate: '30,000원',
-            total: '80,000원',
+            application: '별도 문의',
+            certificate: '별도 문의',
+            total: '별도 문의',
          },
          image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=400&fit=crop',
-         color: 'from-purple-500 to-purple-700',
-      },
-   ]
-
-   const educationPrograms = [
-      {
-         title: '창업교육',
-         description: '예비 창업자를 위한 체계적인 창업 교육 프로그램',
-         duration: '4주 과정',
-         format: '온라인 + 오프라인',
-         features: ['사업계획 수립', '마케팅 전략', '고객 관리', '재무 관리', '법규 및 안전'],
-         image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop',
-         color: 'from-blue-500 to-blue-700',
-      },
-      {
-         title: '전문가교육',
-         description: '현업 종사자들의 전문성 향상을 위한 심화 교육',
-         duration: '6주 과정',
-         format: '실습 중심',
-         features: ['최신 기술 동향', '고급 기술 습득', '품질 관리', '고객 서비스', '안전 관리'],
-         image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
-         color: 'from-emerald-500 to-emerald-700',
-      },
-      {
-         title: '신아이템교육',
-         description: '새로운 가전제품과 기술에 대한 전문 교육',
-         duration: '2주 과정',
-         format: '집중 교육',
-         features: ['신제품 분석', '신기술 적용', '시장 동향', '경쟁력 강화', '미래 준비'],
-         image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
-         color: 'from-orange-500 to-orange-700',
       },
    ]
 
@@ -132,7 +115,18 @@ export default function BusinessPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700">
+            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.BUSINESS 사용 */}
+            <section
+               className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
+               style={
+                  {
+                     // backgroundImage: `url(${IMAGES.PAGES.BUSINESS})`, // 실제 이미지로 교체 시 사용
+                     // backgroundSize: 'cover',
+                     // backgroundPosition: 'center',
+                     // backgroundRepeat: 'no-repeat'
+                  }
+               }
+            >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">주요 사업</h1>
@@ -148,169 +142,259 @@ export default function BusinessPage() {
                      <p className="text-xl text-gray-600 max-w-3xl mx-auto">체계적인 교육과 실무 중심의 커리큘럼으로 전문가 자격을 취득하세요</p>
 
                      {/* 법적 표시사항 */}
-                     <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-xl max-w-5xl mx-auto">
-                        <h3 className="text-lg font-bold text-blue-900 mb-4">민간자격 등록 정보</h3>
-                        <div className="text-sm text-blue-800 space-y-2 text-left">
-                           <p>
-                              <strong>• 자격 종류:</strong> 등록민간자격
-                           </p>
-                           <p>
-                              <strong>• 관리·운영기관:</strong> 한국생활가전유지관리협회(KHAMA)
-                           </p>
-                           <p>
-                              <strong>• 총비용:</strong> 80,000원 (응시료 50,000원 + 자격발급비 30,000원)
-                           </p>
-                           <p>
-                              <strong>• 환불규정:</strong> 접수마감 전 100% 환불, 시험 당일 취소 시 30% 공제 후 환불
-                           </p>
-                           <p>
-                              <strong>• 연락처:</strong> 02-1234-5678
-                           </p>
-                           <p className="text-red-700 font-medium mt-4">※ 본 자격은 자격기본법 규정에 따라 등록한 민간자격으로, 국가로부터 인정받은 공인자격이 아닙니다.</p>
-                           <p className="text-blue-700">※ 민간자격 등록 및 공인 제도에 대한 상세내용은 민간자격정보서비스(www.pqi.or.kr)의 &apos;민간자격 소개&apos; 란을 참고하여 주십시오.</p>
+                     <div className="mt-8 max-w-6xl mx-auto">
+                        <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 sm:p-8 shadow-lg">
+                           <div className="flex items-center mb-4 sm:mb-6">
+                              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                 </svg>
+                              </div>
+                              <div>
+                                 <h3 className="text-lg sm:text-2xl font-bold text-blue-900 mb-1">민간자격 법적 고지사항</h3>
+                                 <p className="text-sm sm:text-base text-blue-700">자격기본법 제17조 제1항에 따른 민간자격 표시의무</p>
+                              </div>
+                           </div>
+
+                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                              <div className="bg-white rounded-xl p-4 sm:p-6 border border-blue-100 shadow-sm">
+                                 <h4 className="font-bold text-gray-900 mb-4 flex items-center">
+                                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                    기본 정보
+                                 </h4>
+                                 <div className="space-y-3 text-sm">
+                                    <div className="flex justify-between">
+                                       <span className="font-medium text-gray-600">자격 종류</span>
+                                       <span className="text-gray-900 font-semibold">등록민간자격</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                       <span className="font-medium text-gray-600">관리·운영기관</span>
+                                       <span className="text-gray-900 font-semibold">한국생활가전유지관리협회</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                       <span className="font-medium text-gray-600">대표자</span>
+                                       <span className="text-gray-900 font-semibold">김윤채</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                       <span className="font-medium text-gray-600">연락처</span>
+                                       <span className="text-blue-600 font-semibold">1566-3321</span>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div className="bg-white rounded-xl p-4 sm:p-6 border border-emerald-100 shadow-sm">
+                                 <h4 className="font-bold text-gray-900 mb-4 flex items-center">
+                                    <span className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></span>
+                                    비용 및 환불 정보
+                                 </h4>
+                                 <div className="space-y-3 text-sm">
+                                    <div className="flex justify-between">
+                                       <span className="font-medium text-gray-600">총 비용</span>
+                                       <span className="text-emerald-600 font-semibold">별도 문의</span>
+                                    </div>
+                                    <div className="bg-emerald-50 rounded-lg p-3 mt-3">
+                                       <div className="font-medium text-emerald-900 mb-2">환불 규정</div>
+                                       <div className="text-xs text-emerald-800 space-y-1">
+                                          <div>• 접수마감 전: 100% 환불</div>
+                                          <div>• 시험 당일 취소: 30% 공제 후 환불</div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 sm:p-6">
+                              <div className="flex items-start">
+                                 <div className="flex-1">
+                                    <h4 className="font-bold text-amber-900 mb-2">⚠️중요 안내사항</h4>
+                                    <div className="text-sm text-amber-800 space-y-2">
+                                       <p>
+                                          • 본 자격은 <strong>자격기본법 규정에 따라 등록된 민간자격</strong>입니다.
+                                       </p>
+                                       <p>• 민간자격 취득자에 대한 우대사항은 해당 기관이나 법령에 따라 다를 수 있습니다.</p>
+                                       <p>
+                                          • 자세한 정보는 <strong className="text-amber-900">민간자격정보서비스(www.pqi.or.kr)</strong>에서 확인하실 수 있습니다.
+                                       </p>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div className="mt-6 text-center">
+                              <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-sm text-blue-800">
+                                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                 </svg>
+                                 자격기본법 제17조 제1항 및 제27조에 따른 법정 표시사항
+                              </div>
+                           </div>
                         </div>
                      </div>
                   </div>
 
-                  <div className="space-y-16">
-                     {certifications.map((cert, index) => (
-                        <div key={cert.id} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                           <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
-                              <div className="relative h-80 rounded-xl overflow-hidden">
-                                 <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${cert.image})` }} />
-                                 <div className={`absolute inset-0 bg-gradient-to-r ${cert.color} opacity-80`} />
-                                 <div className="absolute inset-0 flex items-center justify-center text-center text-white p-6">
+                  {/* 간소화된 자격증 카드 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     {certifications.map((cert) => (
+                        <Card key={cert.id} hover className="group cursor-pointer" onClick={() => handleCertificationClick(cert)}>
+                           <div className="relative h-48 rounded-lg overflow-hidden mb-4">
+                              <div className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style={{ backgroundImage: `url(${cert.image})` }} />
+                              <div className="absolute inset-0 bg-blue-900/60" />
+                              <div className="absolute inset-0 flex items-center justify-center text-center text-white p-4">
+                                 <div>
+                                    <h3 className="text-xl font-bold mb-2">{cert.title}</h3>
+                                    <p className="text-sm opacity-90">{cert.subtitle}</p>
+                                 </div>
+                              </div>
+                              <div className="absolute top-3 right-3">
+                                 <Badge variant="default" size="sm">
+                                    등록번호: {cert.registrationNumber}
+                                 </Badge>
+                              </div>
+                              <div className="absolute bottom-3 left-3">
+                                 <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-white">클릭하여 상세보기</div>
+                              </div>
+                           </div>
+
+                           <div className="space-y-4">
+                              <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{cert.description}</p>
+
+                              {/* 주요 특징 */}
+                              <div>
+                                 <h4 className="font-medium text-gray-900 mb-2 text-sm">주요 특징</h4>
+                                 <div className="flex flex-wrap gap-1">
+                                    {cert.features.slice(0, 3).map((feature, idx) => (
+                                       <Badge key={idx} variant="primary" size="sm">
+                                          {feature}
+                                       </Badge>
+                                    ))}
+                                    {cert.features.length > 3 && (
+                                       <Badge variant="secondary" size="sm">
+                                          +{cert.features.length - 3}개
+                                       </Badge>
+                                    )}
+                                 </div>
+                              </div>
+
+                              {/* 간단한 시험 정보 */}
+                              <div className="bg-gray-50 rounded-lg p-3">
+                                 <div className="grid grid-cols-2 gap-3 text-xs">
                                     <div>
-                                       <h3 className="text-2xl font-bold mb-2">{cert.title}</h3>
-                                       <p className="text-lg opacity-90">{cert.subtitle}</p>
+                                       <span className="font-medium text-gray-600">필기:</span>
+                                       <span className="ml-1 text-gray-800">객관식 5과목</span>
                                     </div>
-                                 </div>
-                                 <div className="absolute top-4 right-4">
-                                    <Badge variant="default">등록번호: {cert.registrationNumber}</Badge>
+                                    <div>
+                                       <span className="font-medium text-gray-600">실기:</span>
+                                       <span className="ml-1 text-gray-800">구술형 4과목</span>
+                                    </div>
+                                    <div>
+                                       <span className="font-medium text-gray-600">합격기준:</span>
+                                       <span className="ml-1 text-gray-800">60점 이상</span>
+                                    </div>
+                                    <div>
+                                       <span className="font-medium text-gray-600">비용:</span>
+                                       <span className="ml-1 text-blue-600 font-medium">{cert.cost.total}</span>
+                                    </div>
                                  </div>
                               </div>
-                           </div>
 
-                           <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                              <Card>
-                                 <h3 className="text-2xl font-bold text-gray-900 mb-4">{cert.title}</h3>
-                                 <p className="text-gray-600 mb-6 leading-relaxed">{cert.description}</p>
-
-                                 {/* 주요 특징 */}
-                                 <div className="mb-6">
-                                    <h4 className="font-semibold text-gray-900 mb-3">주요 특징</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                       {cert.features.map((feature, idx) => (
-                                          <Badge key={idx} variant="primary">
-                                             {feature}
-                                          </Badge>
-                                       ))}
-                                    </div>
-                                 </div>
-
-                                 {/* 시험 정보 */}
-                                 <div className="mb-6">
-                                    <h4 className="font-semibold text-gray-900 mb-3">시험 정보</h4>
-                                    <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
-                                       <p>
-                                          <strong>필기시험:</strong> {cert.examInfo.written}
-                                       </p>
-                                       <p>
-                                          <strong>실기시험:</strong> {cert.examInfo.practical}
-                                       </p>
-                                       <p>
-                                          <strong>합격기준:</strong> {cert.examInfo.passingScore}
-                                       </p>
-                                    </div>
-                                 </div>
-
-                                 {/* 비용 정보 */}
-                                 <div className="mb-6">
-                                    <h4 className="font-semibold text-gray-900 mb-3">비용 정보</h4>
-                                    <div className="bg-blue-50 p-4 rounded-lg space-y-2 text-sm">
-                                       <p>
-                                          <strong>응시료:</strong> {cert.cost.application}
-                                       </p>
-                                       <p>
-                                          <strong>자격발급비:</strong> {cert.cost.certificate}
-                                       </p>
-                                       <p className="text-blue-900 font-semibold">
-                                          <strong>총 비용:</strong> {cert.cost.total}
-                                       </p>
-                                    </div>
-                                 </div>
-
-                                 <div className="flex flex-col sm:flex-row gap-3">
-                                    <Button href={`/business/certifications/${cert.id}`} className="flex-1">
-                                       자세히 보기
-                                    </Button>
-                                    <Button href="/exam" variant="secondary" className="flex-1">
-                                       시험 신청
-                                    </Button>
-                                 </div>
-                              </Card>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-               </div>
-            </section>
-
-            {/* 교육 프로그램 */}
-            <section className="py-20 bg-gray-50">
-               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="text-center mb-16">
-                     <h2 className="text-3xl font-bold text-gray-900 mb-4">교육 프로그램</h2>
-                     <p className="text-xl text-gray-600">창업부터 전문가 양성까지, 단계별 맞춤 교육 프로그램</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                     {educationPrograms.map((program, index) => (
-                        <Card key={index} hover>
-                           <div className="relative h-48 rounded-lg overflow-hidden mb-6">
-                              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${program.image})` }} />
-                              <div className={`absolute inset-0 bg-gradient-to-r ${program.color} opacity-80`} />
-                              <div className="absolute inset-0 flex items-center justify-center text-center text-white">
-                                 <h3 className="text-2xl font-bold">{program.title}</h3>
+                              <div className="flex gap-2">
+                                 <Button
+                                    onClick={(e) => {
+                                       e.stopPropagation()
+                                       handleCertificationClick(cert)
+                                    }}
+                                    className="flex-1"
+                                    size="sm"
+                                 >
+                                    상세보기
+                                 </Button>
+                                 <Button href="/exam" variant="secondary" className="flex-1" size="sm" onClick={(e) => e.stopPropagation()}>
+                                    시험신청
+                                 </Button>
                               </div>
                            </div>
-
-                           <p className="text-gray-600 mb-4 leading-relaxed">{program.description}</p>
-
-                           <div className="mb-4">
-                              <div className="flex justify-between text-sm text-gray-600 mb-2">
-                                 <span>
-                                    <strong>기간:</strong> {program.duration}
-                                 </span>
-                                 <span>
-                                    <strong>형태:</strong> {program.format}
-                                 </span>
-                              </div>
-                           </div>
-
-                           <div className="mb-6">
-                              <h4 className="font-semibold text-gray-900 mb-3">교육 내용</h4>
-                              <div className="space-y-2">
-                                 {program.features.map((feature, idx) => (
-                                    <div key={idx} className="flex items-center text-sm text-gray-600">
-                                       <svg className="w-4 h-4 text-emerald-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                       </svg>
-                                       {feature}
-                                    </div>
-                                 ))}
-                              </div>
-                           </div>
-
-                           <Button href="/business/education" fullWidth>
-                              교육 신청하기
-                           </Button>
                         </Card>
                      ))}
                   </div>
                </div>
             </section>
+
+            {/* 협회 서비스 */}
+            <section className="py-20 bg-gray-50">
+               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="text-center mb-16">
+                     <h2 className="text-3xl font-bold text-gray-900 mb-4">협회 서비스</h2>
+                     <p className="text-xl text-gray-600">전문가 양성과 업계 발전을 위한 다양한 서비스를 제공합니다</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                     <Card hover className="text-center">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                 strokeLinecap="round"
+                                 strokeLinejoin="round"
+                                 strokeWidth={2}
+                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                              />
+                           </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">전문 교육</h3>
+                        <p className="text-gray-600 text-sm">체계적인 이론과 실무 교육을 통한 전문가 양성</p>
+                     </Card>
+
+                     <Card hover className="text-center">
+                        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                 strokeLinecap="round"
+                                 strokeLinejoin="round"
+                                 strokeWidth={2}
+                                 d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                              />
+                           </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">자격 인증</h3>
+                        <p className="text-gray-600 text-sm">공정하고 투명한 자격 검정 및 인증 서비스</p>
+                     </Card>
+
+                     <Card hover className="text-center">
+                        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                 strokeLinecap="round"
+                                 strokeLinejoin="round"
+                                 strokeWidth={2}
+                                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                              />
+                           </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">회원 지원</h3>
+                        <p className="text-gray-600 text-sm">회원 간 네트워킹 및 사업 지원 서비스</p>
+                     </Card>
+
+                     <Card hover className="text-center">
+                        <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                           </svg>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">기술 지원</h3>
+                        <p className="text-gray-600 text-sm">최신 기술 정보 제공 및 기술 상담 서비스</p>
+                     </Card>
+                  </div>
+
+                  <div className="text-center mt-12">
+                     <Button href="/about" size="lg">
+                        협회 소개 보기
+                     </Button>
+                  </div>
+               </div>
+            </section>
          </main>
+
+         {/* 모달 */}
+         <CertificationModal isOpen={isModalOpen} onClose={closeModal} certification={selectedCertification} />
 
          <Footer />
       </div>

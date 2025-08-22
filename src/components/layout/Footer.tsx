@@ -8,9 +8,6 @@ export default function Footer() {
                {/* 협회 정보 */}
                <div className="col-span-1 md:col-span-2">
                   <div className="flex items-center space-x-2 mb-4">
-                     <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">K</span>
-                     </div>
                      <div>
                         <div className="text-xl font-bold">KHAMA</div>
                         <div className="text-sm text-gray-400">한국생활가전유지관리협회</div>
@@ -22,9 +19,11 @@ export default function Footer() {
                      전문가 양성 및 창업 지원을 통해 업계 발전에 기여하고 있습니다.
                   </p>
                   <div className="text-sm text-gray-400">
-                     <p>주소: 서울특별시 강남구 테헤란로 123길 45</p>
-                     <p>전화: 02-1234-5678</p>
-                     <p>이메일: info@khama.or.kr</p>
+                     <p>주소: 인천광역시 서구 청라한내로72번길 13 (청라동) 203호</p>
+                     <p>대표번호: 1566-3321</p>
+                     <p>사업자등록번호: 714-88-00785</p>
+                     <p>대표자명: 김윤채</p>
+                     <p>이메일: haan@hanallcompany.com</p>
                   </div>
                </div>
 
@@ -70,7 +69,7 @@ export default function Footer() {
             {/* 하단 정보 */}
             <div className="border-t border-gray-800 mt-8 pt-8">
                <div className="flex flex-col md:flex-row justify-between items-center">
-                  <div className="text-sm text-gray-400 mb-4 md:mb-0">© 2024 한국생활가전유지관리협회(KHAMA). All rights reserved.</div>
+                  <div className="text-sm text-gray-400 mb-4 md:mb-0">© 2025 한국생활가전유지관리협회(KHAMA). All rights reserved.</div>
                   <div className="flex space-x-6 text-sm">
                      <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">
                         개인정보처리방침

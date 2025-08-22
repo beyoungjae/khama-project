@@ -2,29 +2,34 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { IMAGES } from '@/constants/images'
 
 export default function HeroSection() {
    const [currentSlide, setCurrentSlide] = useState(0)
 
+   // TODO: 실제 이미지 파일로 교체 - src/constants/images.ts의 IMAGES.HERO 참조
    const slides = [
       {
          title: '생활가전 유지관리 전문가',
          subtitle: '체계적인 교육과 자격증으로 새로운 미래를 시작하세요',
-         image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=600&fit=crop',
+         image: IMAGES.HERO.SLIDE1, // 실제 이미지로 교체 시 사용
+         // image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=600&fit=crop',
          cta: '자격증 알아보기',
          link: '/business',
       },
       {
          title: '창업부터 전문가 교육까지',
          subtitle: '실무 중심 교육으로 성공적인 창업을 지원합니다',
-         image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1200&h=600&fit=crop',
+         image: IMAGES.HERO.SLIDE2, // 실제 이미지로 교체 시 사용
+         // image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1200&h=600&fit=crop',
          cta: '교육 프로그램 보기',
          link: '/business',
       },
       {
          title: '신뢰할 수 있는 자격 관리',
          subtitle: '투명하고 공정한 자격 검정으로 업계 표준을 선도합니다',
-         image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&h=600&fit=crop',
+         image: IMAGES.HERO.SLIDE3, // 실제 이미지로 교체 시 사용
+         // image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&h=600&fit=crop',
          cta: '시험 신청하기',
          link: '/exam',
       },

@@ -5,40 +5,47 @@ import { useState } from 'react'
 export default function GallerySection() {
    const [currentIndex, setCurrentIndex] = useState(0)
 
+   // TODO: 실제 이미지 파일로 교체 - src/constants/images.ts의 IMAGES.GALLERY 참조
    const galleryImages = [
       {
          id: 1,
          title: '교육 현장',
+         // image: IMAGES.GALLERY.EDUCATION1, // 실제 이미지로 교체 시 사용
          image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop',
          description: '실무 중심의 교육 프로그램',
       },
       {
          id: 2,
          title: '자격증 시험',
+         // image: IMAGES.GALLERY.EXAM1, // 실제 이미지로 교체 시 사용
          image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop',
          description: '공정한 자격 검정 시스템',
       },
       {
          id: 3,
          title: '실습 교육',
+         // image: IMAGES.GALLERY.PRACTICE1, // 실제 이미지로 교체 시 사용
          image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=600&fit=crop',
          description: '가전제품 분해 청소 실습',
       },
       {
          id: 4,
          title: '수료식',
+         // image: IMAGES.GALLERY.CEREMONY, // 실제 이미지로 교체 시 사용
          image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=600&fit=crop',
          description: '전문가 양성 과정 수료',
       },
       {
          id: 5,
          title: '협회 활동',
+         // image: IMAGES.GALLERY.ACTIVITY, // 실제 이미지로 교체 시 사용
          image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop',
          description: '업계 발전을 위한 협력',
       },
       {
          id: 6,
          title: '기술 세미나',
+         // image: IMAGES.GALLERY.SEMINAR, // 실제 이미지로 교체 시 사용
          image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=800&h=600&fit=crop',
          description: '최신 기술 동향 공유',
       },
