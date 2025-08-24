@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ApplicationForm from '@/components/exam/ApplicationForm'
@@ -31,7 +32,9 @@ export default function ExamApplyPage() {
             {/* 신청 폼 */}
             <section className="py-20 bg-gray-50">
                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <ApplicationForm />
+                  <Suspense fallback={<div className="text-center py-8">로딩 중...</div>}>
+                     <ApplicationForm />
+                  </Suspense>
                </div>
             </section>
          </main>

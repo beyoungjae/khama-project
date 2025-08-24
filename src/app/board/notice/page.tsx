@@ -1,3 +1,6 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -6,6 +9,8 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 
 export default function NoticePage() {
+   const router = useRouter()
+   
    // 임시 데이터 (실제로는 API에서 가져올 데이터)
    const noticeList = [
       {
@@ -161,8 +166,11 @@ export default function NoticePage() {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                            {noticeList.map((notice) => (
-                              <Link key={notice.id} href={`/board/notice/${notice.id}`}>
-                                 <tr className="hover:bg-gray-50 cursor-pointer">
+                              <tr 
+                                 key={notice.id} 
+                                 className="hover:bg-gray-50 cursor-pointer transition-colors"
+                                 onClick={() => router.push(`/board/notice/${notice.id}`)}
+                              >
                                     <td className="px-6 py-4">
                                        <div className="flex items-center">
                                           {notice.isImportant && (
@@ -174,7 +182,7 @@ export default function NoticePage() {
                                              <div className="flex items-center">
                                                 <span className={`text-sm font-medium ${notice.isImportant ? 'text-red-600' : 'text-gray-900'}`}>{notice.title}</span>
                                                 {notice.isNew && (
-                                                   <Badge variant="success" size="sm" className="ml-2">
+                                                   <Badge variant="success" size="sm">
                                                       NEW
                                                    </Badge>
                                                 )}
@@ -188,7 +196,6 @@ export default function NoticePage() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{notice.createdAt}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{notice.views.toLocaleString()}</td>
                                  </tr>
-                              </Link>
                            ))}
                         </tbody>
                      </table>

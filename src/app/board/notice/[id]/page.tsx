@@ -171,7 +171,7 @@ export default function NoticeDetailPage() {
             <section className="bg-gray-50 py-4">
                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                   <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                     <Link href="/" className="hover:text-blue-600">
+                     <Link href="/" className="hover:text-blue-600" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
                         홈
                      </Link>
                      <span>/</span>
@@ -273,7 +273,7 @@ export default function NoticeDetailPage() {
                      {relatedNotices.map((item) => (
                         <Link key={item.id} href={`/board/notice/${item.id}`} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                            <div className="flex items-center gap-3">
-                              <Badge variant="outline" size="sm">
+                              <Badge variant="default" size="sm">
                                  {item.category}
                               </Badge>
                               <span className="text-gray-900">{item.title}</span>

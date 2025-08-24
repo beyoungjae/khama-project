@@ -34,6 +34,19 @@ export default function Button({ variant = 'primary', size = 'md', children, hre
   `.trim()
 
    if (href) {
+      // 홈페이지로 이동할 때 강제 새로고침
+      if (href === '/') {
+         return (
+            <button 
+               className={classes} 
+               onClick={() => window.location.href = '/'}
+               {...props}
+            >
+               {children}
+            </button>
+         )
+      }
+      
       return (
          <Link href={href} className={classes}>
             {children}

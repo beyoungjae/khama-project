@@ -37,7 +37,7 @@ export default function SearchFilter({ type, categories, selectedCategory, searc
                   >
                      {category.label}
                      {category.count !== undefined && (
-                        <Badge variant={selectedCategory === category.value ? 'default' : 'outline'} size="sm" className={selectedCategory === category.value ? 'bg-blue-500 text-white' : ''}>
+                        <Badge variant={selectedCategory === category.value ? 'default' : 'secondary'} size="sm" className={selectedCategory === category.value ? 'bg-blue-500 text-white' : ''}>
                            {category.count}
                         </Badge>
                      )}

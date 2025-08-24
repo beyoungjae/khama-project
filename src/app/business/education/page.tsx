@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
@@ -167,12 +168,12 @@ export default function EducationPage() {
                      창업부터 전문성 향상까지, 단계별 맞춤 교육을 제공합니다.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                     <Button variant="primary" size="lg">
+                     <Link href="/business" className="bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-4xl text-base sm:text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg whitespace-nowrap">
                         교육 신청하기
-                     </Button>
-                     <Button variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-emerald-900 font-semibold">
+                     </Link>
+                     <Link href="/support" className="inline-flex items-center bg-emerald-600 text-white px-8 py-4 rounded-4xl text-lg font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                         교육 문의
-                     </Button>
+                     </Link>
                   </div>
                </div>
             </section>
@@ -282,7 +283,13 @@ export default function EducationPage() {
                               <Card>
                                  <h3 className="text-xl font-bold text-gray-900 mb-4">강사 소개</h3>
                                  <div className="flex items-center gap-4">
-                                    <img src={program.instructor.image} alt={program.instructor.name} className="w-16 h-16 rounded-full object-cover" />
+                                    <Image 
+                                       src={program.instructor.image} 
+                                       alt={program.instructor.name} 
+                                       width={64} 
+                                       height={64} 
+                                       className="w-16 h-16 rounded-full object-cover" 
+                                    />
                                     <div>
                                        <h4 className="font-semibold text-gray-900">{program.instructor.name}</h4>
                                        <p className="text-gray-600">{program.instructor.career}</p>

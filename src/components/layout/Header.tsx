@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IMAGES } from '@/constants/images'
@@ -58,12 +58,14 @@ export default function Header() {
       },
    ]
 
-   // 페이지 이동 시 메뉴 닫기
-   useEffect(() => {
-      setIsMobileMenuOpen(false)
-      setIsMegaMenuOpen(false)
-      setActiveDropdown(null)
-   }, [pathname])
+   // 홈페이지로 이동할 때 강제 새로고침
+   const handleHomeNavigation = (e: React.MouseEvent, path: string) => {
+      if (path === '/') {
+         e.preventDefault()
+         window.location.href = '/'
+      }
+   }
+
 
    // 메가 메뉴 열기 핸들러
    const handleMouseEnterMegaMenu = () => {
@@ -90,7 +92,7 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                <div className="flex justify-between items-center h-16">
                   {/* 로고 */}
-                  <Link href="/" className="flex items-center flex-shrink-0">
+                  <Link href="/" className="flex items-center flex-shrink-0" onClick={(e) => handleHomeNavigation(e, '/')}>
                      {/* 실제 로고 이미지 (599x106 비율에 맞게 조정) */}
                      <div className="h-10 flex items-center">
                         <OptimizedImage
@@ -119,6 +121,7 @@ export default function Header() {
                                  block px-4 py-2 text-sm font-medium transition-colors duration-200 text-center
                                  ${pathname === item.path ? 'text-blue-900 font-bold' : 'text-gray-700 hover:text-blue-900'}
                               `}
+                              onClick={(e) => handleHomeNavigation(e, item.path)}
                            >
                               {item.name}
                            </Link>
@@ -148,7 +151,10 @@ export default function Header() {
                      <div className="flex flex-col space-y-2">
                         {menuItems.map((item) => (
                            <div key={item.name}>
-                              <Link href={item.path} className="flex items-center justify-between text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200" onClick={() => !item.subItems.length && setIsMobileMenuOpen(false)}>
+                              <Link href={item.path} className="flex items-center justify-between text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200" onClick={(e) => {
+                                 handleHomeNavigation(e, item.path)
+                                 if (!item.subItems.length) setIsMobileMenuOpen(false)
+                              }}>
                                  {item.name}
                                  {item.subItems.length > 0 && (
                                     <button

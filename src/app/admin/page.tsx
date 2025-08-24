@@ -123,7 +123,7 @@ export default function AdminDashboardPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                <div className="flex justify-between items-center h-16">
                   <div className="flex items-center space-x-4">
-                     <Link href="/" className="flex items-center space-x-2">
+                     <Link href="/" className="flex items-center space-x-2" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
                         <div className="w-8 h-8 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
                            <span className="text-white font-bold text-sm">K</span>
                         </div>

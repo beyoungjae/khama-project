@@ -50,7 +50,7 @@ export default function ForgotPasswordPage() {
 
          setMessage('인증번호가 이메일로 전송되었습니다.')
          setStep('verification')
-      } catch (error) {
+      } catch {
          setErrors({ email: '이메일 전송에 실패했습니다. 다시 시도해주세요.' })
       } finally {
          setIsLoading(false)
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
 
          setMessage('인증이 완료되었습니다. 새 비밀번호를 설정해주세요.')
          setStep('reset')
-      } catch (error) {
+      } catch {
          setErrors({ verificationCode: '인증번호가 올바르지 않습니다.' })
       } finally {
          setIsLoading(false)
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
 
          // 성공 시 로그인 페이지로 리다이렉트
          window.location.href = '/login?message=password-reset-success'
-      } catch (error) {
+      } catch {
          setErrors({ general: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.' })
       } finally {
          setIsLoading(false)

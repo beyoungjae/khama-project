@@ -228,7 +228,7 @@ export default function PostDetail({ post, type, prevPost, nextPost, relatedPost
                   {relatedPosts.map((item) => (
                      <Link key={item.id} href={`/board/${type}/${item.id}`} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                         <div className="flex items-center gap-3">
-                           <Badge variant="outline" size="sm">
+                           <Badge variant="secondary" size="sm">
                               {item.category}
                            </Badge>
                            <span className="text-gray-900">{item.title}</span>

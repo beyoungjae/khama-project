@@ -4,8 +4,24 @@ import ExamCard from '@/components/exam/ExamCard'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 
+// Exam 타입 정의
+interface Exam {
+   id: number
+   title: string
+   registrationNumber: string
+   examDate: string
+   applicationPeriod: string
+   examFee: string
+   certificateFee: string
+   totalFee: string
+   status: 'open' | 'closed' | 'upcoming'
+   examLocation: string
+   description: string
+   color: string
+}
+
 export default function ExamPage() {
-   const examSchedule = [
+   const examSchedule: Exam[] = [
       {
          id: 1,
          title: '가전제품분해청소관리사',

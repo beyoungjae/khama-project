@@ -29,7 +29,7 @@ export default function OptimizedImage({ src, alt, width, height, fallbackSrc, c
 
    const imageProps = {
       src: imgSrc,
-      alt,
+      alt, // ESLint alt-text 규칙을 위해 명시적으로 포함
       className,
       priority,
       quality,
@@ -37,5 +37,5 @@ export default function OptimizedImage({ src, alt, width, height, fallbackSrc, c
       ...(fill ? { fill: true, sizes } : { width, height }),
    }
 
-   return <Image {...imageProps} />
+   return <Image {...imageProps} alt={alt} />
 }

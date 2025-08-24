@@ -157,7 +157,7 @@ export default function SignupPage() {
 
          // 회원가입 성공 시 로그인 페이지로 리다이렉트
          window.location.href = '/login?message=signup-success'
-      } catch (error) {
+      } catch {
          setErrors({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' })
       } finally {
          setIsLoading(false)
@@ -322,7 +322,7 @@ export default function SignupPage() {
                         이용약관 동의 (필수) *
                      </label>
                      <div className="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-600 max-h-32 overflow-y-auto">
-                        제1조 (목적) 본 약관은 대한생활가전유지관리협회(이하 "협회")가 제공하는 서비스의 이용조건 및 절차, 회원과 협회의 권리, 의무, 책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다. 제2조 (정의) "서비스"란 협회가 제공하는 자격증 시험, 교육, 온라인 서비스 등 일체의 서비스를
+                        제1조 (목적) 본 약관은 대한생활가전유지관리협회(이하 &quot;협회&quot;)가 제공하는 서비스의 이용조건 및 절차, 회원과 협회의 권리, 의무, 책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다. 제2조 (정의) &quot;서비스&quot;란 협회가 제공하는 자격증 시험, 교육, 온라인 서비스 등 일체의 서비스를
                         의미합니다. 제3조 (약관의 효력 및 변경) 본 약관은 서비스를 이용하고자 하는 모든 회원에 대하여 그 효력을 발생합니다.
                      </div>
                      <Link href="/terms" className="text-xs text-blue-600 hover:underline">
@@ -341,7 +341,7 @@ export default function SignupPage() {
                         개인정보 처리방침 동의 (필수) *
                      </label>
                      <div className="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-600 max-h-32 overflow-y-auto">
-                        1. 개인정보의 처리목적: 회원가입, 서비스 제공, 고객상담, 시험 관리 2. 처리하는 개인정보 항목: 이름, 이메일, 전화번호, 주소, 생년월일 3. 개인정보의 보유 및 이용기간: 회원탈퇴 시까지 (단, 관련 법령에 따라 보존 필요시 해당 기간) 4. 개인정보 제3자 제공: 원칙적으로 제공하지 않음
+                         1. 개인정보의 처리목적: 회원가입, 서비스 제공, 고객상담, 시험 관리 &lt;?php 2. 처리하는 개인정보 항목: 이름, 이메일, 전화번호, 주소, 생년월일 3. 개인정보의 보유 및 이용기간: 회원탈퇴 시까지 (단, 관련 법령에 따라 보존 필요시 해당 기간) 4. 개인정보 제3자 제공: 원칙적으로 제공하지 않음
                         (법령에 의한 경우 제외)
                      </div>
                      <Link href="/privacy" className="text-xs text-blue-600 hover:underline">

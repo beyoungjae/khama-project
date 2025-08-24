@@ -8,11 +8,34 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import CertificationModal from '@/components/business/CertificationModal'
 
+// Certification 타입 정의
+interface Certification {
+   id: number
+   title: string
+   subtitle: string
+   description: string
+   registrationNumber: string
+   features: string[]
+   curriculum: string[]
+   practicalCurriculum: string[]
+   examInfo: {
+      written: string
+      practical: string
+      passingScore: string
+   }
+   cost: {
+      application: string
+      certificate: string
+      total: string
+   }
+   image: string
+}
+
 export default function BusinessPage() {
-   const [selectedCertification, setSelectedCertification] = useState<unknown>(null)
+   const [selectedCertification, setSelectedCertification] = useState<Certification | null>(null)
    const [isModalOpen, setIsModalOpen] = useState(false)
 
-   const handleCertificationClick = (cert: unknown) => {
+   const handleCertificationClick = (cert: Certification) => {
       setSelectedCertification(cert)
       setIsModalOpen(true)
    }
@@ -22,7 +45,7 @@ export default function BusinessPage() {
       setSelectedCertification(null)
    }
 
-   const certifications = [
+   const certifications: Certification[] = [
       {
          id: 1,
          title: '가전제품분해청소관리사',

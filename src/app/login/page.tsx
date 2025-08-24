@@ -60,7 +60,7 @@ export default function LoginPage() {
 
          // 로그인 성공 시 리다이렉트
          window.location.href = '/mypage'
-      } catch (error) {
+      } catch {
          setErrors({ general: '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.' })
       } finally {
          setIsLoading(false)

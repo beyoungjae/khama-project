@@ -98,7 +98,7 @@ export default function QnaWritePage() {
 
          // 성공 시 Q&A 목록으로 리다이렉트
          router.push('/board/qna?message=write-success')
-      } catch (error) {
+      } catch {
          setErrors({ general: '문의 등록에 실패했습니다. 다시 시도해주세요.' })
       } finally {
          setIsLoading(false)
@@ -123,7 +123,7 @@ export default function QnaWritePage() {
             <section className="bg-gray-50 py-4">
                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                   <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                     <Link href="/" className="hover:text-blue-600">
+                     <Link href="/" className="hover:text-blue-600" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
                         홈
                      </Link>
                      <span>/</span>

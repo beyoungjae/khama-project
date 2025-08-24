@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
 
          // 로그인 성공 시 관리자 대시보드로 리다이렉트
          router.push('/admin')
-      } catch (error) {
+      } catch {
          setErrors({ general: '로그인에 실패했습니다. 관리자 ID와 비밀번호를 확인해주세요.' })
       } finally {
          setIsLoading(false)
@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
          <div className="max-w-md w-full space-y-8">
             {/* 헤더 */}
             <div className="text-center">
-               <Link href="/" className="inline-flex items-center space-x-2 mb-8">
+               <Link href="/" className="inline-flex items-center space-x-2 mb-8" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
                      <span className="text-white font-bold text-xl">K</span>
                   </div>
@@ -147,7 +147,7 @@ export default function AdminLoginPage() {
                </form>
 
                <div className="mt-8 text-center">
-                  <Link href="/" className="text-sm text-gray-600 hover:text-blue-600">
+                  <Link href="/" className="text-sm text-gray-600 hover:text-blue-600" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
                      ← 메인 사이트로 돌아가기
                   </Link>
                </div>

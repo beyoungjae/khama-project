@@ -7,16 +7,37 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 
+// SearchResult 타입 정의
+interface SearchResult {
+   examNumber: string
+   name: string
+   certification: string
+   examDate: string
+   result: 'pass' | 'fail' | 'pending'
+   totalScore: number
+   writtenScore: number
+   practicalScore: number
+   certificateNumber: string
+}
+
+// RecentResult 타입 정의
+interface RecentResult {
+   examDate: string
+   certification: string
+   announcementDate: string
+   status: 'announced' | 'pending'
+}
+
 export default function ExamResultsPage() {
    const [searchData, setSearchData] = useState({
       examNumber: '',
       name: '',
       birthDate: '',
    })
-   const [searchResult, setSearchResult] = useState<unknown>(null)
+   const [searchResult, setSearchResult] = useState<SearchResult | null>(null)
    const [isSearching, setIsSearching] = useState(false)
 
-   const recentResults = [
+   const recentResults: RecentResult[] = [
       {
          examDate: '2025년 8월 18일',
          certification: '가전제품분해청소관리사',
@@ -61,7 +82,7 @@ export default function ExamResultsPage() {
       // 임시 검색 결과 (실제로는 API 호출)
       setTimeout(() => {
          // 임시 데이터
-         const mockResult = {
+         const mockResult: SearchResult = {
             examNumber: searchData.examNumber,
             name: searchData.name,
             certification: '가전제품분해청소관리사',
@@ -70,7 +91,7 @@ export default function ExamResultsPage() {
             totalScore: 85,
             writtenScore: 88,
             practicalScore: 82,
-            certificateNumber: 'KHAMA-2025-001234',
+            certificateNumber: 'KHAMA-2024-001234',
          }
 
          setSearchResult(mockResult)
