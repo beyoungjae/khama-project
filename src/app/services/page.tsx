@@ -2,6 +2,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { IMAGES } from '@/constants/images'
 
 export default function ServicesPage() {
    const services = [
@@ -43,25 +44,6 @@ export default function ServicesPage() {
          href: '/board/qna',
          color: 'orange',
          features: ['질문 작성', '전문가 답변', '검색 기능', '카테고리별 분류'],
-      },
-      {
-         id: 4,
-         title: '관리자 시스템',
-         description: '관리자 전용 시스템 (권한이 필요합니다)',
-         icon: (
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-               />
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-         ),
-         href: '/admin',
-         color: 'purple',
-         features: ['회원 관리', '시험 관리', '게시판 관리', '통계 현황'],
       },
    ]
 
@@ -105,17 +87,14 @@ export default function ServicesPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.SERVICES 사용 */}
             <section
                className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.SERVICES})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.SERVICES})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -132,7 +111,7 @@ export default function ServicesPage() {
                      <p className="text-xl text-gray-600 max-w-3xl mx-auto">회원님의 편의를 위한 다양한 온라인 서비스를 제공합니다</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                      {services.map((service) => {
                         const colorClasses = getColorClasses(service.color)
                         return (

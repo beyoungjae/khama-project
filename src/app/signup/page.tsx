@@ -1,13 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { useAuth } from '@/contexts/AuthContext'
+import { IMAGES } from '@/constants/images'
 
 export default function SignupPage() {
+   const router = useRouter()
+   const { signUp } = useAuth()
+
    const [currentStep, setCurrentStep] = useState(1)
    const [formData, setFormData] = useState({
       // 기본 정보
@@ -17,7 +23,7 @@ export default function SignupPage() {
       confirmPassword: '',
       phone: '',
       birthDate: '',
-      gender: '',
+      gender: '' as 'male' | 'female' | 'other' | '',
 
       // 주소 정보
       zipcode: '',
@@ -31,6 +37,45 @@ export default function SignupPage() {
    })
    const [isLoading, setIsLoading] = useState(false)
    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+
+   // 다음 우편번호 검색 함수
+   const handleAddressSearch = () => {
+      if (typeof window !== 'undefined' && window.daum) {
+         new window.daum.Postcode({
+            oncomplete: function (data) {
+               // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+               // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+               let addr = '' // 주소 변수
+
+               // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+               if (data.userSelectedType === 'R') {
+                  // 사용자가 도로명 주소를 선택했을 경우
+                  addr = data.roadAddress
+               } else {
+                  // 사용자가 지번 주소를 선택했을 경우(J)
+                  addr = data.jibunAddress
+               }
+
+               // 우편번호와 주소 정보를 해당 필드에 넣는다.
+               setFormData((prev) => ({
+                  ...prev,
+                  zipcode: data.zonecode,
+                  address: addr,
+               }))
+
+               // 에러 메시지 클리어
+               if (errors.zipcode) {
+                  setErrors((prev) => ({ ...prev, zipcode: '' }))
+               }
+               if (errors.address) {
+                  setErrors((prev) => ({ ...prev, address: '' }))
+               }
+            },
+         }).open()
+      } else {
+         alert('주소 검색 서비스를 불러올 수 없습니다. 페이지를 새로고침 후 다시 시도해주세요.')
+      }
+   }
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const { name, value, type } = e.target
@@ -150,14 +195,29 @@ export default function SignupPage() {
 
    const handleSubmit = async () => {
       setIsLoading(true)
+      setErrors({})
 
       try {
-         // TODO: 실제 회원가입 API 호출
-         await new Promise((resolve) => setTimeout(resolve, 2000)) // 임시 지연
+         // AuthContext의 signUp 함수 호출
+         const result = await signUp(formData.email, formData.password, {
+            name: formData.name,
+            phone: formData.phone,
+            birth_date: formData.birthDate,
+            gender: formData.gender as 'male' | 'female' | 'other',
+            postal_code: formData.zipcode,
+            address: formData.address,
+            detail_address: formData.detailAddress,
+            marketing_agreed: formData.agreeMarketing,
+         })
 
-         // 회원가입 성공 시 로그인 페이지로 리다이렉트
-         window.location.href = '/login?message=signup-success'
-      } catch {
+         if (result.error) {
+            setErrors({ general: result.error })
+         } else {
+            // 회원가입 성공 시 로그인 페이지로 리다이렉트
+            router.push('/login?message=signup-success')
+         }
+      } catch (error) {
+         console.error('회원가입 에러:', error)
          setErrors({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' })
       } finally {
          setIsLoading(false)
@@ -267,11 +327,20 @@ export default function SignupPage() {
                <label htmlFor="zipcode" className="block text-sm font-medium text-gray-700 mb-2">
                   우편번호 *
                </label>
-               <input type="text" id="zipcode" name="zipcode" value={formData.zipcode} onChange={handleChange} className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.zipcode ? 'border-red-300' : 'border-gray-300'}`} placeholder="12345" />
+               <input
+                  type="text"
+                  id="zipcode"
+                  name="zipcode"
+                  value={formData.zipcode}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.zipcode ? 'border-red-300' : 'border-gray-300'} bg-gray-50`}
+                  placeholder="주소 검색을 이용해주세요"
+                  readOnly
+               />
                {errors.zipcode && <p className="mt-1 text-sm text-red-600">{errors.zipcode}</p>}
             </div>
             <div className="flex items-end">
-               <Button type="button" variant="outline">
+               <Button type="button" variant="outline" onClick={handleAddressSearch}>
                   주소 검색
                </Button>
             </div>
@@ -287,8 +356,9 @@ export default function SignupPage() {
                name="address"
                value={formData.address}
                onChange={handleChange}
-               className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.address ? 'border-red-300' : 'border-gray-300'}`}
-               placeholder="서울시 강남구 테헤란로 123"
+               className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.address ? 'border-red-300' : 'border-gray-300'} bg-gray-50`}
+               placeholder="주소 검색을 이용해주세요"
+               readOnly
             />
             {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
          </div>
@@ -322,8 +392,8 @@ export default function SignupPage() {
                         이용약관 동의 (필수) *
                      </label>
                      <div className="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-600 max-h-32 overflow-y-auto">
-                        제1조 (목적) 본 약관은 대한생활가전유지관리협회(이하 &quot;협회&quot;)가 제공하는 서비스의 이용조건 및 절차, 회원과 협회의 권리, 의무, 책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다. 제2조 (정의) &quot;서비스&quot;란 협회가 제공하는 자격증 시험, 교육, 온라인 서비스 등 일체의 서비스를
-                        의미합니다. 제3조 (약관의 효력 및 변경) 본 약관은 서비스를 이용하고자 하는 모든 회원에 대하여 그 효력을 발생합니다.
+                        제1조 (목적) 본 약관은 대한생활가전유지관리협회(이하 &quot;협회&quot;)가 제공하는 서비스의 이용조건 및 절차, 회원과 협회의 권리, 의무, 책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다. 제2조 (정의) &quot;서비스&quot;란 협회가 제공하는 자격증 시험, 교육, 온라인 서비스 등
+                        일체의 서비스를 의미합니다. 제3조 (약관의 효력 및 변경) 본 약관은 서비스를 이용하고자 하는 모든 회원에 대하여 그 효력을 발생합니다.
                      </div>
                      <Link href="/terms" className="text-xs text-blue-600 hover:underline">
                         전체 약관 보기
@@ -341,8 +411,8 @@ export default function SignupPage() {
                         개인정보 처리방침 동의 (필수) *
                      </label>
                      <div className="mt-2 p-3 bg-gray-50 rounded text-xs text-gray-600 max-h-32 overflow-y-auto">
-                         1. 개인정보의 처리목적: 회원가입, 서비스 제공, 고객상담, 시험 관리 &lt;?php 2. 처리하는 개인정보 항목: 이름, 이메일, 전화번호, 주소, 생년월일 3. 개인정보의 보유 및 이용기간: 회원탈퇴 시까지 (단, 관련 법령에 따라 보존 필요시 해당 기간) 4. 개인정보 제3자 제공: 원칙적으로 제공하지 않음
-                        (법령에 의한 경우 제외)
+                        1. 개인정보의 처리목적: 회원가입, 서비스 제공, 고객상담, 시험 관리 &lt;?php 2. 처리하는 개인정보 항목: 이름, 이메일, 전화번호, 주소, 생년월일 3. 개인정보의 보유 및 이용기간: 회원탈퇴 시까지 (단, 관련 법령에 따라 보존 필요시 해당 기간) 4. 개인정보 제3자 제공: 원칙적으로
+                        제공하지 않음 (법령에 의한 경우 제외)
                      </div>
                      <Link href="/privacy" className="text-xs text-blue-600 hover:underline">
                         전체 개인정보 처리방침 보기
@@ -379,17 +449,14 @@ export default function SignupPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.SIGNUP 사용 */}
             <section
                className="relative py-12 bg-gradient-to-r from-emerald-900 to-emerald-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.SIGNUP})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.SIGNUP})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

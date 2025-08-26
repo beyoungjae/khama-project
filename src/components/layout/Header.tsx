@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IMAGES } from '@/constants/images'
 import OptimizedImage from '@/components/ui/OptimizedImage'
+import { useAuth } from '@/contexts/AuthContext'
+import { useAdminCheck } from '@/hooks/useAdmin'
 
 export default function Header() {
    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -12,6 +14,8 @@ export default function Header() {
    const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
    const pathname = usePathname()
    const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+   const { user, signOut } = useAuth()
+   const { isAdmin } = useAdminCheck()
 
    // 메뉴 데이터 구조화 (IA에 맞게)
    const menuItems = [
@@ -23,7 +27,10 @@ export default function Header() {
       {
          name: '협회 소개',
          path: '/about',
-         subItems: [{ name: '협회 개요', path: '/about' }],
+         subItems: [
+            { name: '협회 개요', path: '/about' },
+            { name: '갤러리', path: '/about/gallery' },
+         ],
       },
       {
          name: '주요 사업',
@@ -45,7 +52,6 @@ export default function Header() {
             { name: '마이페이지', path: '/mypage' },
             { name: '공지사항', path: '/board/notice' },
             { name: 'Q&A', path: '/board/qna' },
-            { name: '관리자 시스템', path: '/admin' },
          ],
       },
       {
@@ -66,6 +72,11 @@ export default function Header() {
       }
    }
 
+   // 로그아웃 처리
+   const handleSignOut = async () => {
+      await signOut()
+      window.location.href = '/'
+   }
 
    // 메가 메뉴 열기 핸들러
    const handleMouseEnterMegaMenu = () => {
@@ -129,14 +140,32 @@ export default function Header() {
                      ))}
                   </nav>
 
-                  {/* 로그인 버튼 */}
+                  {/* 로그인/로그아웃 버튼 */}
                   <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
-                     <Link href="/login" className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200">
-                        로그인
-                     </Link>
-                     <Link href="/signup" className="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors duration-200">
-                        회원가입
-                     </Link>
+                     {user ? (
+                        <>
+                           <Link href="/mypage" className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200">
+                              마이페이지
+                           </Link>
+                           {isAdmin && (
+                              <Link href="/admin" className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200">
+                                 관리자
+                              </Link>
+                           )}
+                           <button onClick={handleSignOut} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200">
+                              로그아웃
+                           </button>
+                        </>
+                     ) : (
+                        <>
+                           <Link href="/login" className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200">
+                              로그인
+                           </Link>
+                           <Link href="/signup" className="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors duration-200">
+                              회원가입
+                           </Link>
+                        </>
+                     )}
                   </div>
 
                   {/* 모바일 햄버거 버튼 */}
@@ -151,10 +180,14 @@ export default function Header() {
                      <div className="flex flex-col space-y-2">
                         {menuItems.map((item) => (
                            <div key={item.name}>
-                              <Link href={item.path} className="flex items-center justify-between text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200" onClick={(e) => {
-                                 handleHomeNavigation(e, item.path)
-                                 if (!item.subItems.length) setIsMobileMenuOpen(false)
-                              }}>
+                              <Link
+                                 href={item.path}
+                                 className="flex items-center justify-between text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
+                                 onClick={(e) => {
+                                    handleHomeNavigation(e, item.path)
+                                    if (!item.subItems.length) setIsMobileMenuOpen(false)
+                                 }}
+                              >
                                  {item.name}
                                  {item.subItems.length > 0 && (
                                     <button
@@ -182,12 +215,31 @@ export default function Header() {
                            </div>
                         ))}
                         <div className="border-t border-gray-100 pt-2 mt-2">
-                           <Link href="/login" className="block text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200" onClick={() => setIsMobileMenuOpen(false)}>
-                              로그인
-                           </Link>
-                           <Link href="/signup" className="block bg-blue-900 text-white px-3 py-2 mx-3 mt-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors duration-200 text-center" onClick={() => setIsMobileMenuOpen(false)}>
-                              회원가입
-                           </Link>
+                           {user ? (
+                              <>
+                                 <Link href="/mypage" className="block text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200" onClick={() => setIsMobileMenuOpen(false)}>
+                                    마이페이지
+                                 </Link>
+                                 <button
+                                    onClick={() => {
+                                       handleSignOut()
+                                       setIsMobileMenuOpen(false)
+                                    }}
+                                    className="block w-full text-left bg-red-600 text-white px-3 py-2 mx-3 mt-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200"
+                                 >
+                                    로그아웃
+                                 </button>
+                              </>
+                           ) : (
+                              <>
+                                 <Link href="/login" className="block text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200" onClick={() => setIsMobileMenuOpen(false)}>
+                                    로그인
+                                 </Link>
+                                 <Link href="/signup" className="block bg-blue-900 text-white px-3 py-2 mx-3 mt-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors duration-200 text-center" onClick={() => setIsMobileMenuOpen(false)}>
+                                    회원가입
+                                 </Link>
+                              </>
+                           )}
                         </div>
                      </div>
                   </div>

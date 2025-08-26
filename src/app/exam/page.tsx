@@ -1,85 +1,12 @@
+'use client'
+
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import ExamCard from '@/components/exam/ExamCard'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-
-// Exam 타입 정의
-interface Exam {
-   id: number
-   title: string
-   registrationNumber: string
-   examDate: string
-   applicationPeriod: string
-   examFee: string
-   certificateFee: string
-   totalFee: string
-   status: 'open' | 'closed' | 'upcoming'
-   examLocation: string
-   description: string
-   color: string
-}
+import { IMAGES } from '@/constants/images'
 
 export default function ExamPage() {
-   const examSchedule: Exam[] = [
-      {
-         id: 1,
-         title: '가전제품분해청소관리사',
-         registrationNumber: '2024-001234',
-         examDate: '2025년 9월 15일 (일)',
-         applicationPeriod: '2025.08.01 ~ 2025.09.08',
-         examFee: '별도 문의',
-         certificateFee: '별도 문의',
-         totalFee: '별도 문의',
-         status: 'open', // open, closed, upcoming
-         examLocation: '인천',
-         description: '세탁기, 에어컨, 공기청정기 등 가전제품 전문 청소',
-         color: 'from-blue-500 to-blue-700',
-      },
-      {
-         id: 2,
-         title: '냉난방기세척서비스관리사',
-         registrationNumber: '2024-001235',
-         examDate: '2025년 9월 22일 (일)',
-         applicationPeriod: '2025.08.08 ~ 2025.09.15',
-         examFee: '별도 문의',
-         certificateFee: '별도 문의',
-         totalFee: '별도 문의',
-         status: 'open',
-         examLocation: '인천',
-         description: '냉난방기 청소 및 유지보수 전문가',
-         color: 'from-emerald-500 to-emerald-700',
-      },
-      {
-         id: 3,
-         title: '에어컨설치관리사',
-         registrationNumber: '2024-001236',
-         examDate: '2025년 10월 13일 (일)',
-         applicationPeriod: '2025.09.01 ~ 2025.10.06',
-         examFee: '별도 문의',
-         certificateFee: '별도 문의',
-         totalFee: '별도 문의',
-         status: 'upcoming',
-         examLocation: '인천',
-         description: '에어컨 설치 및 시공 전문가',
-         color: 'from-orange-500 to-orange-700',
-      },
-      {
-         id: 4,
-         title: '환기청정시스템관리사',
-         registrationNumber: '2024-001237',
-         examDate: '2025년 10월 20일 (일)',
-         applicationPeriod: '2025.09.08 ~ 2025.10.13',
-         examFee: '별도 문의',
-         certificateFee: '별도 문의',
-         totalFee: '별도 문의',
-         status: 'upcoming',
-         examLocation: '인천',
-         description: '환기 및 공기 정화 시스템 전문가',
-         color: 'from-purple-500 to-purple-700',
-      },
-   ]
-
    const quickLinks = [
       {
          title: '시험 일정',
@@ -113,38 +40,19 @@ export default function ExamPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.EXAM 사용 */}
             <section
                className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.EXAM})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.EXAM})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">자격 검정</h1>
                   <p className="text-xl text-blue-100 max-w-3xl mx-auto">KHAMA 자격증 시험에 신청하고 생활가전 유지관리 전문가가 되세요</p>
-               </div>
-            </section>
-
-            {/* 시험 신청 현황 */}
-            <section className="py-20 bg-white">
-               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="text-center mb-16">
-                     <h2 className="text-3xl font-bold text-gray-900 mb-4">시험 신청</h2>
-                     <p className="text-xl text-gray-600">원하는 자격증을 선택하여 시험에 신청하세요</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                     {examSchedule.map((exam) => (
-                        <ExamCard key={exam.id} exam={exam} />
-                     ))}
-                  </div>
                </div>
             </section>
 

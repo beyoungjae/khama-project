@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button'
 
 interface ExamCardProps {
    exam: {
-      id: number
+      id: string // UUID 타입으로 변경
       title: string
       registrationNumber: string
       examDate: string

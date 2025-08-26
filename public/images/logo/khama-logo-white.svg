@@ -1,0 +1,64 @@
+<svg width="599" height="106" viewBox="0 0 599 106" xmlns="http://www.w3.org/2000/svg">
+  <!-- 로고 배경 그라디언트 -->
+  <defs>
+    <linearGradient id="whiteGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f1f5f9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lightAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e2e8f0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cbd5e1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 로고 심볼 (왼쪽) -->
+  <g transform="translate(10, 10)">
+    <!-- 외곽 원형 프레임 -->
+    <circle cx="43" cy="43" r="40" fill="url(#whiteGradient)" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- 중앙 아이콘 - 가전제품 및 관리 상징 -->
+    <g transform="translate(43, 43)">
+      <!-- 가전제품 심볼 (에어컨/세탁기 모티브) -->
+      <rect x="-20" y="-15" width="40" height="25" rx="3" fill="#334155" opacity="0.8"/>
+      <rect x="-15" y="-10" width="30" height="15" rx="2" fill="#ffffff"/>
+      
+      <!-- 청소/관리 도구 심볼 -->
+      <g transform="rotate(45)">
+        <rect x="-2" y="10" width="4" height="15" fill="url(#lightAccent)"/>
+        <circle cx="0" cy="8" r="3" fill="url(#lightAccent)"/>
+      </g>
+      
+      <!-- 품질 관리 심볼 (체크마크) -->
+      <path d="M8,-8 L12,-4 L18,-10" stroke="#334155" stroke-width="2" fill="none"/>
+      
+      <!-- 전문성 심볼 (기어) -->
+      <circle cx="-12" cy="8" r="4" fill="none" stroke="#334155" stroke-width="1"/>
+      <circle cx="-12" cy="8" r="2" fill="#334155"/>
+    </g>
+    
+    <!-- 장식 요소 -->
+    <circle cx="15" cy="25" r="2" fill="#cbd5e1" opacity="0.8"/>
+    <circle cx="71" cy="35" r="1.5" fill="#f1f5f9" opacity="0.7"/>
+    <circle cx="20" cy="65" r="1" fill="#e2e8f0" opacity="0.9"/>
+  </g>
+  
+  <!-- KHAMA 텍스트 (중앙) -->
+  <g transform="translate(110, 20)">
+    <text x="0" y="45" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#ffffff" letter-spacing="2px">KHAMA</text>
+    
+    <!-- 하단 영문 설명 -->
+    <text x="0" y="68" font-family="Arial, sans-serif" font-size="11" fill="#cbd5e1" letter-spacing="1px">Korea Home Appliance Maintenance Association</text>
+  </g>
+  
+  <!-- 한글 협회명 (오른쪽) -->
+  <g transform="translate(360, 20)">
+    <text x="0" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff">한국생활가전</text>
+    <text x="0" y="60" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#ffffff">유지관리협회</text>
+  </g>
+  
+  <!-- 장식 라인 -->
+  <line x1="350" y1="25" x2="350" y2="75" stroke="url(#lightAccent)" stroke-width="2"/>
+  
+  <!-- 하단 강조 라인 -->
+  <rect x="10" y="95" width="579" height="3" fill="url(#whiteGradient)"/>
+</svg>

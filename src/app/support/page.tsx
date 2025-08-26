@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { IMAGES } from '@/constants/images'
 
 export default function SupportPage() {
    const supportServices = [
@@ -63,7 +64,7 @@ export default function SupportPage() {
 
    const contactInfo = {
       phone: '1566-3321',
-      email: 'info@khama.or.kr',
+      email: 'haan@hanallcompany.com',
       address: '인천광역시 서구 청라한내로72번길 13 (청라동) 203호',
       hours: {
          weekday: '09:00 - 18:00',
@@ -85,17 +86,14 @@ export default function SupportPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.SUPPORT 사용 */}
             <section
                className="relative py-16 bg-gradient-to-r from-blue-900 to-blue-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.SUPPORT})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.SUPPORT})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

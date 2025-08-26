@@ -4,32 +4,36 @@
 export const IMAGES = {
    // 로고 이미지
    LOGO: {
-      MAIN: '/images/logo.png', // 메인 로고
-      WHITE: '/images/logo/khama-logo-white.png', // 흰색 로고 (어두운 배경용)
-      ICON: '/images/logo/khama-icon.png', // 아이콘만
-      FAVICON: '/images/logo/favicon.ico', // 파비콘
+      MAIN: '/images/logo.png', // 메인 로고 (SVG)
+      WHITE: '/images/logo/khama-logo-white.svg', // 흰색 로고 (어두운 배경용)
+      ICON: '/images/logo/khama-icon.svg', // 아이콘만 (SVG)
+      FAVICON: '/images/logo/favicon.svg', // 파비콘 (SVG)
    },
 
    // 히어로 섹션 배경 이미지
    HERO: {
-      SLIDE1: '/images/hero/banner-background.jpg', // 첫 번째 슬라이드 배경
-      SLIDE2: '/images/hero/banner-background2.jpg', // 두 번째 슬라이드 배경
-      SLIDE3: '/images/hero/banner-background3.jpg', // 세 번째 슬라이드 배경
+      SLIDE1: '/images/hero/hero-bg-1.svg', // 첫 번째 슬라이드 배경 (전문성 & 신뢰성)
+      SLIDE2: '/images/hero/hero-bg-2.svg', // 두 번째 슬라이드 배경 (혁신 & 기술)
+      SLIDE3: '/images/hero/hero-bg-3.svg', // 세 번째 슬라이드 배경 (교육 & 성장)
    },
 
    // 페이지별 히어로 배경
    PAGES: {
-      ABOUT: '/images/association/education.jpg', // 협회 소개 페이지
-      BUSINESS: '/images/pages/business-hero-bg.jpg', // 주요 사업 페이지
-      EXAM: '/images/pages/exam-hero-bg.jpg', // 자격 검정 페이지
-      EDUCATION: '/images/pages/education-hero-bg.jpg', // 교육 프로그램 페이지
-      SERVICES: '/images/pages/services-hero-bg.jpg', // 온라인 서비스 페이지
-      SUPPORT: '/images/pages/support-hero-bg.jpg', // 고객 지원 페이지
-      NOTICE: '/images/pages/notice-hero-bg.jpg', // 공지사항 페이지
-      QNA: '/images/pages/qna-hero-bg.jpg', // Q&A 페이지
-      LOGIN: '/images/pages/login-hero-bg.jpg', // 로그인 페이지
-      SIGNUP: '/images/pages/signup-hero-bg.jpg', // 회원가입 페이지
-      SITEMAP: '/images/pages/sitemap-hero-bg.jpg', // 사이트맵 페이지
+      ABOUT: '/images/backgrounds/about/about-hero-bg.jpg', // 협회 소개 페이지
+      BUSINESS: '/images/backgrounds/business/business-hero-bg.jpg', // 주요 사업 페이지
+      EXAM: '/images/backgrounds/exam/exam-hero-bg.jpg', // 자격 검정 페이지
+      EDUCATION: '/images/backgrounds/business/education-hero-bg.jpg', // 교육 프로그램 페이지
+      SERVICES: '/images/backgrounds/services/services-hero-bg.jpg', // 온라인 서비스 페이지
+      SUPPORT: '/images/backgrounds/support/support-hero-bg.jpg', // 고객 지원 페이지
+      NOTICE: '/images/backgrounds/board/notice-hero-bg.jpg', // 공지사항 페이지
+      QNA: '/images/backgrounds/board/qna-hero-bg.jpg', // Q&A 페이지
+      LOGIN: '/images/backgrounds/auth/login-hero-bg.jpg', // 로그인 페이지
+      SIGNUP: '/images/backgrounds/auth/signup-hero-bg.jpg', // 회원가입 페이지
+      SITEMAP: '/images/backgrounds/sitemap/sitemap-hero-bg.jpg', // 사이트맵 페이지
+      MYPAGE: '/images/backgrounds/mypage/mypage-hero-bg.jpg', // 마이페이지
+      RESOURCES: '/images/backgrounds/support/resources-hero-bg.jpg', // 자료실 페이지
+      CONTACT: '/images/backgrounds/support/contact-hero-bg.jpg', // 문의하기 페이지
+      ADMIN: '/images/backgrounds/admin/admin-hero-bg.jpg', // 관리자 페이지
    },
 
    // 갤러리 이미지

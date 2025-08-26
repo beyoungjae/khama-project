@@ -1,267 +1,331 @@
 'use client'
 
-import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
+import { useAuth } from '@/contexts/AuthContext'
+
+interface ExamSchedule {
+   id: string
+   certification_id: string
+   exam_date: string
+   registration_start_date: string
+   registration_end_date: string
+   exam_location: string
+   exam_address: string | null
+   max_applicants: number
+   current_applicants: number
+   status: string
+   certifications: {
+      id: string
+      name: string
+      description: string | null
+      application_fee: number | null
+   }
+}
 
 export default function ApplicationForm() {
+   const router = useRouter()
    const searchParams = useSearchParams()
-   const certId = searchParams.get('cert')
+   const { user, profile } = useAuth()
+   const [loading, setLoading] = useState(true)
+   const [submitting, setSubmitting] = useState(false)
+   const [examSchedules, setExamSchedules] = useState<ExamSchedule[]>([])
+   const [selectedSchedule, setSelectedSchedule] = useState<ExamSchedule | null>(null)
+
+   const scheduleId = searchParams.get('schedule')
 
    const [formData, setFormData] = useState({
-      // 개인정보
-      name: '',
-      birthDate: '',
-      phone: '',
-      email: '',
-      address: '',
-      detailAddress: '',
-
-      // 시험 정보
-      certificationId: certId || '',
-      examDate: '',
-      examLocation: '',
-
-      // 교육 이수 정보
-      educationCompleted: false,
-      educationCertificate: null as File | null,
-
-      // 약관 동의
-      termsAgreed: false,
-      privacyAgreed: false,
-      marketingAgreed: false,
+      examScheduleId: scheduleId || '',
+      paymentMethod: 'transfer', // 기본값을 계좌이체로 변경
    })
 
-   const certifications = [
-      { id: '1', name: '가전제품분해청소관리사' },
-      { id: '2', name: '냉난방기세척서비스관리사' },
-      { id: '3', name: '에어컨설치관리사' },
-      { id: '4', name: '환기청정시스템관리사' },
-   ]
-
-   const examDates = [
-      { id: '1', date: '2025년 9월 15일 (일)', locations: ['인천'] },
-      { id: '2', date: '2025년 9월 22일 (일)', locations: ['인천'] },
-      { id: '3', date: '2025년 10월 13일 (일)', locations: ['인천'] },
-      { id: '4', date: '2025년 10월 20일 (일)', locations: ['인천'] },
-   ]
-
-   const selectedCert = certifications.find((cert) => cert.id === formData.certificationId)
-   const selectedExamDate = examDates.find((exam) => exam.id === formData.certificationId)
-
-   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value, type } = e.target
-      if (type === 'checkbox') {
-         const checked = (e.target as HTMLInputElement).checked
-         setFormData((prev) => ({ ...prev, [name]: checked }))
-      } else {
-         setFormData((prev) => ({ ...prev, [name]: value }))
+   // 사용자 인증 확인
+   useEffect(() => {
+      if (!user) {
+         router.push('/login?redirectTo=/exam/apply')
+         return
       }
+   }, [user, router])
+
+   // 시험 일정 목록 로드
+   useEffect(() => {
+      const loadExamSchedules = async () => {
+         try {
+            const response = await fetch('/api/exams/schedules')
+            const data = await response.json()
+
+            if (response.ok) {
+               const availableSchedules = data.schedules.filter((schedule: ExamSchedule) => schedule.status === 'registration_open' && new Date(schedule.registration_end_date) > new Date() && schedule.current_applicants < schedule.max_applicants)
+               setExamSchedules(availableSchedules)
+
+               // URL에서 지정된 스케줄이 있으면 자동 선택
+               if (scheduleId) {
+                  const schedule = availableSchedules.find((s: ExamSchedule) => s.id === scheduleId)
+                  if (schedule) {
+                     setSelectedSchedule(schedule)
+                     setFormData((prev) => ({ ...prev, examScheduleId: scheduleId }))
+                  }
+               }
+            } else {
+               console.error('시험 일정 로드 실패:', data.error)
+            }
+         } catch (error) {
+            console.error('시험 일정 로드 오류:', error)
+         } finally {
+            setLoading(false)
+         }
+      }
+
+      loadExamSchedules()
+   }, [scheduleId])
+
+   const handleScheduleSelect = (scheduleId: string) => {
+      const schedule = examSchedules.find((s) => s.id === scheduleId)
+      setSelectedSchedule(schedule || null)
+      setFormData((prev) => ({ ...prev, examScheduleId: scheduleId }))
    }
 
-   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0] || null
-      setFormData((prev) => ({ ...prev, educationCertificate: file }))
-   }
-
-   const handleSubmit = (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault()
 
-      // 필수 항목 검증
-      if (!formData.name || !formData.phone || !formData.email || !formData.certificationId) {
-         alert('필수 항목을 모두 입력해주세요.')
+      if (!user) {
+         alert('로그인이 필요합니다.')
          return
       }
 
-      if (!formData.termsAgreed || !formData.privacyAgreed) {
-         alert('필수 약관에 동의해주세요.')
+      if (!formData.examScheduleId) {
+         alert('시험 일정을 선택해주세요.')
          return
       }
 
-      if (!formData.educationCompleted) {
-         alert('해당 자격증의 교육 과정을 먼저 이수해주세요.')
+      if (!profile?.name || !profile?.phone) {
+         alert('마이페이지에서 개인정보를 먼저 등록해주세요.')
+         router.push('/mypage')
          return
       }
 
-      // 임시 처리 (실제로는 API 호출)
-      alert('시험 신청이 완료되었습니다. 결제 페이지로 이동합니다.')
-      console.log('신청 데이터:', formData)
+      try {
+         setSubmitting(true)
+
+         // 폼 데이터 준비
+         const applicationData = {
+            exam_schedule_id: formData.examScheduleId,
+            certification_id: selectedSchedule?.certification_id,
+            applicant_name: profile.name,
+            applicant_phone: profile.phone,
+            applicant_email: user.email,
+            applicant_birth_date: profile.birth_date,
+            applicant_address: profile.address,
+            payment_method: formData.paymentMethod,
+            user_id: user.id, // user_id 추가
+         }
+
+         const response = await fetch('/api/exams/applications', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(applicationData),
+         })
+
+         const result = await response.json()
+
+         if (response.ok) {
+            // 신청 완료 메시지 표시
+            alert(`시험 신청이 완료되었습니다!\n\n계좌이체 안내:\n국민은행 805937-04-005684\n예금주: (주)한올컴퍼니\n\n입금 확인 후 신청이 최종 완료됩니다.`)
+            router.push('/mypage')
+         } else {
+            alert(result.error || '신청 중 오류가 발생했습니다.')
+         }
+      } catch (error) {
+         console.error('신청 오류:', error)
+         alert('신청 중 오류가 발생했습니다.')
+      } finally {
+         setSubmitting(false)
+      }
+   }
+
+   if (!user) {
+      return (
+         <div className="text-center py-8">
+            <p className="text-gray-600">로그인이 필요합니다.</p>
+         </div>
+      )
+   }
+
+   if (loading) {
+      return (
+         <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">시험 일정을 불러오는 중...</p>
+         </div>
+      )
+   }
+
+   if (examSchedules.length === 0) {
+      return (
+         <Card>
+            <div className="text-center py-8">
+               <p className="text-gray-600 mb-4">현재 신청 가능한 시험이 없습니다.</p>
+               <Button onClick={() => router.push('/exam/schedule')}>시험 일정 보기</Button>
+            </div>
+         </Card>
+      )
    }
 
    return (
       <form onSubmit={handleSubmit} className="space-y-8">
-         {/* 자격증 선택 */}
+         {/* 신청자 정보 확인 */}
          <Card>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">자격증 선택</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">신청자 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                     신청할 자격증 <span className="text-red-500">*</span>
-                  </label>
-                  <select name="certificationId" value={formData.certificationId} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
-                     <option value="">자격증을 선택해주세요</option>
-                     {certifications.map((cert) => (
-                        <option key={cert.id} value={cert.id}>
-                           {cert.name}
-                        </option>
-                     ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">이름</label>
+                  <input type="text" value={profile?.name || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readOnly />
                </div>
-
-               {selectedCert && (
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                     <div className="flex items-center justify-between">
-                        <div>
-                           <h3 className="font-semibold text-blue-900">{selectedCert.name}</h3>
-                        </div>
-                        <Badge variant="primary">선택됨</Badge>
-                     </div>
-                  </div>
-               )}
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                  <input type="email" value={user.email || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readOnly />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                  <input type="tel" value={profile?.phone || ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readOnly />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">생년월일</label>
+                  <input type="text" value={profile?.birth_date ? new Date(profile.birth_date).toLocaleDateString('ko-KR') : ''} className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readOnly />
+               </div>
             </div>
+
+            {(!profile?.name || !profile?.phone) && (
+               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-yellow-800 text-sm mb-2">개인정보가 완전하지 않습니다. 시험 신청을 위해 마이페이지에서 정보를 완성해주세요.</p>
+                  <Button type="button" variant="outline" size="sm" onClick={() => router.push('/mypage')}>
+                     마이페이지로 이동
+                  </Button>
+               </div>
+            )}
          </Card>
 
          {/* 시험 일정 선택 */}
-         {selectedExamDate && (
-            <Card>
-               <h2 className="text-2xl font-bold text-gray-900 mb-6">시험 일정 및 장소</h2>
-               <div className="space-y-4">
-                  <div>
-                     <label className="block text-sm font-medium text-gray-700 mb-2">시험 일자</label>
-                     <input type="text" value={selectedExamDate.date} className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readOnly />
+         <Card>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">시험 일정 선택</h2>
+            <div className="space-y-4">
+               {examSchedules.map((schedule) => (
+                  <div key={schedule.id} className={`border rounded-lg p-4 cursor-pointer transition-colors ${formData.examScheduleId === schedule.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`} onClick={() => handleScheduleSelect(schedule.id)}>
+                     <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                           <div className="flex items-center space-x-3 mb-2">
+                              <h3 className="font-semibold text-gray-900">{schedule.certifications.name}</h3>
+                              {formData.examScheduleId === schedule.id && <Badge variant="primary">선택됨</Badge>}
+                           </div>
+                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                              <div>
+                                 <span className="font-medium">시험일:</span>
+                                 <br />
+                                 {new Date(schedule.exam_date).toLocaleDateString('ko-KR')}
+                              </div>
+                              <div>
+                                 <span className="font-medium">장소:</span>
+                                 <br />
+                                 {schedule.exam_location}
+                                 {schedule.exam_address && <div className="text-xs text-gray-500">{schedule.exam_address}</div>}
+                              </div>
+                              <div>
+                                 <span className="font-medium">신청 현황:</span>
+                                 <br />
+                                 {schedule.current_applicants}/{schedule.max_applicants}명<div className="text-xs text-gray-500">잔여 {schedule.max_applicants - schedule.current_applicants}명</div>
+                              </div>
+                           </div>
+                           {schedule.certifications.description && <p className="mt-2 text-sm text-gray-600">{schedule.certifications.description}</p>}
+                        </div>
+                        <div className="ml-4 text-right">
+                           <div className="text-lg font-bold text-blue-600">{schedule.certifications.application_fee ? `${schedule.certifications.application_fee.toLocaleString()}원` : '별도문의'}</div>
+                           <div className="text-xs text-gray-500">신청마감: {new Date(schedule.registration_end_date).toLocaleDateString('ko-KR')}</div>
+                        </div>
+                     </div>
                   </div>
+               ))}
+            </div>
+         </Card>
 
-                  <div>
-                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                        시험 지역 <span className="text-red-500">*</span>
-                     </label>
-                     <select name="examLocation" value={formData.examLocation} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
-                        <option value="">시험 지역을 선택해주세요</option>
-                        {selectedExamDate.locations.map((location) => (
-                           <option key={location} value={location}>
-                              {location}
-                           </option>
-                        ))}
-                     </select>
+         {/* 결제 방법 */}
+         {selectedSchedule && selectedSchedule.certifications.application_fee && selectedSchedule.certifications.application_fee > 0 && (
+            <Card>
+               <h2 className="text-2xl font-bold text-gray-900 mb-6">결제 방법</h2>
+               <div className="space-y-3">
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                     <input type="radio" name="paymentMethod" value="transfer" checked={formData.paymentMethod === 'transfer'} onChange={(e) => setFormData((prev) => ({ ...prev, paymentMethod: e.target.value }))} className="text-blue-600" />
+                     <span>계좌이체</span>
+                  </label>
+               </div>
+
+               {/* 계좌 정보 안내 */}
+               <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="font-medium text-blue-900 mb-2">계좌이체 안내</h3>
+                  <p className="text-sm text-blue-800 mb-2">아래 계좌로 정확한 금액을 입금해주세요.</p>
+                  <div className="bg-white p-3 rounded border border-blue-100">
+                     <div className="font-mono text-lg font-bold text-blue-900">국민은행 805937-04-005684</div>
+                     <div className="text-sm text-gray-600 mt-1">예금주: (주)한올컴퍼니</div>
                   </div>
+                  <p className="text-xs text-blue-700 mt-2">* 입금 확인 후 신청이 최종 완료됩니다. 관리자가 입금을 확인하면 시험 신청이 확정됩니다.</p>
+               </div>
+
+               {/* 관리자 확인 절차 안내 */}
+               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <h3 className="font-medium text-yellow-900 mb-2">관리자 확인 절차 안내</h3>
+                  <p className="text-sm text-yellow-800">입금 후 관리자가 입금 내역을 확인해야 신청이 최종 완료됩니다. 관리자 확인이 완료되면 마이페이지에서 신청 상태를 확인할 수 있습니다.</p>
                </div>
             </Card>
          )}
 
-         {/* 개인정보 입력 */}
-         <Card>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">개인정보 입력</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                     성명 <span className="text-red-500">*</span>
-                  </label>
-                  <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="홍길동" required />
+         {/* 신청 요약 및 제출 */}
+         {selectedSchedule && (
+            <Card>
+               <h2 className="text-2xl font-bold text-gray-900 mb-6">신청 요약</h2>
+               <div className="space-y-4">
+                  <div className="flex justify-between items-center py-2 border-b">
+                     <span className="font-medium">자격증명:</span>
+                     <span>{selectedSchedule.certifications.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b">
+                     <span className="font-medium">시험일:</span>
+                     <span>{new Date(selectedSchedule.exam_date).toLocaleDateString('ko-KR')}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b">
+                     <span className="font-medium">시험장소:</span>
+                     <span>{selectedSchedule.exam_location}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b">
+                     <span className="font-medium">신청자명:</span>
+                     <span>{profile?.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b">
+                     <span className="font-medium text-lg">결제금액:</span>
+                     <span className="text-lg font-bold text-blue-600">{selectedSchedule.certifications.application_fee ? `${selectedSchedule.certifications.application_fee.toLocaleString()}원` : '별도문의'}</span>
+                  </div>
                </div>
 
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                     생년월일 <span className="text-red-500">*</span>
-                  </label>
-                  <input type="date" name="birthDate" value={formData.birthDate} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+               <div className="mt-8 flex space-x-4">
+                  <Button type="button" variant="outline" onClick={() => router.back()} className="flex-1">
+                     취소
+                  </Button>
+                  <Button type="submit" disabled={submitting || !profile?.name || !profile?.phone} className="flex-1">
+                     {submitting ? (
+                        <div className="flex items-center justify-center">
+                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                           신청 중...
+                        </div>
+                     ) : (
+                        '시험 신청하기'
+                     )}
+                  </Button>
                </div>
-
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                     휴대폰 번호 <span className="text-red-500">*</span>
-                  </label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="010-1234-5678" required />
-               </div>
-
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                     이메일 <span className="text-red-500">*</span>
-                  </label>
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="example@email.com" required />
-               </div>
-
-               <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                     주소 <span className="text-red-500">*</span>
-                  </label>
-                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-2" placeholder="주소를 입력해주세요" required />
-                  <input type="text" name="detailAddress" value={formData.detailAddress} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="상세주소 (선택사항)" />
-               </div>
-            </div>
-         </Card>
-
-         {/* 교육 이수 확인 */}
-         <Card>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">교육 이수 확인</h2>
-            <div className="space-y-4">
-               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-yellow-800 text-sm">
-                     <strong>중요:</strong> 해당 자격증의 종합 교육을 이수한 자에 한하여 시험 응시가 가능합니다.
-                  </p>
-               </div>
-
-               <div className="flex items-center">
-                  <input type="checkbox" name="educationCompleted" checked={formData.educationCompleted} onChange={handleInputChange} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required />
-                  <label className="ml-2 text-sm text-gray-700">
-                     해당 자격증의 교육 과정을 이수하였습니다. <span className="text-red-500">*</span>
-                  </label>
-               </div>
-
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">교육 이수증 첨부 (선택사항)</label>
-                  <input type="file" onChange={handleFileChange} accept=".pdf,.jpg,.jpeg,.png" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                  <p className="text-xs text-gray-500 mt-1">PDF, JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
-               </div>
-            </div>
-         </Card>
-
-         {/* 약관 동의 */}
-         <Card>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">약관 동의</h2>
-            <div className="space-y-4">
-               <div className="flex items-center">
-                  <input type="checkbox" name="termsAgreed" checked={formData.termsAgreed} onChange={handleInputChange} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required />
-                  <label className="ml-2 text-sm text-gray-700">
-                     시험 응시 약관에 동의합니다. <span className="text-red-500">*</span>
-                     <a href="#" className="text-blue-600 hover:underline ml-1">
-                        [보기]
-                     </a>
-                  </label>
-               </div>
-
-               <div className="flex items-center">
-                  <input type="checkbox" name="privacyAgreed" checked={formData.privacyAgreed} onChange={handleInputChange} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required />
-                  <label className="ml-2 text-sm text-gray-700">
-                     개인정보 수집 및 이용에 동의합니다. <span className="text-red-500">*</span>
-                     <a href="#" className="text-blue-600 hover:underline ml-1">
-                        [보기]
-                     </a>
-                  </label>
-               </div>
-
-               <div className="flex items-center">
-                  <input type="checkbox" name="marketingAgreed" checked={formData.marketingAgreed} onChange={handleInputChange} className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                  <label className="ml-2 text-sm text-gray-700">
-                     마케팅 정보 수신에 동의합니다. (선택사항)
-                     <a href="#" className="text-blue-600 hover:underline ml-1">
-                        [보기]
-                     </a>
-                  </label>
-               </div>
-            </div>
-         </Card>
-
-         {/* 제출 버튼 */}
-         <div className="flex flex-col sm:flex-row gap-4">
-            <Button type="button" variant="outline" className="flex-1" href="/exam">
-               취소
-            </Button>
-            <Button type="submit" className="flex-1">
-               신청하기
-            </Button>
-         </div>
+            </Card>
+         )}
       </form>
    )
 }

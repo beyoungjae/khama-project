@@ -10,11 +10,10 @@ export default function AboutPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.ABOUT 사용 */}
             <section
                className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
                style={{
-                  backgroundImage: `url(${IMAGES.PAGES.ABOUT})`, // 실제 이미지로 교체 시 사용
+                  backgroundImage: `url(${IMAGES.PAGES.ABOUT})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',

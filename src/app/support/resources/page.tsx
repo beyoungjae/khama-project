@@ -1,12 +1,36 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
+import { IMAGES } from '@/constants/images'
+
+interface Resource {
+   id: number | string
+   title: string
+   description: string | null
+   category: string
+   file_type?: string
+   file_size?: number
+   file_url?: string
+   download_count?: number
+   is_active: boolean
+   created_at: string
+   updated_at: string
+}
 
 export default function ResourcesPage() {
-   // 임시 데이터 (실제로는 API에서 가져올 데이터)
-   const resources = [
+   const [resources, setResources] = useState<any[]>([])
+   const [loading, setLoading] = useState(true)
+   const [selectedCategory, setSelectedCategory] = useState('전체')
+   const [searchQuery, setSearchQuery] = useState('')
+   const [totalCount, setTotalCount] = useState(0)
+
+   // 폴백 데이터
+   const fallbackResources = [
       {
          id: 1,
          title: '가전제품분해청소관리사 시험 가이드북',
@@ -75,6 +99,61 @@ export default function ResourcesPage() {
       },
    ]
 
+   // 자료 데이터 로드
+   useEffect(() => {
+      loadResources()
+   }, [selectedCategory, searchQuery])
+
+   const loadResources = async () => {
+      try {
+         setLoading(true)
+         const params = new URLSearchParams()
+         
+         if (selectedCategory !== '전체') {
+            params.append('category', selectedCategory)
+         }
+         
+         if (searchQuery) {
+            params.append('search', searchQuery)
+         }
+         
+         const response = await fetch(`/api/resources?${params.toString()}`)
+         const data = await response.json()
+         
+         if (response.ok && data.resources) {
+            // API 데이터를 UI 형태로 변환
+            const transformedData = data.resources.map((resource: Resource) => ({
+               id: resource.id,
+               title: resource.title,
+               description: resource.description || '설명이 없습니다.',
+               category: resource.category,
+               fileType: resource.file_type?.toUpperCase() || 'PDF',
+               fileSize: resource.file_size ? `${(resource.file_size / 1024 / 1024).toFixed(1)}MB` : '1.0MB',
+               downloadCount: resource.download_count || 0,
+               uploadDate: new Date(resource.created_at).toLocaleDateString('ko-KR'),
+               isNew: new Date(resource.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+            }))
+            
+            setResources(transformedData)
+            setTotalCount(data.total)
+         } else {
+            console.error('자료실 로드 실패:', data.error)
+            setResources(fallbackResources)
+            setTotalCount(fallbackResources.length)
+         }
+      } catch (error) {
+         console.error('자료실 로드 오류:', error)
+         setResources(fallbackResources)
+         setTotalCount(fallbackResources.length)
+      } finally {
+         setLoading(false)
+      }
+   }
+
+   const handleSearch = () => {
+      loadResources()
+   }
+
    const categories = ['전체', '시험자료', '교육자료', '안전자료', '양식', '홍보자료']
 
    const getCategoryBadge = (category: string) => {
@@ -123,7 +202,15 @@ export default function ResourcesPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-12 bg-gradient-to-r from-blue-900 to-blue-700">
+            <section
+               className="relative py-12 bg-gradient-to-r from-blue-900 to-blue-700"
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.RESOURCES})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
+            >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">자료실</h1>
@@ -137,21 +224,65 @@ export default function ResourcesPage() {
                   <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                      <div className="flex flex-wrap gap-2">
                         {categories.map((category) => (
-                           <Button key={category} variant={category === '전체' ? 'primary' : 'outline'} size="sm">
+                           <Button 
+                              key={category} 
+                              variant={category === selectedCategory ? 'primary' : 'outline'} 
+                              size="sm"
+                              onClick={() => setSelectedCategory(category)}
+                           >
                               {category}
                            </Button>
                         ))}
                      </div>
                      <div className="flex gap-2 w-full md:w-auto">
-                        <input type="text" placeholder="파일명으로 검색..." className="flex-1 md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                        <Button>검색</Button>
+                        <input 
+                           type="text" 
+                           placeholder="파일명으로 검색..." 
+                           className="flex-1 md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           value={searchQuery}
+                           onChange={(e) => setSearchQuery(e.target.value)}
+                           onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                        />
+                        <Button onClick={handleSearch}>검색</Button>
                      </div>
                   </div>
                </Card>
 
                {/* 자료 목록 */}
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {resources.map((resource) => (
+               {loading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                     {Array.from({ length: 6 }).map((_, index) => (
+                        <Card key={index} className="h-full animate-pulse">
+                           <div className="space-y-4">
+                              <div className="flex items-center gap-2">
+                                 <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                                 <div className="space-y-1">
+                                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                                 </div>
+                              </div>
+                              <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                              <div className="h-16 bg-gray-200 rounded"></div>
+                              <div className="h-8 bg-gray-200 rounded"></div>
+                           </div>
+                        </Card>
+                     ))}
+                  </div>
+               ) : resources.length === 0 ? (
+                  <Card>
+                     <div className="text-center py-16">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                           <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                           </svg>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">자료가 없습니다</h3>
+                        <p className="text-gray-500">등록된 자료가 없습니다.</p>
+                     </div>
+                  </Card>
+               ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                     {resources.map((resource) => (
                      <Card key={resource.id} hover className="h-full flex flex-col">
                         <div className="flex items-start justify-between mb-4">
                            <div className="flex items-center">
@@ -190,8 +321,9 @@ export default function ResourcesPage() {
                            </Button>
                         </div>
                      </Card>
-                  ))}
-               </div>
+                     ))}
+                  </div>
+               )}
 
                {/* 페이지네이션 */}
                <Card className="mt-8">
@@ -207,7 +339,7 @@ export default function ResourcesPage() {
                      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                         <div>
                            <p className="text-sm text-gray-700">
-                              총 <span className="font-medium">6</span>개의 자료
+                              총 <span className="font-medium">{totalCount}</span>개의 자료
                            </p>
                         </div>
                         <div>

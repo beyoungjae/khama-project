@@ -1,39 +1,43 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import CertificationModal from '@/components/business/CertificationModal'
+import { IMAGES } from '@/constants/images'
 
-// Certification 타입 정의
+// Certification 타입 정의 (데이터베이스 스키마에 맞춤)
 interface Certification {
-   id: number
-   title: string
-   subtitle: string
-   description: string
-   registrationNumber: string
-   features: string[]
-   curriculum: string[]
-   practicalCurriculum: string[]
-   examInfo: {
-      written: string
-      practical: string
-      passingScore: string
-   }
-   cost: {
+   id: string
+   name: string
+   registration_number: string
+   description: string | null
+   category: string
+   application_fee: number | null
+   certificate_fee: number | null
+   status: string
+   display_order: number
+   requirements?: string | null
+   exam_subjects?: string | null
+   passing_criteria?: string | null
+   created_at: string
+   updated_at: string
+   // cost 객체 추가
+   cost?: {
       application: string
       certificate: string
       total: string
    }
-   image: string
 }
 
 export default function BusinessPage() {
    const [selectedCertification, setSelectedCertification] = useState<Certification | null>(null)
    const [isModalOpen, setIsModalOpen] = useState(false)
+   const [certifications, setCertifications] = useState<Certification[]>([])
+   const [loading, setLoading] = useState(true)
 
    const handleCertificationClick = (cert: Certification) => {
       setSelectedCertification(cert)
@@ -45,92 +49,71 @@ export default function BusinessPage() {
       setSelectedCertification(null)
    }
 
-   const certifications: Certification[] = [
-      {
-         id: 1,
-         title: '가전제품분해청소관리사',
-         subtitle: 'Home Appliance Cleaning Manager',
-         description: '세탁기, 에어컨, 공기청정기 등 가전제품에 대한 전문적인 지식을 가지고 분해 청소하는 업무',
-         registrationNumber: '2024-001234',
-         features: ['완전분해 세척', '재조립 기술', '안전 관리', '고객 서비스'],
-         curriculum: ['가전제품의 작동 원리', '세탁기 완전분해 세척교육 이론', '에어컨 완전분해 세척교육 이론', '기타 가전제품 케어 교육 이론', '마케팅 실무 이론'],
-         practicalCurriculum: ['세탁기 완전분해 세척 실기', '에어컨 완전분해 세척 실기', '기타 가전제품 케어 실기', '마케팅 실무 실기'],
-         examInfo: {
-            written: '객관식 5과목',
-            practical: '실기 구술형 4과목',
-            passingScore: '과목당 60점 이상, 평균 60점 이상',
-         },
-         cost: {
-            application: '별도 문의',
-            certificate: '별도 문의',
-            total: '별도 문의',
-         },
-         image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
-      },
-      {
-         id: 2,
-         title: '냉난방기세척서비스관리사',
-         subtitle: 'HVAC Cleaning Service Manager',
-         description: '냉난방기 청소 및 유지보수 전문가로서 시스템 진단과 효율 최적화를 담당',
-         registrationNumber: '2024-001235',
-         features: ['시스템 진단', '효율 최적화', '예방 관리', '전문 상담'],
-         curriculum: ['냉난방기 시스템 이해', '청소 기법 및 도구 사용법', '안전 관리 및 사고 예방', '고객 관리 및 서비스', '사업 운영 및 마케팅'],
-         practicalCurriculum: ['냉난방기 분해 및 청소', '시스템 점검 및 진단', '부품 교체 및 수리', '고객 응대 실습'],
-         examInfo: {
-            written: '객관식 5과목',
-            practical: '실기 구술형 4과목',
-            passingScore: '과목당 60점 이상, 평균 60점 이상',
-         },
-         cost: {
-            application: '별도 문의',
-            certificate: '별도 문의',
-            total: '별도 문의',
-         },
-         image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
-      },
-      {
-         id: 3,
-         title: '에어컨설치관리사',
-         subtitle: 'Air Conditioner Installation Manager',
-         description: '에어컨 설치 및 시공 전문가로서 정확한 설치와 성능 테스트를 담당',
-         registrationNumber: '2024-001236',
-         features: ['정확한 설치', '배관 작업', '성능 테스트', '안전 점검'],
-         curriculum: ['에어컨 시스템 구조 이해', '설치 기법 및 도구 사용', '배관 작업 및 연결', '전기 작업 및 안전', '성능 테스트 및 점검'],
-         practicalCurriculum: ['에어컨 설치 실습', '배관 연결 작업', '전기 배선 작업', '성능 테스트 실시'],
-         examInfo: {
-            written: '객관식 5과목',
-            practical: '실기 구술형 4과목',
-            passingScore: '과목당 60점 이상, 평균 60점 이상',
-         },
-         cost: {
-            application: '별도 문의',
-            certificate: '별도 문의',
-            total: '별도 문의',
-         },
-         image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
-      },
-      {
-         id: 4,
-         title: '환기청정시스템관리사',
-         subtitle: 'Ventilation System Manager',
-         description: '환기 및 공기 정화 시스템 전문가로서 공기질 관리와 시스템 점검을 담당',
-         registrationNumber: '2024-001237',
-         features: ['공기질 관리', '필터 교체', '시스템 점검', '환경 개선'],
-         curriculum: ['환기 시스템 원리', '공기질 측정 및 분석', '필터 종류 및 교체', '시스템 유지보수', '환경 개선 방안'],
-         practicalCurriculum: ['환기 시스템 점검', '공기질 측정 실습', '필터 교체 작업', '시스템 청소 및 관리'],
-         examInfo: {
-            written: '객관식 5과목',
-            practical: '실기 구술형 4과목',
-            passingScore: '과목당 60점 이상, 평균 60점 이상',
-         },
-         cost: {
-            application: '별도 문의',
-            certificate: '별도 문의',
-            total: '별도 문의',
-         },
-         image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=400&fit=crop',
-      },
-   ]
+   // 자격증 데이터 로드
+   useEffect(() => {
+      loadCertifications()
+   }, [])
+
+   const loadCertifications = async () => {
+      try {
+         setLoading(true)
+         const response = await fetch('/api/certifications?status=active')
+         const data = await response.json()
+
+         if (response.ok) {
+            // cost 객체를 추가하여 certifications 데이터 변환
+            const transformedCertifications = (data.certifications || []).map((cert: any) => ({
+               ...cert,
+               cost: {
+                  application: cert.application_fee ? `${cert.application_fee.toLocaleString()}원` : '별도 문의',
+                  certificate: cert.certificate_fee ? `${cert.certificate_fee.toLocaleString()}원` : '별도 문의',
+                  total: cert.application_fee && cert.certificate_fee ? `${(cert.application_fee + cert.certificate_fee).toLocaleString()}원` : '별도 문의',
+               },
+            }))
+
+            setCertifications(transformedCertifications)
+         } else {
+            console.error('자격증 목록 로드 실패:', data.error)
+         }
+      } catch (error) {
+         console.error('자격증 목록 로드 오류:', error)
+      } finally {
+         setLoading(false)
+      }
+   }
+
+   // 폴백 이미지 매핑
+   const getImageForCert = (cert: Certification) => {
+      const imageMap: { [key: string]: string } = {
+         가전제품분해청소관리사: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop',
+         냉난방기세척서비스관리사: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop',
+         에어컨설치관리사: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop',
+         환기청정시스템관리사: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&h=400&fit=crop',
+      }
+      return imageMap[cert.name] || null // 대체 이미지 대신 null 반환
+   }
+
+   // 자격증별 부제목 매핑
+   const getSubtitleForCert = (cert: Certification) => {
+      const subtitleMap: { [key: string]: string } = {
+         가전제품분해청소관리사: 'Home Appliance Cleaning Manager',
+         냉난방기세척서비스관리사: 'HVAC Cleaning Service Manager',
+         에어컨설치관리사: 'Air Conditioner Installation Manager',
+         환기청정시스템관리사: 'Ventilation System Manager',
+      }
+      return subtitleMap[cert.name] || ''
+   }
+
+   // 자격증별 주요 특징 매핑
+   const getFeaturesForCert = (cert: Certification) => {
+      const featuresMap: { [key: string]: string[] } = {
+         가전제품분해청소관리사: ['완전분해 세척', '재조립 기술', '안전 관리', '고객 서비스'],
+         냉난방기세척서비스관리사: ['시스템 진단', '효율 최적화', '예방 관리', '전문 상담'],
+         에어컨설치관리사: ['정확한 설치', '배관 작업', '성능 테스트', '안전 점검'],
+         환기청정시스템관리사: ['공기질 관리', '필터 교체', '시스템 점검', '환경 개선'],
+      }
+      return featuresMap[cert.name] || ['전문 서비스', '품질 관리', '안전성', '신뢰성']
+   }
 
    return (
       <div className="min-h-screen">
@@ -138,17 +121,14 @@ export default function BusinessPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.BUSINESS 사용 */}
             <section
                className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.BUSINESS})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.BUSINESS})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -255,90 +235,85 @@ export default function BusinessPage() {
                      </div>
                   </div>
 
-                  {/* 간소화된 자격증 카드 */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                     {certifications.map((cert) => (
-                        <Card key={cert.id} hover className="group cursor-pointer" onClick={() => handleCertificationClick(cert)}>
-                           <div className="relative h-48 rounded-lg overflow-hidden mb-4">
-                              <div className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style={{ backgroundImage: `url(${cert.image})` }} />
-                              <div className="absolute inset-0 bg-blue-900/60" />
-                              <div className="absolute inset-0 flex items-center justify-center text-center text-white p-4">
-                                 <div>
-                                    <h3 className="text-xl font-bold mb-2">{cert.title}</h3>
-                                    <p className="text-sm opacity-90">{cert.subtitle}</p>
+                  {/* 자격증 카드 */}
+                  {loading ? (
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                           <Card key={index} className="animate-pulse">
+                              <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                              <div className="space-y-4">
+                                 <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                 <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                                 <div className="flex gap-1">
+                                    <div className="h-6 bg-gray-200 rounded w-20"></div>
+                                    <div className="h-6 bg-gray-200 rounded w-20"></div>
                                  </div>
                               </div>
-                              <div className="absolute top-3 right-3">
-                                 <Badge variant="default" size="sm">
-                                    등록번호: {cert.registrationNumber}
-                                 </Badge>
-                              </div>
-                              <div className="absolute bottom-3 left-3">
-                                 <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-white">클릭하여 상세보기</div>
-                              </div>
-                           </div>
-
-                           <div className="space-y-4">
-                              <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{cert.description}</p>
-
-                              {/* 주요 특징 */}
-                              <div>
-                                 <h4 className="font-medium text-gray-900 mb-2 text-sm">주요 특징</h4>
-                                 <div className="flex flex-wrap gap-1">
-                                    {cert.features.slice(0, 3).map((feature, idx) => (
-                                       <Badge key={idx} variant="primary" size="sm">
-                                          {feature}
-                                       </Badge>
-                                    ))}
-                                    {cert.features.length > 3 && (
-                                       <Badge variant="secondary" size="sm">
-                                          +{cert.features.length - 3}개
-                                       </Badge>
+                           </Card>
+                        ))}
+                     </div>
+                  ) : certifications.length === 0 ? (
+                     <div className="text-center py-16">
+                        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                           <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                 strokeLinecap="round"
+                                 strokeLinejoin="round"
+                                 strokeWidth={2}
+                                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                              />
+                           </svg>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">자격증 정보가 없습니다</h3>
+                        <p className="text-gray-500">현재 등록된 자격증이 없습니다.</p>
+                     </div>
+                  ) : (
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {certifications.map((cert) => (
+                           <div key={cert.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                              <div className="relative">
+                                 {/* 이미지 컨테이너 - 이미지가 없을 경우 대체 색상 배경 표시 */}
+                                 <div className="h-48 overflow-hidden">
+                                    {cert.image_url || getImageForCert(cert) ? (
+                                       <img src={cert.image_url || getImageForCert(cert)} alt={cert.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                       <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
+                                          <svg className="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                          </svg>
+                                       </div>
                                     )}
                                  </div>
-                              </div>
+                                 <div className="p-6">
+                                    <div className="flex justify-between items-start mb-2">
+                                       <h3 className="text-xl font-bold text-gray-900">{cert.name}</h3>
+                                       <Badge variant="default">{cert.status === 'active' ? '모집중' : '모집종료'}</Badge>
+                                    </div>
 
-                              {/* 간단한 시험 정보 */}
-                              <div className="bg-gray-50 rounded-lg p-3">
-                                 <div className="grid grid-cols-2 gap-3 text-xs">
-                                    <div>
-                                       <span className="font-medium text-gray-600">필기:</span>
-                                       <span className="ml-1 text-gray-800">객관식 5과목</span>
+                                    {cert.description && <p className="text-gray-600 mb-4 line-clamp-2">{cert.description}</p>}
+
+                                    <div className="flex justify-between items-center mb-4">
+                                       <div className="text-sm text-gray-500">등록번호: {cert.registration_number}</div>
+                                       <div className="text-sm text-gray-500">{cert.category}</div>
                                     </div>
-                                    <div>
-                                       <span className="font-medium text-gray-600">실기:</span>
-                                       <span className="ml-1 text-gray-800">구술형 4과목</span>
-                                    </div>
-                                    <div>
-                                       <span className="font-medium text-gray-600">합격기준:</span>
-                                       <span className="ml-1 text-gray-800">60점 이상</span>
-                                    </div>
-                                    <div>
-                                       <span className="font-medium text-gray-600">비용:</span>
-                                       <span className="ml-1 text-blue-600 font-medium">{cert.cost.total}</span>
+
+                                    <div className="border-t border-gray-100 pt-4">
+                                       <div className="flex justify-between items-center">
+                                          <div>
+                                             <div className="text-sm text-gray-500">응시료</div>
+                                             <div className="text-lg font-bold text-blue-600">{cert.cost?.application || '별도 문의'}</div>
+                                          </div>
+                                          <Button onClick={() => handleCertificationClick(cert)} variant="primary" size="sm">
+                                             상세보기
+                                          </Button>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
-
-                              <div className="flex gap-2">
-                                 <Button
-                                    onClick={(e) => {
-                                       e.stopPropagation()
-                                       handleCertificationClick(cert)
-                                    }}
-                                    className="flex-1"
-                                    size="sm"
-                                 >
-                                    상세보기
-                                 </Button>
-                                 <Button href="/exam" variant="secondary" className="flex-1" size="sm" onClick={(e) => e.stopPropagation()}>
-                                    시험신청
-                                 </Button>
-                              </div>
                            </div>
-                        </Card>
-                     ))}
-                  </div>
+                        ))}
+                     </div>
+                  )}
                </div>
             </section>
 

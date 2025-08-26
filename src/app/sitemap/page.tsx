@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
+import { IMAGES } from '@/constants/images'
 
 export default function SitemapPage() {
    const siteStructure = [
@@ -71,17 +72,14 @@ export default function SitemapPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.SITEMAP 사용 */}
             <section
                className="relative py-12 bg-gradient-to-r from-gray-900 to-gray-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.SITEMAP})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.SITEMAP})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -129,7 +127,7 @@ export default function SitemapPage() {
                      <div>
                         <h4 className="font-semibold text-gray-900 mb-2">연락처</h4>
                         <p>전화: 1566-3321</p>
-                        <p>이메일: info@khama.or.kr</p>
+                        <p>이메일: haan@hanallcompany.com</p>
                         <p>주소: 인천광역시 서구 청라한내로72번길 13 (청라동) 203호</p>
                      </div>
                      <div>

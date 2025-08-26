@@ -1,256 +1,288 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import { useAuth } from '@/contexts/AuthContext'
+import { IMAGES } from '@/constants/images'
+
+interface ExamApplication {
+   id: string
+   application_number: string
+   application_status: string
+   created_at: string
+   exam_schedules: {
+      id: string
+      exam_date: string
+      exam_location: string
+      certifications: {
+         id: string
+         name: string
+      }
+   }
+}
+
+interface ExamResult {
+   id: string
+   written_score: number | null
+   practical_score: number | null
+   total_score: number
+   result_status: string
+   pass_status?: string
+   announced_at: string
+   created_at?: string
+   exam_applications: {
+      id: string
+      application_number: string
+      exam_schedules: {
+         exam_date: string
+         certifications: {
+            name: string
+         }
+      }
+   }
+}
 
 export default function MyPage() {
-   // 임시 데이터 (실제로는 API에서 가져올 데이터)
-   const userInfo = {
-      name: '홍길동',
-      email: 'hong@example.com',
-      phone: '010-1234-5678',
-      address: '서울시 강남구 테헤란로 123',
-      joinDate: '2024-01-15',
+   const router = useRouter()
+   const { user, profile, isLoading } = useAuth()
+   const [examApplications, setExamApplications] = useState<ExamApplication[]>([])
+   const [examResults, setExamResults] = useState<ExamResult[]>([])
+   const [activeTab, setActiveTab] = useState<'applications' | 'results'>('applications')
+   const [loading, setLoading] = useState(true)
+
+   useEffect(() => {
+      if (!user && !isLoading) {
+         router.push('/login')
+         return
+      }
+
+      if (user && profile) {
+         loadExamData()
+      }
+   }, [user, profile, isLoading])
+
+   const loadExamData = async () => {
+      try {
+         setLoading(true)
+
+         if (!user) return
+
+         console.log('시험 데이터 로딩 시작 - 사용자 ID:', user.id)
+
+         // 실제 시험 신청 데이터 로드
+         try {
+            const applicationsRes = await fetch(`/api/exams/applications?userId=${user.id}`)
+            const applicationsData = await applicationsRes.json()
+            
+            if (applicationsRes.ok) {
+               setExamApplications(applicationsData.applications || [])
+               console.log('시험 신청 데이터 로드 성공:', applicationsData.applications?.length || 0, '개')
+            } else {
+               console.error('시험 신청 데이터 로드 실패:', applicationsData.error)
+               // 실패 시 빈 배열로 설정
+               setExamApplications([])
+            }
+         } catch (error) {
+            console.error('시험 신청 API 호출 오류:', error)
+            setExamApplications([])
+         }
+
+         // 실제 시험 결과 데이터 로드
+         try {
+            const resultsRes = await fetch(`/api/exams/results?userId=${user.id}`)
+            const resultsData = await resultsRes.json()
+            
+            if (resultsRes.ok) {
+               setExamResults(resultsData.results || [])
+               console.log('시험 결과 데이터 로드 성공:', resultsData.results?.length || 0, '개')
+            } else {
+               console.error('시험 결과 데이터 로드 실패:', resultsData.error)
+               // 실패 시 빈 배열로 설정
+               setExamResults([])
+            }
+         } catch (error) {
+            console.error('시험 결과 API 호출 오류:', error)
+            setExamResults([])
+         }
+      } catch (error) {
+         console.error('시험 데이터 로딩 오류:', error)
+      } finally {
+         setLoading(false)
+      }
    }
 
-   const examHistory = [
-      {
-         id: 1,
-         examName: '가전제품분해청소관리사',
-         examDate: '2024-03-15',
-         status: '합격',
-         score: 85,
-         certificateNumber: 'KHAMA-2024-001',
-      },
-      {
-         id: 2,
-         examName: '냉난방기세척서비스관리사',
-         examDate: '2024-06-20',
-         status: '대기중',
-         score: null,
-         certificateNumber: null,
-      },
-      {
-         id: 3,
-         examName: '에어컨설치관리사',
-         examDate: '2024-02-10',
-         status: '불합격',
-         score: 55,
-         certificateNumber: null,
-      },
-   ]
-
-   const educationHistory = [
-      {
-         id: 1,
-         courseName: '가전제품 분해청소 기초과정',
-         startDate: '2024-01-20',
-         endDate: '2024-02-20',
-         status: '수료',
-         instructor: '김전문',
-      },
-      {
-         id: 2,
-         courseName: '냉난방기 세척 전문과정',
-         startDate: '2024-05-15',
-         endDate: '2024-06-15',
-         status: '진행중',
-         instructor: '이기술',
-      },
-   ]
+   const handleLogout = async () => {
+      try {
+         await fetch('/api/auth/logout', { method: 'POST' })
+         router.push('/')
+         router.refresh()
+      } catch (error) {
+         console.error('로그아웃 오류:', error)
+      }
+   }
 
    const getStatusBadge = (status: string) => {
       switch (status) {
-         case '합격':
-         case '수료':
-            return <Badge variant="success">{status}</Badge>
-         case '불합격':
-            return <Badge variant="error">{status}</Badge>
-         case '대기중':
-         case '진행중':
-            return <Badge variant="warning">{status}</Badge>
+         case 'draft':
+            return <Badge variant="secondary">임시저장</Badge>
+         case 'submitted':
+            return <Badge variant="warning">제출됨</Badge>
+         case 'payment_pending':
+            return <Badge variant="warning">입금대기</Badge>
+         case 'payment_completed':
+            return <Badge variant="primary">입금완료</Badge>
+         case 'confirmed':
+            return <Badge variant="success">승인됨</Badge>
+         case 'exam_taken':
+            return <Badge variant="secondary">시험응시</Badge>
+         case 'passed':
+            return <Badge variant="success">합격</Badge>
+         case 'failed':
+            return <Badge variant="error">불합격</Badge>
+         case 'cancelled':
+            return <Badge variant="error">취소</Badge>
          default:
             return <Badge variant="default">{status}</Badge>
       }
    }
 
+   if (isLoading) {
+      return (
+         <div className="min-h-screen flex items-center justify-center">
+            <LoadingSpinner size="large" />
+         </div>
+      )
+   }
+
+   if (!user || !profile) {
+      return null
+   }
+
    return (
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
          <Header />
-
-         <main className="pt-16">
-            {/* Hero Section */}
-            <section className="relative py-12 bg-gradient-to-r from-blue-900 to-blue-700">
-               <div className="absolute inset-0 bg-black/20" />
-               <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">마이페이지</h1>
-                  <p className="text-lg text-blue-100">개인 정보와 자격증 현황을 관리하세요</p>
-               </div>
-            </section>
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* 사이드바 */}
-                  <div className="lg:col-span-1">
-                     <Card>
-                        <div className="text-center mb-6">
-                           <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                              <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                              </svg>
-                           </div>
-                           <h2 className="text-xl font-bold text-gray-900 mb-2">{userInfo.name}</h2>
-                           <p className="text-gray-600">{userInfo.email}</p>
-                           <p className="text-sm text-gray-500 mt-2">가입일: {userInfo.joinDate}</p>
-                        </div>
-
-                        <div className="space-y-2">
-                           <Button href="#profile" variant="ghost" className="w-full justify-start">
-                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                              </svg>
-                              개인정보 수정
-                           </Button>
-                           <Button href="#exams" variant="ghost" className="w-full justify-start">
-                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                              시험 내역
-                           </Button>
-                           <Button href="#education" variant="ghost" className="w-full justify-start">
-                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                                 />
-                              </svg>
-                              교육 이력
-                           </Button>
-                        </div>
-                     </Card>
+         <main className="flex-grow bg-gray-50 py-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+               <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+                  <div className="flex justify-between items-center mb-6">
+                     <h1 className="text-2xl font-bold text-gray-900">마이페이지</h1>
+                     <Button onClick={handleLogout} variant="outline">
+                        로그아웃
+                     </Button>
                   </div>
 
-                  {/* 메인 콘텐츠 */}
-                  <div className="lg:col-span-2 space-y-8">
-                     {/* 개인정보 */}
-                     <Card id="profile">
-                        <h3 className="text-xl font-bold text-gray-900 mb-6">개인정보</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                           <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">이름</label>
-                              <input type="text" value={userInfo.name} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" readOnly />
-                           </div>
-                           <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">이메일</label>
-                              <input type="email" value={userInfo.email} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" readOnly />
-                           </div>
-                           <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
-                              <input type="tel" value={userInfo.phone} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" readOnly />
-                           </div>
-                           <div className="md:col-span-2">
-                              <label className="block text-sm font-medium text-gray-700 mb-2">주소</label>
-                              <input type="text" value={userInfo.address} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" readOnly />
-                           </div>
-                        </div>
-                        <div className="mt-6 flex gap-3">
-                           <Button>정보 수정</Button>
-                           <Button variant="outline">비밀번호 변경</Button>
-                        </div>
-                     </Card>
-
-                     {/* 시험 내역 */}
-                     <Card id="exams">
-                        <div className="flex justify-between items-center mb-6">
-                           <h3 className="text-xl font-bold text-gray-900">시험 내역</h3>
-                           <Button href="/exam/apply" size="sm">
-                              새 시험 신청
-                           </Button>
-                        </div>
-                        <div className="overflow-x-auto">
-                           <table className="min-w-full divide-y divide-gray-200">
-                              <thead className="bg-gray-50">
-                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">자격증명</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">시험일</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">점수</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">액션</th>
-                                 </tr>
-                              </thead>
-                              <tbody className="bg-white divide-y divide-gray-200">
-                                 {examHistory.map((exam) => (
-                                    <tr key={exam.id} className="hover:bg-gray-50">
-                                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{exam.examName}</td>
-                                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{exam.examDate}</td>
-                                       <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(exam.status)}</td>
-                                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{exam.score ? `${exam.score}점` : '-'}</td>
-                                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                          {exam.status === '합격' && (
-                                             <Button size="sm" variant="outline">
-                                                자격증 다운로드
-                                             </Button>
-                                          )}
-                                          {exam.status === '대기중' && (
-                                             <Button size="sm" variant="ghost">
-                                                결과 대기중
-                                             </Button>
-                                          )}
-                                          {exam.status === '불합격' && (
-                                             <Button size="sm" variant="outline">
-                                                재신청
-                                             </Button>
-                                          )}
-                                       </td>
-                                    </tr>
-                                 ))}
-                              </tbody>
-                           </table>
-                        </div>
-                     </Card>
-
-                     {/* 교육 이력 */}
-                     <Card id="education">
-                        <div className="flex justify-between items-center mb-6">
-                           <h3 className="text-xl font-bold text-gray-900">교육 이력</h3>
-                           <Button href="/business/education" size="sm" variant="secondary">
-                              교육 신청
-                           </Button>
-                        </div>
-                        <div className="space-y-4">
-                           {educationHistory.map((course) => (
-                              <div key={course.id} className="border border-gray-200 rounded-lg p-4">
-                                 <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-semibold text-gray-900">{course.courseName}</h4>
-                                    {getStatusBadge(course.status)}
-                                 </div>
-                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                                    <div>
-                                       <span className="font-medium">교육기간:</span> {course.startDate} ~ {course.endDate}
-                                    </div>
-                                    <div>
-                                       <span className="font-medium">강사:</span> {course.instructor}
-                                    </div>
-                                    <div>
-                                       {course.status === '수료' && (
-                                          <Button size="sm" variant="outline">
-                                             수료증 다운로드
-                                          </Button>
-                                       )}
-                                    </div>
-                                 </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     <div className="md:col-span-1">
+                        <Card>
+                           <div className="text-center">
+                              <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                 <span className="text-2xl font-bold text-gray-600">{profile.name?.charAt(0) || 'U'}</span>
                               </div>
-                           ))}
-                        </div>
-                     </Card>
+                              <h2 className="text-xl font-semibold text-gray-900">{profile.name || '이름 없음'}</h2>
+                              <p className="text-gray-600">{user.email}</p>
+                              <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                                 <Badge variant="secondary">{profile.role === 'admin' ? '관리자' : '일반회원'}</Badge>
+                                 <Badge variant={profile.status === 'active' ? 'success' : 'warning'}>{profile.status === 'active' ? '활성' : '비활성'}</Badge>
+                              </div>
+                           </div>
+                        </Card>
+                     </div>
+
+                     <div className="md:col-span-2">
+                        <Card>
+                           <div className="border-b border-gray-200">
+                              <nav className="-mb-px flex space-x-8">
+                                 <button onClick={() => setActiveTab('applications')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'applications' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                    시험 신청 내역
+                                 </button>
+                                 <button onClick={() => setActiveTab('results')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'results' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                    시험 결과
+                                 </button>
+                              </nav>
+                           </div>
+
+                           <div className="mt-6">
+                              {loading ? (
+                                 <div className="flex justify-center py-8">
+                                    <LoadingSpinner />
+                                 </div>
+                              ) : activeTab === 'applications' ? (
+                                 <div className="space-y-4">
+                                    {examApplications.length > 0 ? (
+                                       examApplications.map((application) => {
+                                          // 데이터 구조 안전 접근
+                                          const certificationName = application.exam_schedules?.certifications?.name || '리스트 불가'
+                                          const examDate = application.exam_schedules?.exam_date || application.created_at
+                                          const examLocation = application.exam_schedules?.exam_location || '미정'
+                                          
+                                          return (
+                                             <div key={application.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                                <div className="flex justify-between items-start">
+                                                   <div>
+                                                      <h3 className="font-medium text-gray-900">{certificationName}</h3>
+                                                      <p className="text-sm text-gray-500">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
+                                                   </div>
+                                                   {getStatusBadge(application.application_status)}
+                                                </div>
+                                                <div className="mt-2 text-sm text-gray-600">
+                                                   <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>
+                                                   <p>장소: {examLocation}</p>
+                                                   <p>신청일: {new Date(application.created_at).toLocaleDateString('ko-KR')}</p>
+                                                </div>
+                                             </div>
+                                          )
+                                       })
+                                    ) : (
+                                       <p className="text-gray-500 text-center py-4">신청 내역이 없습니다.</p>
+                                    )}
+                                 </div>
+                              ) : (
+                                 <div className="space-y-4">
+                                    {examResults.length > 0 ? (
+                                       examResults.map((result) => {
+                                          // 데이터 구조 안전 접근
+                                          const certificationName = result.exam_applications?.exam_schedules?.certifications?.name || '리스트 불가'
+                                          const applicationNumber = result.exam_applications?.application_number || result.id?.slice(0, 8) || 'N/A'
+                                          const examDate = result.exam_applications?.exam_schedules?.exam_date
+                                          const resultStatus = result.result_status || result.pass_status
+                                          
+                                          return (
+                                             <div key={result.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                                <div className="flex justify-between items-start">
+                                                   <div>
+                                                      <h3 className="font-medium text-gray-900">{certificationName}</h3>
+                                                      <p className="text-sm text-gray-500">신청번호: {applicationNumber}</p>
+                                                   </div>
+                                                   <Badge variant={resultStatus === 'pass' || resultStatus === 'passed' ? 'success' : 'error'}>
+                                                      {resultStatus === 'pass' || resultStatus === 'passed' ? '합격' : '불합격'}
+                                                   </Badge>
+                                                </div>
+                                                <div className="mt-2 text-sm text-gray-600">
+                                                   <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>
+                                                   <p>총점: {result.total_score || 0}점</p>
+                                                   <p>결과발표일: {result.announced_at ? new Date(result.announced_at).toLocaleDateString('ko-KR') : '대기중'}</p>
+                                                </div>
+                                             </div>
+                                          )
+                                       })
+                                    ) : (
+                                       <p className="text-gray-500 text-center py-4">시험 결과가 없습니다.</p>
+                                    )}
+                                 </div>
+                              )}
+                           </div>
+                        </Card>
+                     </div>
                   </div>
                </div>
             </div>
          </main>
-
          <Footer />
       </div>
    )

@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
+import { IMAGES } from '@/constants/images'
 
 interface EducationProgram {
    id: string
@@ -19,7 +20,6 @@ interface EducationProgram {
    location: string
    capacity: number
    currentEnrollment: number
-   fee: string
    features: string[]
    curriculum: Array<{
       week: number
@@ -51,7 +51,6 @@ export default function EducationPage() {
          location: '인천 청라 한올평생교육원',
          capacity: 20,
          currentEnrollment: 15,
-         fee: '350,000원',
          features: ['실무 중심 커리큘럼', '1:1 멘토링 제공', '창업 컨설팅 포함', '수료 후 취업 연계'],
          curriculum: [
             { week: 1, topic: '가전청소 기초 이론', content: '가전제품 구조 이해, 청소 원리, 안전 수칙' },
@@ -79,7 +78,6 @@ export default function EducationPage() {
          location: '인천 청라 한올평생교육원',
          capacity: 15,
          currentEnrollment: 8,
-         fee: '480,000원',
          features: ['최신 기술 교육', '고급 장비 실습', '전문가 네트워킹', '기술 인증서 발급'],
          curriculum: [
             { week: 1, topic: '고급 청소 기술', content: '최신 청소 기법, 친환경 세제 활용법' },
@@ -109,7 +107,6 @@ export default function EducationPage() {
          location: '인천 청라 한올평생교육원',
          capacity: 25,
          currentEnrollment: 12,
-         fee: '280,000원',
          features: ['최신 트렌드 분석', '신기술 체험', '아이디어 워크숍', '시장 진출 전략'],
          curriculum: [
             { week: 1, topic: '신기술 동향', content: 'IoT 가전, 스마트홈 기술, AI 청소 로봇' },
@@ -147,17 +144,14 @@ export default function EducationPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.EDUCATION 사용 */}
             <section
                className="relative py-16 bg-gradient-to-r from-emerald-900 to-emerald-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.EDUCATION})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.EDUCATION})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -246,11 +240,10 @@ export default function EducationPage() {
                                  </ul>
                               </div>
 
-                              {/* 가격 및 버튼 */}
+                              {/* 버튼 */}
                               <div className="mt-auto">
                                  <div className="flex items-center justify-between mb-4">
                                     <div>
-                                       <span className="text-2xl font-bold text-emerald-600">{program.fee}</span>
                                        <p className="text-sm text-gray-500">다음 개강: {program.nextStartDate}</p>
                                     </div>
                                  </div>
@@ -283,13 +276,7 @@ export default function EducationPage() {
                               <Card>
                                  <h3 className="text-xl font-bold text-gray-900 mb-4">강사 소개</h3>
                                  <div className="flex items-center gap-4">
-                                    <Image 
-                                       src={program.instructor.image} 
-                                       alt={program.instructor.name} 
-                                       width={64} 
-                                       height={64} 
-                                       className="w-16 h-16 rounded-full object-cover" 
-                                    />
+                                    <Image src={program.instructor.image} alt={program.instructor.name} width={64} height={64} className="w-16 h-16 rounded-full object-cover" />
                                     <div>
                                        <h4 className="font-semibold text-gray-900">{program.instructor.name}</h4>
                                        <p className="text-gray-600">{program.instructor.career}</p>

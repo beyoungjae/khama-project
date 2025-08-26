@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ApplicationForm from '@/components/exam/ApplicationForm'
+import { IMAGES } from '@/constants/images'
 
 export default function ExamApplyPage() {
    return (
@@ -10,17 +11,14 @@ export default function ExamApplyPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            {/* TODO: 실제 이미지로 교체 - IMAGES.PAGES.EXAM 사용 */}
             <section
                className="relative py-16 bg-gradient-to-r from-blue-900 to-blue-700"
-               style={
-                  {
-                     // backgroundImage: `url(${IMAGES.PAGES.EXAM})`, // 실제 이미지로 교체 시 사용
-                     // backgroundSize: 'cover',
-                     // backgroundPosition: 'center',
-                     // backgroundRepeat: 'no-repeat'
-                  }
-               }
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.EXAM})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

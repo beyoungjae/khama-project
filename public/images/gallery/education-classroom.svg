@@ -1,0 +1,196 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 -->
+  <defs>
+    <linearGradient id="classroomBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="floorGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#cbd5e1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#94a3b8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 교실 배경 -->
+  <rect width="800" height="600" fill="url(#classroomBg)"/>
+  
+  <!-- 바닥 -->
+  <rect x="0" y="450" width="800" height="150" fill="url(#floorGradient)"/>
+  
+  <!-- 벽면 패널 -->
+  <rect x="0" y="0" width="800" height="450" fill="#f1f5f9"/>
+  <rect x="50" y="50" width="700" height="300" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- 강의 스크린/칠판 -->
+  <rect x="100" y="80" width="300" height="200" rx="10" fill="#1e3a8a"/>
+  <rect x="110" y="90" width="280" height="180" rx="5" fill="#1e40af"/>
+  
+  <!-- 스크린 내용 - 가전제품 분해도 -->
+  <g transform="translate(130, 110)">
+    <!-- 세탁기 분해도 -->
+    <rect x="0" y="0" width="80" height="100" rx="5" fill="white" opacity="0.9"/>
+    <rect x="10" y="10" width="60" height="40" rx="3" fill="#3b82f6" opacity="0.8"/>
+    <circle cx="40" cy="30" r="15" fill="none" stroke="white" stroke-width="2"/>
+    
+    <!-- 부품들 -->
+    <rect x="5" y="60" width="70" height="15" fill="white" opacity="0.7"/>
+    <rect x="15" y="80" width="50" height="10" fill="white" opacity="0.7"/>
+    
+    <!-- 화살표 및 설명 -->
+    <path d="M90,30 L110,30" stroke="white" stroke-width="2" fill="none"/>
+    <polygon points="110,30 105,25 105,35" fill="white"/>
+    
+    <!-- 확대된 부품 -->
+    <rect x="120" y="10" width="60" height="40" rx="3" fill="white" opacity="0.8"/>
+    <rect x="130" y="20" width="40" height="5" fill="#10b981"/>
+    <rect x="130" y="30" width="40" height="5" fill="#f59e0b"/>
+    <rect x="130" y="40" width="40" height="5" fill="#ef4444"/>
+    
+    <!-- 텍스트 영역 -->
+    <rect x="120" y="60" width="100" height="80" fill="white" opacity="0.6"/>
+    <rect x="130" y="70" width="80" height="3" fill="white"/>
+    <rect x="130" y="80" width="60" height="3" fill="white"/>
+    <rect x="130" y="90" width="70" height="3" fill="white"/>
+    <rect x="130" y="100" width="50" height="3" fill="white"/>
+    <rect x="130" y="110" width="75" height="3" fill="white"/>
+    <rect x="130" y="120" width="40" height="3" fill="white"/>
+  </g>
+  
+  <!-- 강사 위치 -->
+  <g transform="translate(450, 200)">
+    <!-- 강사 실루엣 -->
+    <ellipse cx="25" cy="60" rx="20" ry="8" fill="#64748b" opacity="0.3"/>
+    <rect x="15" y="20" width="20" height="40" rx="3" fill="#1e40af"/>
+    <circle cx="25" cy="15" r="8" fill="#f8fafc" stroke="#1e40af" stroke-width="2"/>
+    
+    <!-- 포인터 도구 -->
+    <line x1="35" y1="30" x2="50" y2="25" stroke="#1e40af" stroke-width="3"/>
+    <circle cx="50" cy="25" r="2" fill="#ef4444"/>
+  </g>
+  
+  <!-- 학생 책상 배치 -->
+  <g opacity="0.8">
+    <!-- 첫 번째 줄 -->
+    <g transform="translate(100, 320)">
+      <!-- 책상 1 -->
+      <rect x="0" y="0" width="80" height="50" rx="5" fill="#64748b"/>
+      <rect x="5" y="5" width="70" height="40" rx="3" fill="#f8fafc"/>
+      <rect x="10" y="10" width="25" height="20" rx="2" fill="#1e40af" opacity="0.6"/>
+      <circle cx="50" cy="20" r="3" fill="#10b981"/>
+      <circle cx="60" cy="20" r="3" fill="#f59e0b"/>
+      
+      <!-- 의자 1 -->
+      <rect x="25" y="60" width="30" height="15" rx="3" fill="#475569"/>
+      
+      <!-- 학생 1 -->
+      <circle cx="40" cy="65" r="6" fill="#f8fafc" stroke="#1e40af" stroke-width="1"/>
+      <rect x="35" y="70" width="10" height="20" rx="2" fill="#3b82f6"/>
+    </g>
+    
+    <!-- 책상 2 -->
+    <g transform="translate(220, 320)">
+      <rect x="0" y="0" width="80" height="50" rx="5" fill="#64748b"/>
+      <rect x="5" y="5" width="70" height="40" rx="3" fill="#f8fafc"/>
+      <rect x="10" y="10" width="25" height="20" rx="2" fill="#1e40af" opacity="0.6"/>
+      <circle cx="50" cy="20" r="3" fill="#10b981"/>
+      <circle cx="60" cy="20" r="3" fill="#f59e0b"/>
+      
+      <rect x="25" y="60" width="30" height="15" rx="3" fill="#475569"/>
+      <circle cx="40" cy="65" r="6" fill="#f8fafc" stroke="#1e40af" stroke-width="1"/>
+      <rect x="35" y="70" width="10" height="20" rx="2" fill="#3b82f6"/>
+    </g>
+    
+    <!-- 책상 3 -->
+    <g transform="translate(340, 320)">
+      <rect x="0" y="0" width="80" height="50" rx="5" fill="#64748b"/>
+      <rect x="5" y="5" width="70" height="40" rx="3" fill="#f8fafc"/>
+      <rect x="10" y="10" width="25" height="20" rx="2" fill="#1e40af" opacity="0.6"/>
+      <circle cx="50" cy="20" r="3" fill="#10b981"/>
+      <circle cx="60" cy="20" r="3" fill="#f59e0b"/>
+      
+      <rect x="25" y="60" width="30" height="15" rx="3" fill="#475569"/>
+      <circle cx="40" cy="65" r="6" fill="#f8fafc" stroke="#1e40af" stroke-width="1"/>
+      <rect x="35" y="70" width="10" height="20" rx="2" fill="#3b82f6"/>
+    </g>
+    
+    <!-- 두 번째 줄 -->
+    <g transform="translate(100, 420)">
+      <rect x="0" y="0" width="80" height="50" rx="5" fill="#64748b"/>
+      <rect x="5" y="5" width="70" height="40" rx="3" fill="#f8fafc"/>
+      <rect x="10" y="10" width="25" height="20" rx="2" fill="#1e40af" opacity="0.6"/>
+      <circle cx="50" cy="20" r="3" fill="#10b981"/>
+      <circle cx="60" cy="20" r="3" fill="#f59e0b"/>
+      
+      <rect x="25" y="60" width="30" height="15" rx="3" fill="#475569"/>
+      <circle cx="40" cy="65" r="6" fill="#f8fafc" stroke="#1e40af" stroke-width="1"/>
+      <rect x="35" y="70" width="10" height="20" rx="2" fill="#3b82f6"/>
+    </g>
+    
+    <g transform="translate(220, 420)">
+      <rect x="0" y="0" width="80" height="50" rx="5" fill="#64748b"/>
+      <rect x="5" y="5" width="70" height="40" rx="3" fill="#f8fafc"/>
+      <rect x="10" y="10" width="25" height="20" rx="2" fill="#1e40af" opacity="0.6"/>
+      <circle cx="50" cy="20" r="3" fill="#10b981"/>
+      <circle cx="60" cy="20" r="3" fill="#f59e0b"/>
+      
+      <rect x="25" y="60" width="30" height="15" rx="3" fill="#475569"/>
+      <circle cx="40" cy="65" r="6" fill="#f8fafc" stroke="#1e40af" stroke-width="1"/>
+      <rect x="35" y="70" width="10" height="20" rx="2" fill="#3b82f6"/>
+    </g>
+  </g>
+  
+  <!-- 교육 장비 -->
+  <g transform="translate(550, 300)">
+    <!-- 실습용 가전제품 -->
+    <rect x="0" y="0" width="120" height="100" rx="8" fill="#e2e8f0"/>
+    <rect x="10" y="10" width="100" height="80" rx="5" fill="white"/>
+    
+    <!-- 에어컨 실습 모델 -->
+    <rect x="20" y="25" width="80" height="50" rx="5" fill="#1e40af"/>
+    <rect x="30" y="35" width="60" height="8" fill="white" opacity="0.8"/>
+    <rect x="30" y="48" width="60" height="8" fill="white" opacity="0.8"/>
+    <rect x="30" y="61" width="60" height="8" fill="white" opacity="0.8"/>
+    
+    <!-- 상태 표시등 -->
+    <circle cx="85" cy="35" r="3" fill="#10b981"/>
+    <circle cx="85" cy="45" r="3" fill="#f59e0b"/>
+    <circle cx="85" cy="55" r="3" fill="#3b82f6"/>
+    
+    <!-- 도구함 -->
+    <rect x="10" y="110" width="100" height="30" rx="3" fill="#64748b"/>
+    <rect x="15" y="115" width="90" height="20" rx="2" fill="#94a3b8"/>
+    
+    <!-- 도구들 -->
+    <rect x="20" y="118" width="3" height="14" fill="#1e40af"/>
+    <rect x="28" y="118" width="3" height="14" fill="#10b981"/>
+    <rect x="36" y="118" width="15" height="3" fill="#f59e0b"/>
+    <circle cx="60" cy="125" r="4" fill="#ef4444"/>
+  </g>
+  
+  <!-- 천장 조명 -->
+  <ellipse cx="200" cy="100" rx="30" ry="15" fill="white" opacity="0.8"/>
+  <ellipse cx="400" cy="100" rx="30" ry="15" fill="white" opacity="0.8"/>
+  <ellipse cx="600" cy="100" rx="30" ry="15" fill="white" opacity="0.8"/>
+  
+  <!-- KHAMA 로고 (교실 벽면) -->
+  <g transform="translate(650, 100)">
+    <rect x="0" y="0" width="120" height="80" rx="5" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+    <circle cx="25" cy="25" r="15" fill="#1e40af"/>
+    <text x="25" y="30" font-family="Arial" font-size="12" fill="white" text-anchor="middle">K</text>
+    <text x="60" y="25" font-family="Arial" font-size="14" fill="#1e40af" font-weight="bold">KHAMA</text>
+    <text x="45" y="45" font-family="Arial" font-size="8" fill="#64748b">교육센터</text>
+    <text x="45" y="60" font-family="Arial" font-size="6" fill="#94a3b8">가전제품 전문가 양성</text>
+  </g>
+  
+  <!-- 창문 -->
+  <rect x="20" y="80" width="60" height="120" rx="5" fill="#e0f2fe" stroke="#0891b2" stroke-width="2"/>
+  <line x1="50" y1="80" x2="50" y2="200" stroke="#0891b2" stroke-width="1"/>
+  <line x1="20" y1="140" x2="80" y2="140" stroke="#0891b2" stroke-width="1"/>
+  
+  <!-- 창문 밖 풍경 (흐릿하게) -->
+  <rect x="22" y="82" width="26" height="56" fill="#bfdbfe" opacity="0.6"/>
+  <rect x="52" y="82" width="26" height="56" fill="#dbeafe" opacity="0.6"/>
+  <rect x="22" y="142" width="26" height="56" fill="#e0f2fe" opacity="0.6"/>
+  <rect x="52" y="142" width="26" height="56" fill="#f0f9ff" opacity="0.6"/>
+</svg>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Noto_Sans_KR } from 'next/font/google'
+import { Providers } from '@/components/providers/Providers'
 import './globals.css'
 
 const notoSansKr = Noto_Sans_KR({
@@ -21,7 +22,12 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="ko">
-         <body className={`${notoSansKr.variable} font-sans antialiased`}>{children}</body>
+         <head>
+            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
+         </head>
+         <body className={`${notoSansKr.variable} font-sans antialiased`}>
+            <Providers>{children}</Providers>
+         </body>
       </html>
    )
 }

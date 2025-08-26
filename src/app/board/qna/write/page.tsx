@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function QnaWritePage() {
    const router = useRouter()
@@ -21,14 +22,25 @@ export default function QnaWritePage() {
    })
    const [isLoading, setIsLoading] = useState(false)
    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+   const { user, profile, isLoading: authLoading } = useAuth()
+
+   // 로그인된 사용자 정보 자동 입력
+   useEffect(() => {
+      if (user && profile) {
+         setFormData(prev => ({
+            ...prev,
+            name: profile.name || '',
+            email: user.email || '',
+            phone: profile.phone || '',
+         }))
+      }
+   }, [user, profile])
 
    const categories = [
-      { value: 'exam', label: '자격시험 관련' },
-      { value: 'education', label: '교육과정 관련' },
-      { value: 'certificate', label: '자격증 발급' },
-      { value: 'payment', label: '결제/환불' },
-      { value: 'technical', label: '기술적 문의' },
-      { value: 'other', label: '기타' },
+      { value: '시험문의', label: '시험문의' },
+      { value: '교육문의', label: '교육문의' },
+      { value: '자격증문의', label: '자격증문의' },
+      { value: '기타문의', label: '기타문의' },
    ]
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -93,13 +105,34 @@ export default function QnaWritePage() {
       setIsLoading(true)
 
       try {
-         // TODO: 실제 API 호출
-         await new Promise((resolve) => setTimeout(resolve, 1500))
+         // 로그인 없이도 질문 작성 가능하도록 변경 (임시)
+
+         const response = await fetch('/api/board/qna', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+               title: formData.title,
+               content: formData.content,
+               category: formData.category,
+               is_private: formData.isPrivate,
+               author_name: formData.name,
+               author_email: formData.email,
+            }),
+         })
+
+         const result = await response.json()
+
+         if (!response.ok) {
+            throw new Error(result.error || '문의 등록에 실패했습니다.')
+         }
 
          // 성공 시 Q&A 목록으로 리다이렉트
          router.push('/board/qna?message=write-success')
-      } catch {
-         setErrors({ general: '문의 등록에 실패했습니다. 다시 시도해주세요.' })
+      } catch (error: unknown) {
+         const errorMessage = error instanceof Error ? error.message : '문의 등록에 실패했습니다. 다시 시도해주세요.'
+         setErrors({ general: errorMessage })
       } finally {
          setIsLoading(false)
       }
@@ -123,7 +156,14 @@ export default function QnaWritePage() {
             <section className="bg-gray-50 py-4">
                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                   <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                     <Link href="/" className="hover:text-blue-600" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
+                     <Link
+                        href="/"
+                        className="hover:text-blue-600"
+                        onClick={(e) => {
+                           e.preventDefault()
+                           window.location.href = '/'
+                        }}
+                     >
                         홈
                      </Link>
                      <span>/</span>

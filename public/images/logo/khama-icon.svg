@@ -1,0 +1,44 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 아이콘 배경 그라디언트 -->
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 외곽 원형 프레임 -->
+  <circle cx="32" cy="32" r="30" fill="url(#iconGradient)" stroke="#1e40af" stroke-width="2"/>
+  
+  <!-- 중앙 아이콘 - 가전제품 및 관리 상징 -->
+  <g transform="translate(32, 32)">
+    <!-- 가전제품 심볼 (에어컨/세탁기 모티브) -->
+    <rect x="-14" y="-10" width="28" height="18" rx="2" fill="white" opacity="0.9"/>
+    <rect x="-10" y="-7" width="20" height="12" rx="1" fill="#1e40af"/>
+    
+    <!-- KHAMA 텍스트 (축약) -->
+    <text x="0" y="3" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">K</text>
+    
+    <!-- 청소/관리 도구 심볼 -->
+    <g transform="rotate(45)">
+      <rect x="-1" y="8" width="2" height="10" fill="url(#iconAccent)"/>
+      <circle cx="0" cy="6" r="2" fill="url(#iconAccent)"/>
+    </g>
+    
+    <!-- 품질 관리 심볼 (체크마크) -->
+    <path d="M6,-6 L9,-3 L13,-7" stroke="white" stroke-width="1.5" fill="none"/>
+    
+    <!-- 전문성 심볼 (기어) -->
+    <circle cx="-8" cy="6" r="3" fill="none" stroke="white" stroke-width="1"/>
+    <circle cx="-8" cy="6" r="1.5" fill="white"/>
+  </g>
+  
+  <!-- 장식 요소 -->
+  <circle cx="12" cy="20" r="1.5" fill="#10b981" opacity="0.6"/>
+  <circle cx="52" cy="25" r="1" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="15" cy="48" r="0.8" fill="#059669" opacity="0.7"/>
+</svg>

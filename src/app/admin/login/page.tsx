@@ -1,19 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 
 export default function AdminLoginPage() {
-   const router = useRouter()
    const [formData, setFormData] = useState({
       adminId: '',
       password: '',
    })
    const [isLoading, setIsLoading] = useState(false)
    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+   const router = useRouter()
+
+   // 이미 로그인된 경우 대시보드로 리다이렉트
+   useEffect(() => {
+      if (typeof window !== 'undefined') {
+         const adminToken = localStorage.getItem('admin-token')
+         if (adminToken) {
+            router.push('/admin')
+         }
+      }
+   }, [router])
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target
@@ -46,17 +56,36 @@ export default function AdminLoginPage() {
       if (!validateForm()) return
 
       setIsLoading(true)
+      setErrors({})
 
       try {
-         // TODO: 실제 관리자 로그인 API 호출
-         await new Promise((resolve) => setTimeout(resolve, 1000))
+         // 관리자 로그인 API 호출
+         const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+               adminId: formData.adminId,
+               password: formData.password,
+            }),
+         })
 
-         // 로그인 성공 시 관리자 대시보드로 리다이렉트
-         router.push('/admin')
-      } catch {
-         setErrors({ general: '로그인에 실패했습니다. 관리자 ID와 비밀번호를 확인해주세요.' })
-      } finally {
-         setIsLoading(false)
+         const result = await response.json()
+
+         if (response.ok) {
+            // 로그인 성공 시 토큰을 localStorage에 저장
+            localStorage.setItem('admin-token', result.token)
+            // Next.js 라우터를 사용하여 페이지 이동
+            router.push('/admin')
+         } else {
+            setErrors({ general: result.error || '로그인에 실패했습니다. 관리자 ID와 비밀번호를 확인해주세요.' })
+            setIsLoading(false) // 로딩 상태 해제
+         }
+      } catch (error) {
+         console.error('로그인 오류:', error)
+         setErrors({ general: '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' })
+         setIsLoading(false) // 로딩 상태 해제
       }
    }
 
@@ -65,7 +94,7 @@ export default function AdminLoginPage() {
          <div className="max-w-md w-full space-y-8">
             {/* 헤더 */}
             <div className="text-center">
-               <Link href="/" className="inline-flex items-center space-x-2 mb-8" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
+               <Link href="/" className="inline-flex items-center space-x-2 mb-8">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-lg flex items-center justify-center">
                      <span className="text-white font-bold text-xl">K</span>
                   </div>
@@ -147,7 +176,7 @@ export default function AdminLoginPage() {
                </form>
 
                <div className="mt-8 text-center">
-                  <Link href="/" className="text-sm text-gray-600 hover:text-blue-600" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>
+                  <Link href="/" className="text-sm text-gray-600 hover:text-blue-600">
                      ← 메인 사이트로 돌아가기
                   </Link>
                </div>

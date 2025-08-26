@@ -1,34 +1,39 @@
 {
-  "name": "khama-web",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "fullpage.js": "^4.0.37",
-    "next": "15.5.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^8.40.0",
-    "@typescript-eslint/parser": "^8.40.0",
-    "eslint": "^9",
-    "eslint-config-next": "^15.5.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.5",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+   "name": "khama-web",
+   "version": "0.1.0",
+   "private": true,
+   "scripts": {
+      "dev": "next dev --turbopack",
+      "build": "next build --turbopack",
+      "start": "next start",
+      "lint": "eslint"
+   },
+   "dependencies": {
+      "@supabase/auth-helpers-nextjs": "^0.8.7",
+      "@supabase/auth-helpers-react": "^0.4.2",
+      "@supabase/supabase-js": "^2.39.0",
+      "@types/jsonwebtoken": "^9.0.10",
+      "fullpage.js": "^4.0.37",
+      "jsonwebtoken": "^9.0.2",
+      "next": "15.5.0",
+      "react": "19.1.0",
+      "react-dom": "19.1.0"
+   },
+   "devDependencies": {
+      "@eslint/eslintrc": "^3",
+      "@tailwindcss/postcss": "^4",
+      "@types/node": "^20",
+      "@types/react": "^19",
+      "@types/react-dom": "^19",
+      "@typescript-eslint/eslint-plugin": "^8.40.0",
+      "@typescript-eslint/parser": "^8.40.0",
+      "eslint": "^9",
+      "eslint-config-next": "^15.5.0",
+      "husky": "^9.1.7",
+      "lint-staged": "^16.1.5",
+      "prettier": "^3.6.2",
+      "prettier-plugin-tailwindcss": "^0.6.14",
+      "tailwindcss": "^4",
+      "typescript": "^5"
+   }
 }
