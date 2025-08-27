@@ -23,6 +23,7 @@ interface Certification {
    requirements?: string | null
    exam_subjects?: string | null
    passing_criteria?: string | null
+   image_url: string | null
    created_at: string
    updated_at: string
    // cost 객체 추가
@@ -270,47 +271,75 @@ export default function BusinessPage() {
                   ) : (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {certifications.map((cert) => (
-                           <div key={cert.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                              <div className="relative">
-                                 {/* 이미지 컨테이너 - 이미지가 없을 경우 대체 색상 배경 표시 */}
-                                 <div className="h-48 overflow-hidden">
-                                    {cert.image_url || getImageForCert(cert) ? (
-                                       <img src={cert.image_url || getImageForCert(cert)} alt={cert.name} className="w-full h-full object-cover" />
-                                    ) : (
-                                       <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
-                                          <svg className="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                          </svg>
-                                       </div>
-                                    )}
+                           <Card key={cert.id} hover className="group cursor-pointer" onClick={() => handleCertificationClick(cert)}>
+                              <div className="relative h-48 rounded-lg overflow-hidden mb-4">
+                                 <div
+                                    className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+                                    style={{ backgroundImage: `url(${cert.image_url || getImageForCert(cert) || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop'})` }}
+                                 />
+                                 <div className="absolute inset-0 bg-blue-900/60" />
+                                 <div className="absolute inset-0 flex items-center justify-center text-center text-white p-4">
+                                    <div>
+                                       <h3 className="text-xl font-bold mb-2">{cert.name}</h3>
+                                       <p className="text-sm opacity-90">{getSubtitleForCert(cert)}</p>
+                                    </div>
                                  </div>
-                                 <div className="p-6">
-                                    <div className="flex justify-between items-start mb-2">
-                                       <h3 className="text-xl font-bold text-gray-900">{cert.name}</h3>
-                                       <Badge variant="default">{cert.status === 'active' ? '모집중' : '모집종료'}</Badge>
-                                    </div>
-
-                                    {cert.description && <p className="text-gray-600 mb-4 line-clamp-2">{cert.description}</p>}
-
-                                    <div className="flex justify-between items-center mb-4">
-                                       <div className="text-sm text-gray-500">등록번호: {cert.registration_number}</div>
-                                       <div className="text-sm text-gray-500">{cert.category}</div>
-                                    </div>
-
-                                    <div className="border-t border-gray-100 pt-4">
-                                       <div className="flex justify-between items-center">
-                                          <div>
-                                             <div className="text-sm text-gray-500">응시료</div>
-                                             <div className="text-lg font-bold text-blue-600">{cert.cost?.application || '별도 문의'}</div>
-                                          </div>
-                                          <Button onClick={() => handleCertificationClick(cert)} variant="primary" size="sm">
-                                             상세보기
-                                          </Button>
-                                       </div>
-                                    </div>
+                                 <div className="absolute top-3 right-3">
+                                    <Badge variant="default" size="sm">
+                                       등록번호: {cert.registration_number}
+                                    </Badge>
+                                 </div>
+                                 <div className="absolute bottom-3 left-3">
+                                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-white">클릭하여 상세보기</div>
                                  </div>
                               </div>
-                           </div>
+
+                              <div className="space-y-4">
+                                 <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{cert.description}</p>
+
+                                 {/* 주요 특징 */}
+                                 <div>
+                                    <h4 className="font-medium text-gray-900 mb-2 text-sm">주요 특징</h4>
+                                    <div className="flex flex-wrap gap-1">
+                                       {getFeaturesForCert(cert)
+                                          .slice(0, 3)
+                                          .map((feature, idx) => (
+                                             <Badge key={idx} variant="primary" size="sm">
+                                                {feature}
+                                             </Badge>
+                                          ))}
+                                       {getFeaturesForCert(cert).length > 3 && (
+                                          <Badge variant="secondary" size="sm">
+                                             +{getFeaturesForCert(cert).length - 3}개
+                                          </Badge>
+                                       )}
+                                    </div>
+                                 </div>
+
+                                 {/* 간단한 시험 정보 */}
+                                 <div className="bg-gray-50 rounded-lg p-3">
+                                    <div className="grid grid-cols-1 gap-3 text-xs">
+                                       <div>
+                                          <span className="font-medium text-gray-600">비용:</span>
+                                          <span className="ml-1 text-blue-600 font-medium">{cert.cost?.total || '별도 문의'}</span>
+                                       </div>
+                                    </div>
+                                 </div>
+
+                                 <div className="flex gap-2">
+                                    <Button
+                                       onClick={(e) => {
+                                          e.stopPropagation()
+                                          handleCertificationClick(cert)
+                                       }}
+                                       className="flex-1"
+                                       size="sm"
+                                    >
+                                       상세보기
+                                    </Button>
+                                 </div>
+                              </div>
+                           </Card>
                         ))}
                      </div>
                   )}

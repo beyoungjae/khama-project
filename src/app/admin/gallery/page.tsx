@@ -175,7 +175,7 @@ export default function AdminGalleryPage() {
          setUploading(true)
 
          const token = localStorage.getItem('admin-token')
-         
+
          // FormData로 파일 업로드
          const formData = new FormData()
          formData.append('file', selectedFile)
@@ -311,6 +311,17 @@ export default function AdminGalleryPage() {
                               <span>{new Date(image.created_at).toLocaleDateString('ko-KR')}</span>
                            </div>
                            <div className="mt-3 flex space-x-2">
+                              <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="text-blue-600 hover:text-blue-700"
+                                 onClick={() => {
+                                    navigator.clipboard.writeText(image.file_url)
+                                    alert('이미지 URL이 복사되었습니다.')
+                                 }}
+                              >
+                                 URL 복사
+                              </Button>
                               <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
                                  삭제
                               </Button>

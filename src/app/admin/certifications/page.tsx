@@ -270,45 +270,46 @@ export default function AdminCertificationsPage() {
 
                      // 기존 형식의 필드는 비워둠
                      setPassingCriteria({ written: '', practical: '' })
-                     return
                   }
                } catch (error) {
                   // JSON 파싱 실패 시 기존 방식으로 계속 진행
                }
             }
 
-            // 2. 기존 텍스트 형식 파싱
-            const lines = certification.passing_criteria.split('\n')
-            let written = ''
-            let practical = ''
-            const others = []
+            // 2. 기존 텍스트 형식 파싱 (JSON 형식이 아니거나 파싱에 실패한 경우)
+            if (!certification.passing_criteria.startsWith('{') || !structuredCriteria.length) {
+               const lines = certification.passing_criteria.split('\n')
+               let written = ''
+               let practical = ''
+               const others = []
 
-            for (const line of lines) {
-               if (line.startsWith('필기시험:')) {
-                  written = line.substring('필기시험:'.length).trim()
-               } else if (line.startsWith('실기시험:')) {
-                  practical = line.substring('실기시험:'.length).trim()
-               } else if (line.trim()) {
-                  others.push(line.trim())
+               for (const line of lines) {
+                  if (line.startsWith('필기시험:')) {
+                     written = line.substring('필기시험:'.length).trim()
+                  } else if (line.startsWith('실기시험:')) {
+                     practical = line.substring('실기시험:'.length).trim()
+                  } else if (line.trim()) {
+                     others.push(line.trim())
+                  }
                }
-            }
 
-            setPassingCriteria({ written, practical })
-            setForm((prev) => ({ ...prev, passing_criteria: others.join('\n') }))
-            setUseLegacyFormat(true)
+               setPassingCriteria({ written, practical })
+               setForm((prev) => ({ ...prev, passing_criteria: others.join('\n') }))
+               setUseLegacyFormat(true)
 
-            // 구조화된 데이터 UI 초기화
-            if (written || practical) {
-               const initialCriteria = []
-               if (written) initialCriteria.push({ category: '필기시험', details: [written] })
-               if (practical) initialCriteria.push({ category: '실기시험', details: [practical] })
-               if (others.length > 0) initialCriteria.push({ category: '기타', details: others })
-               setStructuredCriteria(initialCriteria)
-            } else {
-               setStructuredCriteria([
-                  { category: '필기시험', details: [''] },
-                  { category: '실기시험', details: [''] },
-               ])
+               // 구조화된 데이터 UI 초기화
+               if (written || practical) {
+                  const initialCriteria = []
+                  if (written) initialCriteria.push({ category: '필기시험', details: [written] })
+                  if (practical) initialCriteria.push({ category: '실기시험', details: [practical] })
+                  if (others.length > 0) initialCriteria.push({ category: '기타', details: others })
+                  setStructuredCriteria(initialCriteria)
+               } else {
+                  setStructuredCriteria([
+                     { category: '필기시험', details: [''] },
+                     { category: '실기시험', details: [''] },
+                  ])
+               }
             }
          } else {
             setPassingCriteria({ written: '', practical: '' })
@@ -595,13 +596,15 @@ ${form.passing_criteria}`
                         certifications.map((certification) => (
                            <tr key={certification.id} className="hover:bg-gray-50">
                               <td className="px-6 py-4">
-                                 <div className="text-sm font-medium text-gray-900">{certification.name}</div>
+                                 <div className="text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600" onClick={() => openEditModal(certification)}>
+                                    {certification.name}
+                                 </div>
                                  <div className="text-sm text-gray-500 truncate max-w-xs">{certification.description}</div>
                               </td>
                               <td className="px-6 py-4 text-sm text-gray-900">{certification.registration_number}</td>
                               <td className="px-6 py-4 text-sm text-gray-900">{certification.qualification_type || '등록민간자격'}</td>
-                              <td className="px-6 py-4 text-sm text-gray-900">{certification.application_fee.toLocaleString()}원</td>
-                              <td className="px-6 py-4 text-sm text-gray-900">{certification.certificate_fee.toLocaleString()}원</td>
+                              <td className="px-6 py-4 text-sm text-gray-900">{certification.application_fee > 0 ? `${certification.application_fee.toLocaleString()}원` : '별도 문의'}</td>
+                              <td className="px-6 py-4 text-sm text-gray-900">{certification.certificate_fee > 0 ? `${certification.certificate_fee.toLocaleString()}원` : '별도 문의'}</td>
                               <td className="px-6 py-4">{renderStatusBadge(certification.status)}</td>
                               <td className="px-6 py-4 text-right text-sm font-medium">
                                  <div className="flex justify-end space-x-2">
@@ -743,6 +746,11 @@ ${form.passing_criteria}`
                               <Image src={form.image_url} alt="자격증 미리보기" width={128} height={128} className="w-32 h-32 object-cover rounded-md" />
                            </div>
                         )}
+                        {/* 이미지 첨부 기능 안내 */}
+                        <div className="mt-2 text-sm text-gray-500">
+                           <p>이미지를 첨부하려면 먼저 갤러리 페이지에서 이미지를 업로드한 후 URL을 복사하여 입력해주세요.</p>
+                           <p className="mt-1">지원 형식: JPG, PNG, WEBP (최대 10MB)</p>
+                        </div>
                      </div>
 
                      {/* 자격 기본 정보 */}
