@@ -185,13 +185,28 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                               <div>
                                  <span className="font-medium">과목:</span>
                                  {method.subjectNames && method.subjectNames.length > 0
-                                    ? method.subjectNames.join(', ')
+                                    ? method.subjectNames.map((name: string, idx: number) => (
+                                         <span key={idx}>
+                                            {name}
+                                            {idx < method.subjectNames.length - 1 && <br />}
+                                         </span>
+                                      ))
                                     : method.subjects && method.subjects.length > 0
                                       ? method.subjects
                                            .map((subjectIndex: number) => examSubjects[subjectIndex]?.name)
                                            .filter(Boolean)
-                                           .join(', ')
-                                      : examSubjects.map((subject: any) => subject.name).join(', ')}
+                                           .map((name: string, idx: number, arr: string[]) => (
+                                              <span key={idx}>
+                                                 {name}
+                                                 {idx < arr.length - 1 && <br />}
+                                              </span>
+                                           ))
+                                      : examSubjects.map((subject: any, idx: number, arr: any[]) => (
+                                           <span key={idx}>
+                                              {subject.name}
+                                              {idx < arr.length - 1 && <br />}
+                                           </span>
+                                        ))}
                               </div>
                               <div>
                                  <span className="font-medium">문항수:</span> {method.questions || '25문항'}
@@ -266,12 +281,22 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                                  <td className={`px-6 py-4 text-sm font-medium text-gray-900 ${method.type === '필기' ? 'bg-blue-50' : 'bg-emerald-50'}`}>{method.type}</td>
                                  <td className="px-6 py-4 text-sm text-gray-700">
                                     {method.subjectNames && method.subjectNames.length > 0
-                                       ? method.subjectNames.join(', ')
+                                       ? method.subjectNames.map((name: string, idx: number) => (
+                                            <span key={idx}>
+                                               {name}
+                                               {idx < method.subjectNames.length - 1 && <br />}
+                                            </span>
+                                         ))
                                        : method.subjects && method.subjects.length > 0
                                          ? method.subjects
                                               .map((subjectIndex: number) => examSubjects[subjectIndex]?.name)
                                               .filter(Boolean)
-                                              .join(', ')
+                                              .map((name: string, idx: number, arr: string[]) => (
+                                                 <span key={idx}>
+                                                    {name}
+                                                    {idx < arr.length - 1 && <br />}
+                                                 </span>
+                                              ))
                                          : examSubjects.map((subject: any) => subject.name).join(', ')}
                                  </td>
                                  <td className="px-6 py-4 text-sm text-gray-700">{method.questions || '25문항'}</td>
@@ -488,16 +513,20 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
                      <div className="bg-white rounded-lg p-3 sm:p-4 border border-green-100">
                         <div className="font-medium text-green-900 mb-1 sm:mb-2 text-sm sm:text-base">응시료</div>
-                        <div className="text-xl sm:text-3xl font-bold text-green-700">{certification?.cost?.application || certification?.application_fee ? `${certification.application_fee?.toLocaleString()}원` : '별도 문의'}</div>
+                        <div className="text-xl sm:text-3xl font-bold text-green-700">{certification?.cost?.application || certification?.application_fee ? (certification.application_fee > 0 ? `${certification.application_fee?.toLocaleString()}원` : '별도 문의') : '별도 문의'}</div>
                      </div>
                      <div className="bg-white rounded-lg p-3 sm:p-4 border border-green-100">
                         <div className="font-medium text-green-900 mb-1 sm:mb-2 text-sm sm:text-base">자격발급비</div>
-                        <div className="text-xl sm:text-3xl font-bold text-green-700">{certification?.cost?.certificate || certification?.certificate_fee ? `${certification.certificate_fee?.toLocaleString()}원` : '별도 문의'}</div>
+                        <div className="text-xl sm:text-3xl font-bold text-green-700">{certification?.cost?.certificate || certification?.certificate_fee ? (certification.certificate_fee > 0 ? `${certification.certificate_fee?.toLocaleString()}원` : '별도 문의') : '별도 문의'}</div>
                      </div>
                      <div className="bg-white rounded-lg p-3 sm:p-4 border border-green-100">
                         <div className="font-medium text-green-900 mb-1 sm:mb-2 text-sm sm:text-base">총 비용</div>
                         <div className="text-xl sm:text-3xl font-bold text-green-700">
-                           {certification?.cost?.total || (certification?.application_fee && certification?.certificate_fee) ? `${((certification.application_fee || 0) + (certification.certificate_fee || 0)).toLocaleString()}원` : '별도 문의'}
+                           {certification?.cost?.total || (certification?.application_fee && certification?.certificate_fee)
+                              ? (certification.application_fee || 0) + (certification.certificate_fee || 0) > 0
+                                 ? `${((certification.application_fee || 0) + (certification.certificate_fee || 0)).toLocaleString()}원`
+                                 : '별도 문의'
+                              : '별도 문의'}
                         </div>
                      </div>
                   </div>
