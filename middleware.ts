@@ -6,6 +6,18 @@ export async function middleware(req: NextRequest) {
    const res = NextResponse.next()
    const pathname = req.nextUrl.pathname
 
+   // !! VERCEL 긴급 해결: 로그인된 사용자는 middleware 체크 완전 생략
+   const hasAuthToken = req.cookies.get('sb-access-token') || req.cookies.get('sb-refresh-token')
+   const hasAdminToken = req.cookies.get('admin-token')
+   
+   if (hasAuthToken || hasAdminToken) {
+      console.log('Token found, skipping middleware checks for:', pathname, {
+         auth: !!hasAuthToken,
+         admin: !!hasAdminToken
+      })
+      return fixSupabaseSession(req, res)
+   }
+
    // Supabase 클라이언트 생성 (기존 방식 유지)
    const supabase = createMiddlewareClient({ req, res })
 
@@ -15,7 +27,17 @@ export async function middleware(req: NextRequest) {
       error: sessionError
    } = await supabase.auth.getSession()
    
-   console.log('Middleware - Path:', pathname, 'Session:', session?.user?.email || '없음', 'Error:', sessionError)
+   // 고급 디버깅: 쿠키 상태도 확인
+   const cookies = req.cookies.getAll()
+   const authCookies = cookies.filter(c => c.name.includes('supabase') || c.name.includes('sb-'))
+   
+   console.log('=== MIDDLEWARE DEBUG ===')
+   console.log('Path:', pathname)
+   console.log('Session exists:', !!session)
+   console.log('Session user:', session?.user?.email || '없음')
+   console.log('Session error:', sessionError)
+   console.log('Auth cookies:', authCookies.map(c => c.name))
+   console.log('All cookies count:', cookies.length)
 
    // 보호된 경로 정의
    const protectedRoutes = ['/mypage', '/exam/apply', '/board/qna/write']

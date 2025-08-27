@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Noto_Sans_KR } from 'next/font/google'
 import { Providers } from '@/components/providers/Providers'
 import ClientSessionDebugger from '@/components/ClientSessionDebugger'
+import AuthTokenSync from '@/components/AuthTokenSync'
+import VercelAuthFix from '@/components/VercelAuthFix'
 import './globals.css'
 
 const notoSansKr = Noto_Sans_KR({
@@ -28,6 +30,8 @@ export default function RootLayout({
          </head>
          <body className={`${notoSansKr.variable} font-sans antialiased`}>
             <Providers>
+               <AuthTokenSync />
+               <VercelAuthFix />
                {children}
                <ClientSessionDebugger />
             </Providers>
