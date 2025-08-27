@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
@@ -9,7 +9,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { IMAGES } from '@/constants/images'
 
 export default function LoginForm() {
-   const router = useRouter()
    const searchParams = useSearchParams()
    const redirectTo = searchParams.get('redirectTo') || '/mypage'
    const message = searchParams.get('message')
@@ -89,12 +88,18 @@ export default function LoginForm() {
 
       try {
          const result = await signIn(formData.email, formData.password)
+         console.log('로그인 결과:', result, 'redirectTo:', redirectTo)
 
          if (result.error) {
             setErrors({ general: result.error })
          } else {
-            // 로그인 성공 시 리다이렉트
-            router.push(redirectTo)
+            console.log('로그인 성공! 리다이렉트 시도:', redirectTo)
+            // 잘짠 기다린 후 리다이렉트 (세션이 설정될 시간을 주기 위해)
+            setTimeout(() => {
+               console.log('리다이렉트 실행:', redirectTo)
+               setIsLoading(false)
+               window.location.href = redirectTo // router.push 대신 강제 리다이렉트
+            }, 1000)
          }
       } catch (error) {
          console.error('로그인 오류:', error)

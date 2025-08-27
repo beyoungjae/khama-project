@@ -84,10 +84,13 @@ export async function middleware(req: NextRequest) {
    // 로그인된 사용자가 인증 페이지 접근 시 리디렉션
    const authPages = ['/login', '/signup', '/forgot-password']
    if (authPages.includes(pathname) && session) {
+      console.log('로그인된 사용자가 로그인 페이지 접근, 리다이렉트:', session.user.email)
       const redirectTo = req.nextUrl.searchParams.get('redirectTo')
       if (redirectTo) {
+         console.log('redirectTo 파라미터로 리다이렉트:', redirectTo)
          return NextResponse.redirect(new URL(redirectTo, req.url))
       }
+      console.log('마이페이지로 리다이렉트')
       return NextResponse.redirect(new URL('/mypage', req.url))
    }
 
@@ -103,7 +106,8 @@ export const config = {
        * - _next/static (static files)
        * - _next/image (image optimization files)
        * - favicon.ico (favicon file)
+       * - auth (auth callback)
        */
-      '/((?!api|_next/static|_next/image|favicon.ico).*)',
+      '/((?!api|_next/static|_next/image|favicon.ico|auth).*)',
    ],
 }

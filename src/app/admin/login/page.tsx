@@ -21,7 +21,12 @@ export default function AdminLoginPage() {
          const adminToken = localStorage.getItem('admin-token')
          console.log('Admin login page - existing token:', !!adminToken)
          if (adminToken) {
-            router.push('/admin')
+            console.log('기존 토큰으로 리다이렉트 시도')
+            // 지연 시간을 주어 예상치 못한 문제 방지
+            setTimeout(() => {
+               console.log('어드민 리다이렉트 실행!')
+               window.location.href = '/admin' // router.push 대신 강제 리다이렉트
+            }, 500)
          }
       }
    }, [router])
@@ -75,12 +80,19 @@ export default function AdminLoginPage() {
          const result = await response.json()
 
          if (response.ok) {
+            console.log('어드민 로그인 성공!', result)
             // 로그인 성공 시 토큰을 localStorage와 쿠키 둘 다 저장
             localStorage.setItem('admin-token', result.token)
             // 쿠키에도 저장 (middleware에서 확인용)
-            document.cookie = `admin-token=${result.token}; path=/; max-age=3600; SameSite=Strict; Secure`
-            // Next.js 라우터를 사용하여 페이지 이동
-            router.push('/admin')
+            document.cookie = `admin-token=${result.token}; path=/; max-age=3600; SameSite=Lax; Secure=${location.protocol === 'https:'}`
+            
+            console.log('어드민 리다이렉트 시도...')
+            // 세션 설정 시간을 주고 강제 리다이렉트
+            setTimeout(() => {
+               console.log('어드민 대시보드로 이동!')
+               setIsLoading(false)
+               window.location.href = '/admin'
+            }, 1000)
          } else {
             setErrors({ general: result.error || '로그인에 실패했습니다. 관리자 ID와 비밀번호를 확인해주세요.' })
             setIsLoading(false) // 로딩 상태 해제
