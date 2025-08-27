@@ -5,7 +5,7 @@ export async function middleware(req: NextRequest) {
    const res = NextResponse.next()
    const pathname = req.nextUrl.pathname
 
-   // Supabase 클라이언트 생성
+   // Supabase 클라이언트 생성 (기존 방식 유지)
    const supabase = createMiddlewareClient({ req, res })
 
    // 세션 확인

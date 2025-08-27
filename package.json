@@ -10,7 +10,7 @@
    },
    "dependencies": {
       "@supabase/auth-helpers-nextjs": "^0.8.7",
-      "@supabase/auth-helpers-react": "^0.4.2",
+      "@supabase/ssr": "^0.5.2",
       "@supabase/supabase-js": "^2.39.0",
       "@types/jsonwebtoken": "^9.0.10",
       "fullpage.js": "^4.0.37",
