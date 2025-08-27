@@ -17,23 +17,23 @@ export const IMAGES = {
       SLIDE3: '/images/hero/hero-bg-3.svg', // 세 번째 슬라이드 배경 (교육 & 성장)
    },
 
-   // 페이지별 히어로 배경
+   // 페이지별 히어로 배경 (임시로 fallback 이미지 사용)
    PAGES: {
-      ABOUT: '/images/backgrounds/about/about-hero-bg.jpg', // 협회 소개 페이지
-      BUSINESS: '/images/backgrounds/business/business-hero-bg.jpg', // 주요 사업 페이지
-      EXAM: '/images/backgrounds/exam/exam-hero-bg.jpg', // 자격 검정 페이지
-      EDUCATION: '/images/backgrounds/business/education-hero-bg.jpg', // 교육 프로그램 페이지
-      SERVICES: '/images/backgrounds/services/services-hero-bg.jpg', // 온라인 서비스 페이지
-      SUPPORT: '/images/backgrounds/support/support-hero-bg.jpg', // 고객 지원 페이지
-      NOTICE: '/images/backgrounds/board/notice-hero-bg.jpg', // 공지사항 페이지
-      QNA: '/images/backgrounds/board/qna-hero-bg.jpg', // Q&A 페이지
-      LOGIN: '/images/backgrounds/auth/login-hero-bg.jpg', // 로그인 페이지
-      SIGNUP: '/images/backgrounds/auth/signup-hero-bg.jpg', // 회원가입 페이지
-      SITEMAP: '/images/backgrounds/sitemap/sitemap-hero-bg.jpg', // 사이트맵 페이지
-      MYPAGE: '/images/backgrounds/mypage/mypage-hero-bg.jpg', // 마이페이지
-      RESOURCES: '/images/backgrounds/support/resources-hero-bg.jpg', // 자료실 페이지
-      CONTACT: '/images/backgrounds/support/contact-hero-bg.jpg', // 문의하기 페이지
-      ADMIN: '/images/backgrounds/admin/admin-hero-bg.jpg', // 관리자 페이지
+      ABOUT: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1920&h=1080&fit=crop', // 협회 소개 페이지
+      BUSINESS: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1920&h=1080&fit=crop', // 주요 사업 페이지
+      EXAM: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1920&h=1080&fit=crop', // 자격 검정 페이지
+      EDUCATION: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&h=1080&fit=crop', // 교육 프로그램 페이지
+      SERVICES: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=1080&fit=crop', // 온라인 서비스 페이지
+      SUPPORT: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop', // 고객 지원 페이지
+      NOTICE: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop', // 공지사항 페이지
+      QNA: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=1080&fit=crop', // Q&A 페이지
+      LOGIN: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=1080&fit=crop', // 로그인 페이지
+      SIGNUP: 'https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?w=1920&h=1080&fit=crop', // 회원가입 페이지
+      SITEMAP: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&h=1080&fit=crop', // 사이트맵 페이지
+      MYPAGE: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1920&h=1080&fit=crop', // 마이페이지
+      RESOURCES: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&h=1080&fit=crop', // 자료실 페이지
+      CONTACT: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop', // 문의하기 페이지
+      ADMIN: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&h=1080&fit=crop', // 관리자 페이지
    },
 
    // 갤러리 이미지

@@ -85,12 +85,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const {
                data: { session },
             } = await supabase.auth.getSession()
+            
+            console.log('세션 상태:', session ? '존재' : '없음', session?.user?.email)
             setUser(session?.user ?? null)
 
             if (session?.user) {
                const profileData = await fetchProfile(session.user.id)
                setProfile(profileData)
-               console.log('기존 세션 확인:', session.user.email)
+               console.log('기존 세션 확인:', session.user.email, '프로필:', profileData)
             }
          } catch (error) {
             console.error('세션 확인 오류:', error)
@@ -105,12 +107,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const {
          data: { subscription },
       } = supabase.auth.onAuthStateChange(async (event, session) => {
+         console.log('인증 상태 변경:', event, session?.user?.email || '세션 없음')
          setUser(session?.user ?? null)
 
          if (session?.user) {
             const profileData = await fetchProfile(session.user.id)
             setProfile(profileData)
-            console.log('로그인 성공:', session.user.email)
+            console.log('로그인 성공:', session.user.email, '프로필:', profileData)
 
             // 로그인 시간 업데이트
             if (event === 'SIGNED_IN') {

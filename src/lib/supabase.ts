@@ -9,7 +9,16 @@ export const supabase = createClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      // Vercel 배포를 위한 추가 설정
+      storageKey: 'khama-auth-token',
+      debug: process.env.NODE_ENV === 'development'
    },
+   // 글로벌 옵션
+   global: {
+      headers: {
+         'x-application-name': 'khama-web'
+      }
+   }
 })
 
 // 타입 정의

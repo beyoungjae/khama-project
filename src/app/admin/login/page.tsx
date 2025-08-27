@@ -19,6 +19,7 @@ export default function AdminLoginPage() {
    useEffect(() => {
       if (typeof window !== 'undefined') {
          const adminToken = localStorage.getItem('admin-token')
+         console.log('Admin login page - existing token:', !!adminToken)
          if (adminToken) {
             router.push('/admin')
          }
@@ -74,8 +75,10 @@ export default function AdminLoginPage() {
          const result = await response.json()
 
          if (response.ok) {
-            // 로그인 성공 시 토큰을 localStorage에 저장
+            // 로그인 성공 시 토큰을 localStorage와 쿠키 둘 다 저장
             localStorage.setItem('admin-token', result.token)
+            // 쿠키에도 저장 (middleware에서 확인용)
+            document.cookie = `admin-token=${result.token}; path=/; max-age=3600; SameSite=Strict; Secure`
             // Next.js 라우터를 사용하여 페이지 이동
             router.push('/admin')
          } else {
