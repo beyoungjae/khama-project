@@ -4,25 +4,23 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import { useAdmin } from '@/hooks/useAdmin'
 
 export default function AdminHeader() {
    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
    const pathname = usePathname()
    const router = useRouter()
-   const { user, signOut } = useAuth()
-   const { profile } = useAdmin()
+   const { signOut } = useAuth()
 
    // 관리자 메뉴 구조
    const adminMenuItems = [
       { name: '대시보드', href: '/admin' },
+      { nmae: '1:1문의 관리', href: '/admin/inquiries' },
       { name: '자격증 관리', href: '/admin/certifications' },
       { name: '시험 일정 관리', href: '/admin/exams' },
       { name: '시험 신청 관리', href: '/admin/exam-applications' },
       { name: '게시판 관리', href: '/admin/posts' },
       { name: '갤러리 관리', href: '/admin/galleries' },
       { name: '사용자 관리', href: '/admin/users' },
-      { name: '사이트 설정', href: '/admin/settings' },
    ]
 
    // 로그아웃 처리
@@ -77,7 +75,6 @@ export default function AdminHeader() {
                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                      </div>
-                     <span className="font-medium">{profile?.name || user?.email}</span>
                   </div>
                   <div className="w-px h-6 bg-gray-300"></div>
                   <button onClick={handleGoToHome} className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200">
@@ -127,7 +124,6 @@ export default function AdminHeader() {
                      ))}
 
                      <div className="border-t border-gray-200 pt-4 mt-4 px-4">
-                        <div className="px-3 py-2 text-sm text-gray-700 font-medium bg-gray-50 rounded-md mb-3">{profile?.name || user?.email}</div>
                         <button
                            onClick={() => {
                               handleGoToHome()

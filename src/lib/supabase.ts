@@ -1,24 +1,31 @@
 import { createClient } from '@supabase/supabase-js'
 import { Database } from './database.types'
 
+// 환경 변수 검증
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+   throw new Error('Missing Supabase environment variables')
+}
+
 // 일반 사용자용 클라이언트 (서버사이드 렌더링 지원)
-export const supabase = createClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
    auth: {
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: true,
       flowType: 'pkce',
       storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-      // Vercel 배포를 위한 추가 설정
-      storageKey: 'khama-auth-token',
-      debug: process.env.NODE_ENV === 'development'
+      storageKey: 'sb-khama-auth-token',
+      // 개발 중에도 기본 비활성화. 필요한 경우 NEXT_PUBLIC_SUPABASE_DEBUG=true 로 활성화
+      debug: process.env.NEXT_PUBLIC_SUPABASE_DEBUG === 'true',
    },
-   // 글로벌 옵션
    global: {
       headers: {
-         'x-application-name': 'khama-web'
-      }
-   }
+         'x-application-name': 'khama-web',
+      },
+   },
 })
 
 // 타입 정의

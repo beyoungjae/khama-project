@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { verifyAdminTokenFromRequest } from '@/utils/admin-auth'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
    try {
       const { id: scheduleId } = await params
 
-      // 관리자 권한 확인 - JWT 토큰 검증
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
+      // 관리자 권한 확인
+      const { valid } = await verifyAdminTokenFromRequest(request)
+      if (!valid) {
+         return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
       }
 
       const { data: schedule, error } = await supabaseAdmin
@@ -74,6 +75,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       // 필수 필드 검증
       if (!certification_id || !exam_date || !registration_start_date || !registration_end_date || !exam_location) {
          return NextResponse.json({ error: '자격증, 시험일, 접수 시작일, 접수 마감일, 시험장소는 필수입니다.' }, { status: 400 })
+      }
+
+      // 관리자 권한 확인
+      const { valid } = await verifyAdminTokenFromRequest(request)
+      if (!valid) {
+         return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
       }
 
       // 기존 일정 확인
@@ -157,6 +164,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
    try {
       const { id: scheduleId } = await params
+
+      // 관리자 권한 확인
+      const { valid } = await verifyAdminTokenFromRequest(request)
+      if (!valid) {
+         return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
+      }
 
       // 신청자가 있는지 확인
       const { count: applicationsCount } = await supabaseAdmin.from('exam_applications').select('id', { count: 'exact' }).eq('exam_schedule_id', scheduleId).neq('application_status', 'cancelled')

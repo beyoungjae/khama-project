@@ -265,7 +265,7 @@ export default function ExamResultsPage() {
                               <p>• 문의사항은 고객센터로 연락해주세요.</p>
                            </div>
                            <div className="mt-4">
-                              <Button href="/support/contact" variant="outline" size="sm" fullWidth>
+                              <Button href="/support/inquiry" variant="outline" size="sm" fullWidth>
                                  문의하기
                               </Button>
                            </div>

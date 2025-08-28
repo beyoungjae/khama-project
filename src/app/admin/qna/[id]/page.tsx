@@ -47,18 +47,7 @@ export default function AdminQnaDetailPage() {
    // 기존 답변 로드
    const loadAnswers = useCallback(async () => {
       try {
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
-         const response = await fetch(`/api/admin/qna/${postId}/answers`, {
-            headers,
-         })
+         const response = await fetch(`/api/admin/qna/${postId}/answers`)
 
          if (response.ok) {
             const data = await response.json()
@@ -75,18 +64,7 @@ export default function AdminQnaDetailPage() {
 
       const loadPost = async () => {
          try {
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
-
-            const response = await fetch(`/api/admin/qna/${postId}`, {
-               headers,
-            })
+            const response = await fetch(`/api/admin/qna/${postId}`)
 
             if (!response.ok) {
                throw new Error('Q&A를 불러올 수 없습니다.')
@@ -122,15 +100,7 @@ export default function AdminQnaDetailPage() {
       try {
          setSaving(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
          const response = await fetch(`/api/admin/qna/${postId}/answer`, {
             method: 'POST',
             headers,
@@ -170,15 +140,7 @@ export default function AdminQnaDetailPage() {
       try {
          setSaving(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
          const response = await fetch(`/api/admin/qna/${postId}/status`, {
             method: 'PATCH',
             headers,
@@ -211,18 +173,8 @@ export default function AdminQnaDetailPage() {
       try {
          setSaving(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
          const response = await fetch(`/api/admin/qna/${postId}`, {
             method: 'DELETE',
-            headers,
          })
 
          if (!response.ok) {

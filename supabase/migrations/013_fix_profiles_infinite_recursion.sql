@@ -7,6 +7,8 @@ DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Admins can view all profiles" ON public.profiles;
 DROP POLICY IF EXISTS "Admins can update all profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Admins can manage all profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Service role full access" ON public.profiles;
 DROP POLICY IF EXISTS "Service role can access all profiles" ON public.profiles;
 
 -- 2. 간단하고 안전한 새로운 정책들 생성
@@ -23,14 +25,16 @@ CREATE POLICY "Users can update own profile" ON public.profiles
 CREATE POLICY "Users can insert own profile" ON public.profiles
     FOR INSERT WITH CHECK (auth.uid() = id);
 
--- 관리자는 모든 프로필 조회 및 수정 가능 (직접 role 체크)
+-- 관리자는 모든 프로필 조회 및 수정 가능 (더 간단한 방법)
 CREATE POLICY "Admins can manage all profiles" ON public.profiles
     FOR ALL USING (
-        role IN ('admin', 'super_admin') AND status = 'active'
+        EXISTS (
+            SELECT 1 FROM public.profiles p 
+            WHERE p.id = auth.uid() 
+            AND p.role IN ('admin', 'super_admin')
+        )
     );
 
 -- Service Role은 모든 프로필에 접근 가능
 CREATE POLICY "Service role full access" ON public.profiles
-    FOR ALL USING (
-        current_setting('role') = 'service_role'
-    );
+    FOR ALL USING (true);

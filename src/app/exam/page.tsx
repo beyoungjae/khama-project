@@ -17,7 +17,7 @@ export default function ExamPage() {
       {
          title: '합격자 발표',
          description: '합격자 조회 및 합격증 다운로드',
-         href: '/exam/results',
+         href: '/exam/results/search',
          icon: '🏆',
       },
       {
@@ -29,7 +29,7 @@ export default function ExamPage() {
       {
          title: '문의하기',
          description: '시험 관련 문의사항',
-         href: '/support/contact',
+         href: '/support/inquiry',
          icon: '💬',
       },
    ]
@@ -132,7 +132,7 @@ export default function ExamPage() {
                            </div>
                         </div>
                         <div className="mt-6">
-                           <Button href="/support/contact" fullWidth>
+                           <Button href="/support/inquiry" fullWidth>
                               온라인 문의하기
                            </Button>
                         </div>

@@ -1,135 +1,130 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { fixSupabaseSession } from '@/middleware/session-fix'
+import { createServerClient } from '@supabase/ssr'
+import { type NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(req: NextRequest) {
-   const res = NextResponse.next()
-   const pathname = req.nextUrl.pathname
+export async function middleware(request: NextRequest) {
+   // 쿠키를 처리할 응답 객체 생성
+   let response = NextResponse.next({
+      request: {
+         headers: request.headers,
+      },
+   })
 
-   // !! VERCEL 긴급 해결: 로그인된 사용자는 middleware 체크 완전 생략
-   const hasAuthToken = req.cookies.get('sb-access-token') || req.cookies.get('sb-refresh-token')
-   const hasAdminToken = req.cookies.get('admin-token')
-   
-   if (hasAuthToken || hasAdminToken) {
-      console.log('Token found, skipping middleware checks for:', pathname, {
-         auth: !!hasAuthToken,
-         admin: !!hasAdminToken
-      })
-      return fixSupabaseSession(req, res)
-   }
-
-   // Supabase 클라이언트 생성 (기존 방식 유지)
-   const supabase = createMiddlewareClient({ req, res })
-
-   // 세션 확인 (더 상세한 로그)
-   const {
-      data: { session },
-      error: sessionError
-   } = await supabase.auth.getSession()
-   
-   // 고급 디버깅: 쿠키 상태도 확인
-   const cookies = req.cookies.getAll()
-   const authCookies = cookies.filter(c => c.name.includes('supabase') || c.name.includes('sb-'))
-   
-   console.log('=== MIDDLEWARE DEBUG ===')
-   console.log('Path:', pathname)
-   console.log('Session exists:', !!session)
-   console.log('Session user:', session?.user?.email || '없음')
-   console.log('Session error:', sessionError)
-   console.log('Auth cookies:', authCookies.map(c => c.name))
-   console.log('All cookies count:', cookies.length)
-
-   // 보호된 경로 정의
-   const protectedRoutes = ['/mypage', '/exam/apply', '/board/qna/write']
-
-   // 관리자 전용 경로
-   const adminRoutes = ['/admin']
-
-   // 인증이 필요한 페이지 접근 시 리디렉션
-   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
-      if (!session) {
-         console.log('Protected route 리다이렉트:', pathname, '-> /login')
-         const loginUrl = new URL('/login', req.url)
-         loginUrl.searchParams.set('redirectTo', pathname)
-         return NextResponse.redirect(loginUrl)
-      }
-   }
-
-   // 관리자 페이지 접근 시 권한 확인 (로그인 페이지 제외)
-   if (adminRoutes.some((route) => pathname.startsWith(route)) && !pathname.startsWith('/admin/login')) {
-      // Admin token 확인 (더 우선시)
-      const adminToken = req.cookies.get('admin-token')?.value
-      
-      if (adminToken) {
-         // JWT 토큰 검증
-         try {
-            const tokenResponse = await fetch(new URL('/api/admin/verify-token', req.url), {
-               method: 'POST',
-               headers: {
-                  'Content-Type': 'application/json',
-               },
-               body: JSON.stringify({ token: adminToken })
+   // Supabase 클라이언트 생성
+   const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+      cookies: {
+         get(name: string) {
+            return request.cookies.get(name)?.value
+         },
+         set(name: string, value: string, options) {
+            // 요청과 응답 모두에 쿠키 설정
+            request.cookies.set({
+               name,
+               value,
+               ...options,
             })
-            
-            if (tokenResponse.ok) {
-               console.log('Admin token valid, proceeding')
-               return res // Admin token이 유효하면 계속 진행
-            }
-         } catch (tokenError) {
-            console.log('Token verification failed:', tokenError)
-         }
-      }
-      
-      // Admin token이 없거나 무효한 경우, Supabase 세션도 확인
-      if (!session) {
-         console.log('Admin route 리다이렉트:', pathname, '-> /admin/login')
-         const loginUrl = new URL('/admin/login', req.url)
-         return NextResponse.redirect(loginUrl)
-      }
+            response = NextResponse.next({
+               request: {
+                  headers: request.headers,
+               },
+            })
+            response.cookies.set({
+               name,
+               value,
+               ...options,
+            })
+         },
+         remove(name: string, options) {
+            // 요청과 응답 모두에서 쿠키 제거
+            request.cookies.set({
+               name,
+               value: '',
+               ...options,
+            })
+            response = NextResponse.next({
+               request: {
+                  headers: request.headers,
+               },
+            })
+            response.cookies.set({
+               name,
+               value: '',
+               ...options,
+            })
+         },
+      },
+   })
 
-      // Supabase 세션이 있는 경우 프로필에서 관리자 권한 확인
-      try {
-         const { data: profileData, error: profileError } = await supabase.from('profiles').select('id, status, role').eq('id', session.user.id).single()
-         
-         console.log('Admin 권한 확인:', profileData, '오류:', profileError)
+   const { pathname } = request.nextUrl
 
-         if (!profileData || !['admin', 'super_admin'].includes(profileData.role) || profileData.status !== 'active') {
-            console.log('관리자 권한 없음, 403으로 리다이렉트')
-            return NextResponse.redirect(new URL('/403', req.url))
-         }
-      } catch (profileError) {
-         console.error('Profile check failed:', profileError)
-         return NextResponse.redirect(new URL('/admin/login', req.url))
-      }
+   // 정적 파일들은 미들웨어를 거치지 않음
+   if (pathname.startsWith('/_next') || pathname.startsWith('/favicon.ico') || pathname.startsWith('/static') || pathname.includes('.')) {
+      return response
    }
 
-   // 로그인된 사용자가 인증 페이지 접근 시 리디렉션
-   const authPages = ['/login', '/signup', '/forgot-password']
-   if (authPages.includes(pathname) && session) {
-      console.log('로그인된 사용자가 로그인 페이지 접근, 리다이렉트:', session.user.email)
-      const redirectTo = req.nextUrl.searchParams.get('redirectTo')
-      if (redirectTo) {
-         console.log('redirectTo 파라미터로 리다이렉트:', redirectTo)
-         return NextResponse.redirect(new URL(redirectTo, req.url))
-      }
-      console.log('마이페이지로 리다이렉트')
-      return NextResponse.redirect(new URL('/mypage', req.url))
+   // 공개 경로 정의
+   const publicPaths = ['/login', '/signup', '/forgot-password', '/reset-password', '/admin/login', '/api/admin/login', '/api/admin/verify-token', '/api/auth', '/', '/about', '/business', '/exam', '/services', '/support', '/board/notice', '/board/qna', '/terms', '/privacy', '/sitemap']
+
+   // 보호된 경로들
+   const protectedPaths = ['/mypage', '/exam/apply', '/board/qna/write']
+   const adminPaths = ['/admin']
+
+   // 공개 경로는 인증 확인 없이 통과
+   if (publicPaths.some((path) => pathname.startsWith(path))) {
+      return response
    }
 
-   // Vercel 환경에서 세션 수정
-   return fixSupabaseSession(req, res)
+   try {
+      // 사용자 세션 새로고침 (쿠키가 자동으로 업데이트됨)
+      const {
+         data: { user },
+      } = await supabase.auth.getUser()
+
+      // iron-session 기반 사용자 쿠키 존재 여부도 인증으로 인정
+      const hasIronUser = !!request.cookies.get('khama_user_session')?.value
+      const isAuthenticated = !!user || hasIronUser
+
+      // 관리자 페이지는 클라이언트에서 인증 처리 (middleware에서는 통과)
+      // 단순히 정적 파일과 API만 필터링
+
+      // 일반 보호된 경로에 접근하려는데 인증되지 않은 경우
+      if (protectedPaths.some((path) => pathname.startsWith(path)) && !isAuthenticated) {
+         const redirectUrl = new URL('/login', request.url)
+         redirectUrl.searchParams.set('redirectTo', pathname)
+         return NextResponse.redirect(redirectUrl)
+      }
+
+      // 이미 로그인된 사용자가 로그인 페이지에 접근하려는 경우
+      if (pathname === '/login' && isAuthenticated) {
+         const redirectTo = request.nextUrl.searchParams.get('redirectTo')
+         const redirectUrl = new URL(redirectTo || '/mypage', request.url)
+         return NextResponse.redirect(redirectUrl)
+      }
+
+      return response
+   } catch (error) {
+      console.error('Middleware Error:', error)
+
+      // 오류가 발생한 경우 보호된 경로는 로그인 페이지로 리디렉션
+      if (protectedPaths.some((path) => pathname.startsWith(path))) {
+         const redirectUrl = new URL('/login', request.url)
+         return NextResponse.redirect(redirectUrl)
+      }
+
+      // 관리자 페이지는 클라이언트에서 처리
+
+      return response
+   }
 }
 
 export const config = {
    matcher: [
-      /*
-       * Match all request paths except for the ones starting with:
-       * - api (API routes)
-       * - _next/static (static files)
-       * - _next/image (image optimization files)
-       * - favicon.ico (favicon file)
-       * - auth (auth callback)
+      /**
+       * 다음을 제외한 모든 요청 경로와 매치:
+       * - _next/static (정적 파일)
+       * - _next/image (이미지 최적화 파일)
+       * - favicon.ico (파비콘 파일)
+       * - . 이 포함된 파일 (정적 파일)
        */
-      '/((?!api|_next/static|_next/image|favicon.ico|auth).*)',
+      '/((?!_next/static|_next/image|favicon.ico|.*\\.).*)',
    ],
 }

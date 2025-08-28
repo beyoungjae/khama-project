@@ -78,18 +78,8 @@ export default function AdminNoticesPage() {
                ...(filters.search && { search: filters.search }),
             })
 
-            // 인증 헤더 추가
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
-
-            console.log('Loading notices with params:', params.toString())
-            console.log('Token exists:', !!token)
+            // 쿠키 기반 인증 사용
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
             const response = await fetch(`/api/admin/notices?${params}`, {
                headers,
@@ -132,14 +122,7 @@ export default function AdminNoticesPage() {
       try {
          setUpdating(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
          const response = await fetch(`/api/admin/notices/${noticeId}`, {
             method: 'DELETE',

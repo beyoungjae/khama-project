@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { type Profile } from '@/lib/supabase'
-import { verifyAdminToken } from '../login/route'
+import { verifyAdminTokenFromRequest } from '@/utils/admin-auth'
 
 export async function GET(request: NextRequest) {
    try {
       // 관리자 권한 확인
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.split(' ')[1]
-      const { valid } = verifyAdminToken(token)
+      const { valid } = await verifyAdminTokenFromRequest(request)
       if (!valid) {
          return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
       }
@@ -41,7 +35,7 @@ export async function GET(request: NextRequest) {
 
       // 검색어 필터 (profiles 테이블에 있는 필드만 사용)
       if (search) {
-         query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%`)
+         query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%,address.ilike.%${search}%`)
       }
 
       const { data: members, count, error } = await query.range(offset, offset + limit - 1)

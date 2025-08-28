@@ -80,19 +80,8 @@ export default function AdminExamEditPage() {
                setCertifications(certData.certifications || [])
             }
 
-            // 시험 일정 상세 정보 로드
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
-
-            const scheduleResponse = await fetch(`/api/admin/exams/${params.id}`, {
-               headers,
-            })
+            // 시험 일정 상세 정보 로드 (쿠키 기반)
+            const scheduleResponse = await fetch(`/api/admin/exams/${params.id}`)
             const scheduleData = await scheduleResponse.json()
 
             if (scheduleResponse.ok) {

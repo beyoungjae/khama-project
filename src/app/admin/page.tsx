@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
-import Button from '@/components/ui/Button'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
+// import Button from '@/components/ui/Button'
+// import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import AdminLayout from '@/components/layout/AdminLayout'
-import { useAdmin } from '@/hooks/useAdmin'
+// import { useAdmin } from '@/hooks/useAdmin'
 
 interface DashboardStats {
    totalMembers: number
@@ -27,7 +27,6 @@ interface RecentActivity {
 }
 
 export default function AdminDashboardPage() {
-   const { isAdmin, isChecking } = useAdmin()
    const [stats, setStats] = useState<DashboardStats>({
       totalMembers: 0,
       newMembersToday: 0,
@@ -42,20 +41,12 @@ export default function AdminDashboardPage() {
    const [isLoading, setIsLoading] = useState(true)
 
    useEffect(() => {
-      if (!isAdmin || isChecking) return
-
       const fetchDashboardData = async () => {
          setIsLoading(true)
 
          try {
-            // 인증 헤더 준비
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
+            // 쿠키 기반 인증 사용 (Authorization 헤더 제거)
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
             // 통계 데이터 로드
             const [membersRes, examsRes, noticesRes, qnaRes, certificationsRes] = await Promise.all([
@@ -99,14 +90,7 @@ export default function AdminDashboardPage() {
       }
 
       fetchDashboardData()
-   }, [isAdmin, isChecking])
-
-   const handleLogout = () => {
-      // localStorage에서 관리자 토큰 제거
-      localStorage.removeItem('admin-token')
-      // 페이지 새로고침하여 인증 상태 업데이트
-      window.location.href = '/admin/login'
-   }
+   }, [])
 
    const getActivityIcon = (type: string) => {
       switch (type) {
@@ -156,17 +140,7 @@ export default function AdminDashboardPage() {
       return `${Math.floor(diffInMinutes / 1440)}일 전`
    }
 
-   if (isChecking) {
-      return (
-         <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-            <LoadingSpinner size="large" />
-         </div>
-      )
-   }
-
-   if (!isAdmin) {
-      return null // useAdmin 훅에서 리다이렉트 처리
-   }
+   // 인증은 AdminLayout에서 처리하므로 여기서는 제거
 
    if (isLoading) {
       return (
@@ -186,19 +160,14 @@ export default function AdminDashboardPage() {
    return (
       <AdminLayout>
          {/* 페이지 제목 */}
-         <div className="mb-8 flex justify-between items-center">
-            <div>
-               <h1 className="text-3xl font-bold text-gray-900">대시보드</h1>
-               <p className="text-gray-600 mt-2">KHAMA 관리 시스템 현황을 확인하세요</p>
-            </div>
-            <Button onClick={handleLogout} variant="outline" size="sm">
-               로그아웃
-            </Button>
+         <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">대시보드</h1>
+            <p className="text-gray-600 mt-2">KHAMA 관리 시스템 현황을 확인하세요</p>
          </div>
 
-         {/* 통계 카드 */}
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
+            {/* 통계 카드 추후 활성화 */}
+            {/* <Card>
                <div className="flex items-center">
                   <div className="flex-shrink-0">
                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -213,7 +182,7 @@ export default function AdminDashboardPage() {
                      <p className="text-xs text-gray-500 mt-1">오늘 신규: {stats.newMembersToday}명</p>
                   </div>
                </div>
-            </Card>
+            </Card> 
 
             <Card>
                <div className="flex items-center">
@@ -264,7 +233,7 @@ export default function AdminDashboardPage() {
                      <p className="text-xs text-gray-500 mt-1">답변 대기 중</p>
                   </div>
                </div>
-            </Card>
+            </Card> 
 
             <Card>
                <div className="flex items-center">
@@ -282,6 +251,7 @@ export default function AdminDashboardPage() {
                   </div>
                </div>
             </Card>
+            */}
          </div>
 
          {/* 최근 활동 */}

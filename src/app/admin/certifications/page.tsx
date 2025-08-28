@@ -168,7 +168,7 @@ export default function AdminCertificationsPage() {
          exemption_benefits: '',
          status: 'active' as 'active' | 'inactive' | 'draft',
          image_url: '',
-         qualification_type: '등록민간자격',
+         qualification_type: '산업통상자원부',
          grade: '단일등급',
          eligibility: '교육 이수자',
          validity_period: '평생유효',
@@ -200,7 +200,7 @@ export default function AdminCertificationsPage() {
          status: certification.status,
          image_url: certification.image_url || '',
          // 기본 정보가 없으면 기본값 설정
-         qualification_type: certification.qualification_type || '등록민간자격',
+         qualification_type: certification.qualification_type || '산업통상자원부',
          grade: certification.grade || '단일등급',
          eligibility: certification.eligibility || '교육 이수자',
          validity_period: certification.validity_period || '평생유효',
@@ -602,7 +602,7 @@ ${form.passing_criteria}`
                                  <div className="text-sm text-gray-500 truncate max-w-xs">{certification.description}</div>
                               </td>
                               <td className="px-6 py-4 text-sm text-gray-900">{certification.registration_number}</td>
-                              <td className="px-6 py-4 text-sm text-gray-900">{certification.qualification_type || '등록민간자격'}</td>
+                              <td className="px-6 py-4 text-sm text-gray-900">{certification.qualification_type || '산업통상자원부'}</td>
                               <td className="px-6 py-4 text-sm text-gray-900">{certification.application_fee > 0 ? `${certification.application_fee.toLocaleString()}원` : '별도 문의'}</td>
                               <td className="px-6 py-4 text-sm text-gray-900">{certification.certificate_fee > 0 ? `${certification.certificate_fee.toLocaleString()}원` : '별도 문의'}</td>
                               <td className="px-6 py-4">{renderStatusBadge(certification.status)}</td>
@@ -757,10 +757,10 @@ ${form.passing_criteria}`
                      <div>
                         <h3 className="text-lg font-medium text-gray-900 mb-2">자격 기본 정보</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                           {/* 자격 종류 */}
+                           {/* 주무부처 */}
                            <div>
                               <label htmlFor="qualification_type" className="block text-sm font-medium text-gray-700 mb-1">
-                                 자격 종류
+                                 주무부처
                               </label>
                               <input
                                  type="text"
@@ -769,7 +769,7 @@ ${form.passing_criteria}`
                                  value={form.qualification_type || ''}
                                  onChange={handleChange}
                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                 placeholder="예: 등록민간자격"
+                                 placeholder="예: 산업통상자원부"
                               />
                            </div>
                            {/* 등급 */}

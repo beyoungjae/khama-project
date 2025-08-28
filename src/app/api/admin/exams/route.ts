@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { verifyAdminToken } from '../login/route'
+import { verifyAdminToken } from '@/utils/admin-auth'
 
 // 관리자용 시험 일정 목록 조회
 export async function GET(request: NextRequest) {

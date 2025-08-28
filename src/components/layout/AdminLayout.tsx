@@ -2,31 +2,32 @@
 
 import { ReactNode } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { useAdmin } from '@/contexts/AdminContext'
 
 interface AdminLayoutProps {
    children: ReactNode
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+function AdminLayoutContent({ children }: AdminLayoutProps) {
    const pathname = usePathname()
-   const router = useRouter()
+   const { logout } = useAdmin()
 
    const handleLogout = () => {
-      localStorage.removeItem('admin-token')
-      router.push('/admin/login')
+      logout()
    }
    // { name: '자격증 관리', href: '/admin/certifications' },
    const menuItems = [
       { href: '/admin', label: '대시보드', icon: '📊' },
       { href: '/admin/notices', label: '공지사항 관리', icon: '📢' },
-      { href: '/admin/qna', label: 'Q&A 관리', icon: '❓' },
+      { href: '/admin/inquiries', label: '1:1 문의 관리', icon: '💬' },
       { href: '/admin/certifications', label: '자격증 관리', icon: '📜' },
+      { href: '/admin/education', label: '교육 프로그램 관리', icon: '📚' },
       { href: '/admin/exams', label: '시험 일정 관리', icon: '🗓️' },
       { href: '/admin/exam-applications', label: '시험 신청 관리', icon: '📝' },
       { href: '/admin/members', label: '회원 관리', icon: '👥' },
+      { href: '/admin/resources', label: '자료실 관리', icon: '📁' },
       { href: '/admin/gallery', label: '갤러리 관리', icon: '🖼️' },
-      { href: '/admin/settings', label: '설정', icon: '⚙️' },
    ]
 
    return (
@@ -76,4 +77,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
          </div>
       </div>
    )
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
+   return <AdminLayoutContent>{children}</AdminLayoutContent>
 }

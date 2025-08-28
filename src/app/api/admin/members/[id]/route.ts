@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { verifyAdminToken } from '../../login/route'
+import { verifyAdminTokenFromRequest } from '@/utils/admin-auth'
 
 // GET: 특정 회원 상세 정보 조회
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -8,15 +8,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       const { id } = await params
 
       // 관리자 권한 확인 - JWT 토큰 검증
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.split(' ')[1]
-
-      // JWT 토큰 검증
-      const { valid, decoded } = verifyAdminToken(token)
+      const { valid, decoded } = verifyAdminTokenFromRequest(request)
       if (!valid) {
          return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
       }
@@ -101,22 +93,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       const { id } = await params
 
       // 관리자 권한 확인 - JWT 토큰 검증
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.split(' ')[1]
-
-      // JWT 토큰 검증
-      const { valid, decoded } = verifyAdminToken(token)
+      const { valid, decoded } = verifyAdminTokenFromRequest(request)
       if (!valid) {
          return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
       }
 
       const body = await request.json()
 
-      const allowedFields = ['status', 'role', 'name', 'phone', 'address']
+      const allowedFields = ['status', 'role', 'name', 'phone', 'address', 'detail_address']
       const updates = Object.keys(body)
          .filter((key) => allowedFields.includes(key))
          .reduce(
@@ -153,15 +137,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       const { id } = await params
 
       // 관리자 권한 확인 - JWT 토큰 검증
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.split(' ')[1]
-
-      // JWT 토큰 검증
-      const { valid, decoded } = verifyAdminToken(token)
+      const { valid, decoded } = verifyAdminTokenFromRequest(request)
       if (!valid) {
          return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
       }

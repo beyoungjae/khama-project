@@ -27,7 +27,6 @@ export default function ClientSessionDebugger() {
           cookies: document.cookie,
           localStorage: {
             authToken: localStorage.getItem('khama-auth-token'),
-            adminToken: localStorage.getItem('admin-token')
           }
         })
       } catch (err) {

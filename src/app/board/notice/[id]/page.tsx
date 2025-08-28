@@ -183,7 +183,7 @@ export default function NoticeDetailPage() {
                   </div>
 
                   {/* 공지사항 내용 */}
-                  <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: notice.content }} />
+                  <div className="prose prose-lg max-w-none whitespace-pre-line" dangerouslySetInnerHTML={{ __html: notice.content }} />
                </Card>
 
                {/* 관련 공지사항 */}

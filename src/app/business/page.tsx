@@ -168,8 +168,8 @@ export default function BusinessPage() {
                                  </h4>
                                  <div className="space-y-3 text-sm">
                                     <div className="flex justify-between">
-                                       <span className="font-medium text-gray-600">자격 종류</span>
-                                       <span className="text-gray-900 font-semibold">등록민간자격</span>
+                                       <span className="font-medium text-gray-600">주무부처</span>
+                                       <span className="text-gray-900 font-semibold">산업통상자원부</span>
                                     </div>
                                     <div className="flex justify-between">
                                        <span className="font-medium text-gray-600">관리·운영기관</span>

@@ -67,8 +67,13 @@ export default function AdminExamApplicationsPage() {
 
    const statusOptions = [
       { value: 'all', label: '전체' },
+      { value: 'draft', label: '임시저장' },
+      { value: 'submitted', label: '접수완료' },
       { value: 'payment_pending', label: '입금대기' },
-      { value: 'confirmed', label: '입금확인' },
+      { value: 'payment_completed', label: '입금확인' },
+      { value: 'exam_taken', label: '응시완료' },
+      { value: 'passed', label: '합격' },
+      { value: 'failed', label: '불합격' },
       { value: 'cancelled', label: '취소' },
    ]
 
@@ -87,15 +92,8 @@ export default function AdminExamApplicationsPage() {
                ...(filters.search && { search: filters.search }),
             })
 
-            // 인증 헤더 추가
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
+            // 쿠키 기반 인증 사용 (Authorization 제거)
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
             const response = await fetch(`/api/admin/exam-applications?${params}`, {
                headers,
@@ -143,15 +141,8 @@ export default function AdminExamApplicationsPage() {
       try {
          setUpdating(true)
 
-         // 인증 헤더 추가
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
+         // 쿠키 기반 인증 사용 (Authorization 제거)
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
          const response = await fetch(`/api/admin/exam-applications/${applicationId}/confirm-payment`, {
             method: 'POST',
@@ -185,10 +176,21 @@ export default function AdminExamApplicationsPage() {
    // 상태 뱃지 렌더링
    const renderStatusBadge = (status: string) => {
       switch (status) {
+         case 'draft':
+            return <Badge variant="default">임시저장</Badge>
+         case 'submitted':
+            return <Badge variant="default">접수완료</Badge>
          case 'payment_pending':
             return <Badge variant="warning">입금대기</Badge>
-         case 'confirmed':
+         case 'payment_completed':
+         case 'confirmed': // 레거시 상태 호환
             return <Badge variant="success">입금확인</Badge>
+         case 'exam_taken':
+            return <Badge variant="default">응시완료</Badge>
+         case 'passed':
+            return <Badge variant="success">합격</Badge>
+         case 'failed':
+            return <Badge variant="error">불합격</Badge>
          case 'cancelled':
             return <Badge variant="error">취소</Badge>
          default:
@@ -311,7 +313,7 @@ export default function AdminExamApplicationsPage() {
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{application.payment_amount?.toLocaleString() || 0}원</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(application.created_at).toLocaleDateString('ko-KR')}</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                 {application.application_status === 'payment_pending' && (
+                                 {(application.application_status === 'payment_pending' || application.application_status === 'submitted') && (
                                     <Button onClick={() => handlePaymentConfirm(application.id)} disabled={updating} size="sm">
                                        {updating ? '처리 중...' : '입금확인'}
                                     </Button>

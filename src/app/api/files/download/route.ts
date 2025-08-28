@@ -130,8 +130,7 @@ export async function DELETE(request: NextRequest) {
          return NextResponse.json({ error: '파일 삭제에 실패했습니다.' }, { status: 400 })
       }
 
-      // 데이터베이스에서 파일 정보 삭제 (있는 경우)
-      await supabase.from('files').update({ status: 'deleted' }).eq('file_path', filePath)
+      // 파일 삭제 완료 (데이터베이스 업데이트는 필요시 별도 처리)
 
       return NextResponse.json({
          message: '파일이 삭제되었습니다.',

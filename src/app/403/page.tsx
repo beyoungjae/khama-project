@@ -40,7 +40,7 @@ export default function ForbiddenPage() {
                            </Button>
                         </Link>
 
-                        <Link href="/support/contact">
+                        <Link href="/support/inquiry">
                            <Button variant="outline" size="lg" className="w-full">
                               관리자에게 문의하기
                            </Button>

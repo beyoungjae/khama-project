@@ -87,15 +87,8 @@ export default function AdminQnaPage() {
                ...(filters.search && { search: filters.search }),
             })
 
-            // 인증 헤더 추가
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
+            // 쿠키 기반 인증 사용
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
             const response = await fetch(`/api/admin/qna?${params}`, {
                headers,
@@ -134,14 +127,7 @@ export default function AdminQnaPage() {
       try {
          setUpdating(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
          const response = await fetch(`/api/admin/qna/${postId}/answer`, {
             method: 'POST',
@@ -172,14 +158,7 @@ export default function AdminQnaPage() {
       try {
          setUpdating(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
          const response = await fetch(`/api/admin/qna/${postId}`, {
             method: 'DELETE',

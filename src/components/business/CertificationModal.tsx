@@ -142,8 +142,8 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 sm:p-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 text-sm sm:text-base">
                      <div>
-                        <span className="font-medium text-blue-900">자격 종류:</span>
-                        <span className="ml-2 text-gray-700">{certification.qualification_type || '등록민간자격'}</span>
+                        <span className="font-medium text-blue-900">주무부처:</span>
+                        <span className="ml-2 text-gray-700">{certification.qualification_type || '산업통상자원부'}</span>
                      </div>
                      <div>
                         <span className="font-medium text-blue-900">등급:</span>

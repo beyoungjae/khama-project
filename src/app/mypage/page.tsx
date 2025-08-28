@@ -13,6 +13,7 @@ import { IMAGES } from '@/constants/images'
 
 interface ExamApplication {
    id: string
+   exam_number?: string | null
    application_number: string
    application_status: string
    created_at: string
@@ -48,12 +49,29 @@ interface ExamResult {
    }
 }
 
+interface Inquiry {
+   id: string
+   name: string
+   email: string
+   phone: string
+   category: string
+   subject: string
+   content: string
+   status: string
+   is_answered: boolean
+   admin_response?: string
+   created_at: string
+   answered_at?: string
+}
+
 export default function MyPage() {
    const router = useRouter()
    const { user, profile, isLoading } = useAuth()
    const [examApplications, setExamApplications] = useState<ExamApplication[]>([])
+   const [eduEnrollments, setEduEnrollments] = useState<any[]>([])
    const [examResults, setExamResults] = useState<ExamResult[]>([])
-   const [activeTab, setActiveTab] = useState<'applications' | 'results'>('applications')
+   const [inquiries, setInquiries] = useState<Inquiry[]>([])
+   const [activeTab, setActiveTab] = useState<'applications' | 'education' | 'results' | 'certificates' | 'inquiries'>('applications')
    const [loading, setLoading] = useState(true)
 
    useEffect(() => {
@@ -73,16 +91,13 @@ export default function MyPage() {
 
          if (!user) return
 
-         console.log('시험 데이터 로딩 시작 - 사용자 ID:', user.id)
-
          // 실제 시험 신청 데이터 로드
          try {
             const applicationsRes = await fetch(`/api/exams/applications?userId=${user.id}`)
             const applicationsData = await applicationsRes.json()
-            
+
             if (applicationsRes.ok) {
                setExamApplications(applicationsData.applications || [])
-               console.log('시험 신청 데이터 로드 성공:', applicationsData.applications?.length || 0, '개')
             } else {
                console.error('시험 신청 데이터 로드 실패:', applicationsData.error)
                // 실패 시 빈 배열로 설정
@@ -93,22 +108,53 @@ export default function MyPage() {
             setExamApplications([])
          }
 
-         // 실제 시험 결과 데이터 로드
+         // // 실제 시험 결과 데이터 로드 추후 연동
+         // try {
+         //    const resultsRes = await fetch(`/api/exams/results?userId=${user.id}`)
+         //    const resultsData = await resultsRes.json()
+
+         //    if (resultsRes.ok) {
+         //       setExamResults(resultsData.results || [])
+         //    } else {
+         //       console.error('시험 결과 데이터 로드 실패:', resultsData.error)
+         //       // 실패 시 빈 배열로 설정
+         //       setExamResults([])
+         //    }
+         // } catch (error) {
+         //    console.error('시험 결과 API 호출 오류:', error)
+         //    setExamResults([])
+         // }
+
+         // 교육 신청 내역 로드
          try {
-            const resultsRes = await fetch(`/api/exams/results?userId=${user.id}`)
-            const resultsData = await resultsRes.json()
-            
-            if (resultsRes.ok) {
-               setExamResults(resultsData.results || [])
-               console.log('시험 결과 데이터 로드 성공:', resultsData.results?.length || 0, '개')
+            const eduRes = await fetch(`/api/education/applications?userId=${user.id}`)
+            const eduData = await eduRes.json()
+            if (eduRes.ok) {
+               setEduEnrollments(eduData.applications || [])
             } else {
-               console.error('시험 결과 데이터 로드 실패:', resultsData.error)
-               // 실패 시 빈 배열로 설정
-               setExamResults([])
+               console.error('교육 신청 내역 로드 실패:', eduData.error)
+               setEduEnrollments([])
             }
          } catch (error) {
-            console.error('시험 결과 API 호출 오류:', error)
-            setExamResults([])
+            console.error('교육 신청 API 호출 오류:', error)
+            setEduEnrollments([])
+         }
+
+         // 1:1 문의 내역 로드
+         try {
+            const inquiriesRes = await fetch(`/api/support/inquiry?email=${user.email}`)
+            const inquiriesData = await inquiriesRes.json()
+
+            if (inquiriesRes.ok) {
+               setInquiries(inquiriesData.inquiries || [])
+               console.log('문의 내역 로드 성공:', inquiriesData.inquiries?.length || 0, '개')
+            } else {
+               console.error('문의 내역 로드 실패:', inquiriesData.error)
+               setInquiries([])
+            }
+         } catch (error) {
+            console.error('문의 내역 API 호출 오류:', error)
+            setInquiries([])
          }
       } catch (error) {
          console.error('시험 데이터 로딩 오류:', error)
@@ -147,6 +193,24 @@ export default function MyPage() {
             return <Badge variant="error">불합격</Badge>
          case 'cancelled':
             return <Badge variant="error">취소</Badge>
+         default:
+            return <Badge variant="default">{status}</Badge>
+      }
+   }
+
+   // 교육 신청 상태 뱃지 (한글 라벨)
+   const getEduStatusBadge = (status: string) => {
+      switch (status) {
+         case 'pending':
+            return <Badge variant="warning">대기중</Badge>
+         case 'approved':
+            return <Badge variant="success">승인됨</Badge>
+         case 'rejected':
+            return <Badge variant="error">거절됨</Badge>
+         case 'cancelled':
+            return <Badge variant="error">취소됨</Badge>
+         case 'completed':
+            return <Badge variant="primary">수료</Badge>
          default:
             return <Badge variant="default">{status}</Badge>
       }
@@ -201,8 +265,14 @@ export default function MyPage() {
                                  <button onClick={() => setActiveTab('applications')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'applications' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
                                     시험 신청 내역
                                  </button>
-                                 <button onClick={() => setActiveTab('results')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'results' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
-                                    시험 결과
+                                 <button onClick={() => setActiveTab('education')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'education' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                    교육 신청 내역
+                                 </button>
+                                 <button onClick={() => setActiveTab('certificates')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'certificates' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                    보유 자격증
+                                 </button>
+                                 <button onClick={() => setActiveTab('inquiries')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'inquiries' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                    1:1 문의 내역
                                  </button>
                               </nav>
                            </div>
@@ -212,6 +282,106 @@ export default function MyPage() {
                                  <div className="flex justify-center py-8">
                                     <LoadingSpinner />
                                  </div>
+                              ) : activeTab === 'education' ? (
+                                 <div className="space-y-4">
+                                    {eduEnrollments.length > 0 ? (
+                                       eduEnrollments.map((enr) => (
+                                          <div key={enr.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                             <div className="flex justify-between items-start">
+                                                <div>
+                                                   <h3 className="font-medium text-gray-900">{enr.education_schedules?.education_courses?.name || '교육 과정'}</h3>
+                                                   <p className="text-sm text-gray-500">신청번호: {enr.enrollment_number}</p>
+                                                </div>
+                                                {getEduStatusBadge(enr.enrollment_status)}
+                                             </div>
+                                             <div className="mt-2 text-sm text-gray-600">
+                                                <p>교육 기간: {enr.education_schedules?.start_date ? new Date(enr.education_schedules.start_date).toLocaleDateString('ko-KR') : ''} ~ {enr.education_schedules?.end_date ? new Date(enr.education_schedules.end_date).toLocaleDateString('ko-KR') : ''}</p>
+                                                <p>장소: {enr.education_schedules?.location || '-'}</p>
+                                                <p>신청일: {enr.created_at ? new Date(enr.created_at).toLocaleDateString('ko-KR') : ''}</p>
+                                             </div>
+                                          </div>
+                                       ))
+                                    ) : (
+                                       <p className="text-gray-500 text-center py-4">교육 신청 내역이 없습니다.</p>
+                                    )}
+                                 </div>
+                              ) : activeTab === 'certificates' ? (
+                                 <div className="space-y-4">
+                                    <div className="text-center py-8">
+                                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                             />
+                                          </svg>
+                                       </div>
+                                       <h3 className="text-lg font-medium text-gray-900 mb-2">보유 자격증</h3>
+                                       <p className="text-gray-500 mb-4">합격한 자격증의 PDF 파일을 다운로드 받으실 수 있습니다.</p>
+                                       <Button onClick={() => router.push('/mypage/certificates')}>자격증 관리 페이지로 이동</Button>
+                                    </div>
+                                 </div>
+                              ) : activeTab === 'inquiries' ? (
+                                 <div className="space-y-4">
+                                    {inquiries.length > 0 ? (
+                                       inquiries.map((inquiry) => (
+                                          <div key={inquiry.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                                             <div className="flex justify-between items-start">
+                                                <div className="flex-1">
+                                                   <h3 className="font-medium text-gray-900">{inquiry.subject}</h3>
+                                                   <p className="text-sm text-gray-500 mt-1">
+                                                      {inquiry.category === 'exam'
+                                                         ? '시험 관련 문의'
+                                                         : inquiry.category === 'education'
+                                                           ? '교육 관련 문의'
+                                                           : inquiry.category === 'certificate'
+                                                             ? '자격증 관련 문의'
+                                                             : inquiry.category === 'payment'
+                                                               ? '결제 관련 문의'
+                                                               : inquiry.category === 'technical'
+                                                                 ? '기술적 문제'
+                                                                 : '기타 문의'}
+                                                   </p>
+                                                   <p className="text-sm text-gray-400 mt-1">문의일: {new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</p>
+                                                </div>
+                                                <div className="ml-4">
+                                                   <Badge variant={inquiry.is_answered ? 'success' : 'warning'}>{inquiry.is_answered ? '답변완료' : '답변대기'}</Badge>
+                                                </div>
+                                             </div>
+
+                                             <div className="mt-3 pt-3 border-t border-gray-100">
+                                                <p className="text-sm text-gray-600 line-clamp-2">{inquiry.content}</p>
+
+                                                {inquiry.is_answered && inquiry.admin_response && (
+                                                   <div className="mt-3 bg-blue-50 p-3 rounded-lg">
+                                                      <div className="flex items-center mb-2">
+                                                         <svg className="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                         </svg>
+                                                         <span className="text-sm font-medium text-blue-900">관리자 답변</span>
+                                                         {inquiry.answered_at && <span className="text-xs text-blue-600 ml-2">({new Date(inquiry.answered_at).toLocaleDateString('ko-KR')})</span>}
+                                                      </div>
+                                                      <p className="text-sm text-blue-800">{inquiry.admin_response}</p>
+                                                   </div>
+                                                )}
+                                             </div>
+                                          </div>
+                                       ))
+                                    ) : (
+                                       <div className="text-center py-8">
+                                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                             </svg>
+                                          </div>
+                                          <h3 className="text-lg font-medium text-gray-900 mb-2">문의 내역이 없습니다</h3>
+                                          <p className="text-gray-500 mb-4">궁금한 사항이 있으시면 언제든 문의해주세요.</p>
+                                          <Button onClick={() => router.push('/support/inquiry')}>1:1 문의하기</Button>
+                                       </div>
+                                    )}
+                                 </div>
                               ) : activeTab === 'applications' ? (
                                  <div className="space-y-4">
                                     {examApplications.length > 0 ? (
@@ -220,20 +390,29 @@ export default function MyPage() {
                                           const certificationName = application.exam_schedules?.certifications?.name || '리스트 불가'
                                           const examDate = application.exam_schedules?.exam_date || application.created_at
                                           const examLocation = application.exam_schedules?.exam_location || '미정'
-                                          
+
                                           return (
                                              <div key={application.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                                                 <div className="flex justify-between items-start">
                                                    <div>
                                                       <h3 className="font-medium text-gray-900">{certificationName}</h3>
-                                                      <p className="text-sm text-gray-500">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
+                                                      {application.exam_number ? (
+                                                         <>
+                                                            <p className="text-sm text-gray-700">
+                                                               수험번호: <span className="font-medium">{application.exam_number}</span>
+                                                            </p>
+                                                            <p className="text-xs text-gray-500">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
+                                                         </>
+                                                      ) : (
+                                                         <p className="text-sm text-gray-500">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
+                                                      )}
                                                    </div>
                                                    {getStatusBadge(application.application_status)}
                                                 </div>
                                                 <div className="mt-2 text-sm text-gray-600">
-                                                   <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>
                                                    <p>장소: {examLocation}</p>
-                                                   <p>신청일: {new Date(application.created_at).toLocaleDateString('ko-KR')}</p>
+                                                   <br />
+                                                   <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>
                                                 </div>
                                              </div>
                                           )
@@ -251,7 +430,7 @@ export default function MyPage() {
                                           const applicationNumber = result.exam_applications?.application_number || result.id?.slice(0, 8) || 'N/A'
                                           const examDate = result.exam_applications?.exam_schedules?.exam_date
                                           const resultStatus = result.result_status || result.pass_status
-                                          
+
                                           return (
                                              <div key={result.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
                                                 <div className="flex justify-between items-start">
@@ -259,9 +438,7 @@ export default function MyPage() {
                                                       <h3 className="font-medium text-gray-900">{certificationName}</h3>
                                                       <p className="text-sm text-gray-500">신청번호: {applicationNumber}</p>
                                                    </div>
-                                                   <Badge variant={resultStatus === 'pass' || resultStatus === 'passed' ? 'success' : 'error'}>
-                                                      {resultStatus === 'pass' || resultStatus === 'passed' ? '합격' : '불합격'}
-                                                   </Badge>
+                                                   <Badge variant={resultStatus === 'pass' || resultStatus === 'passed' ? 'success' : 'error'}>{resultStatus === 'pass' || resultStatus === 'passed' ? '합격' : '불합격'}</Badge>
                                                 </div>
                                                 <div className="mt-2 text-sm text-gray-600">
                                                    <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>

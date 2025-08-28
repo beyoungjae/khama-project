@@ -2,128 +2,123 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import { IMAGES } from '@/constants/images'
+import Modal from '@/components/ui/Modal'
 
-interface EducationProgram {
+interface EducationCourse {
    id: string
-   title: string
-   subtitle: string
+   name: string
    description: string
-   duration: string
-   schedule: string
+   category: string
+   course_code: string
+   duration_hours: number
+   max_participants: number
+   course_fee: number | null
+   prerequisites: string | null
+   instructor_name: string | null
+   instructor_bio: string | null
+   materials_included: string | null
+   curriculum:
+      | {
+           week: number
+           topic: string
+           content: string
+        }[]
+      | null
+   status: string | null
+   created_at: string
+}
+
+interface EducationSchedule {
+   id: string
+   course_id: string
    location: string
-   capacity: number
-   currentEnrollment: number
-   features: string[]
-   curriculum: Array<{
-      week: number
-      topic: string
-      content: string
-   }>
-   requirements: string[]
-   benefits: string[]
-   instructor: {
-      name: string
-      career: string
-      image: string
-   }
-   status: 'open' | 'closed' | 'upcoming'
-   nextStartDate: string
+   address: string | null
+   classroom: string | null
+   start_date: string
+   end_date: string
+   registration_start_date: string
+   registration_end_date: string
+   max_participants: number
+   current_participants: number | null
+   status: string | null
+   special_notes: string | null
 }
 
 export default function EducationPage() {
    const [selectedProgram, setSelectedProgram] = useState<string | null>(null)
+   const [isDetailOpen, setIsDetailOpen] = useState(false)
+   const [courses, setCourses] = useState<EducationCourse[]>([])
+   const [schedules, setSchedules] = useState<EducationSchedule[]>([])
+   const [loading, setLoading] = useState(true)
 
-   const programs: EducationProgram[] = [
-      {
-         id: 'startup',
-         title: '창업교육 과정',
-         subtitle: '가전 청소 서비스 창업의 모든 것',
-         description: '가전제품 청소 서비스업 창업을 위한 실무 중심 교육과정입니다. 기술 습득부터 사업 운영까지 체계적으로 학습할 수 있습니다.',
-         duration: '4주 (32시간)',
-         schedule: '주 2회 (화, 목) 19:00-23:00',
-         location: '인천 청라 한올평생교육원',
-         capacity: 20,
-         currentEnrollment: 15,
-         features: ['실무 중심 커리큘럼', '1:1 멘토링 제공', '창업 컨설팅 포함', '수료 후 취업 연계'],
-         curriculum: [
-            { week: 1, topic: '가전청소 기초 이론', content: '가전제품 구조 이해, 청소 원리, 안전 수칙' },
-            { week: 2, topic: '실습 및 기술 습득', content: '세탁기, 에어컨, 공기청정기 청소 실습' },
-            { week: 3, topic: '사업 계획 수립', content: '시장 분석, 사업 모델, 마케팅 전략' },
-            { week: 4, topic: '창업 실무', content: '사업자 등록, 보험, 고객 관리 시스템' },
-         ],
-         requirements: ['만 18세 이상', '기본적인 컴퓨터 활용 능력', '창업 의지가 있는 분'],
-         benefits: ['수료증 발급', '창업 자금 지원 정보 제공', '협회 회원 혜택', '지속적인 기술 지원'],
-         instructor: {
-            name: '김창업',
-            career: '가전청소업계 15년 경력, 성공 창업자 멘토',
-            image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-         },
-         status: 'open',
-         nextStartDate: '2025.03.05',
-      },
-      {
-         id: 'professional',
-         title: '전문가교육 과정',
-         subtitle: '고급 기술과 전문성 향상',
-         description: '이미 업계에 종사하고 있는 분들을 위한 고급 기술 교육과정입니다. 최신 기술과 트렌드를 학습하여 전문성을 높일 수 있습니다.',
-         duration: '6주 (48시간)',
-         schedule: '주 2회 (월, 수) 14:00-18:00',
-         location: '인천 청라 한올평생교육원',
-         capacity: 15,
-         currentEnrollment: 8,
-         features: ['최신 기술 교육', '고급 장비 실습', '전문가 네트워킹', '기술 인증서 발급'],
-         curriculum: [
-            { week: 1, topic: '고급 청소 기술', content: '최신 청소 기법, 친환경 세제 활용법' },
-            { week: 2, topic: '특수 가전 청소', content: '산업용 가전, 대형 가전 청소 기법' },
-            { week: 3, topic: '고객 서비스', content: '고급 고객 응대, 클레임 처리 방법' },
-            { week: 4, topic: '품질 관리', content: '서비스 품질 표준화, 체크리스트 작성' },
-            { week: 5, topic: '사업 확장', content: '프랜차이즈, 직원 관리, 시스템 구축' },
-            { week: 6, topic: '실무 프로젝트', content: '종합 실습, 포트폴리오 작성' },
-         ],
-         requirements: ['가전청소 관련 경력 1년 이상', '기본 자격증 보유자 우대', '사업 확장 계획이 있는 분'],
-         benefits: ['전문가 인증서 발급', '협회 전문가 등록', '우수 업체 추천', '지속적인 기술 업데이트'],
-         instructor: {
-            name: '이전문',
-            career: '가전청소 기술 개발 20년, 업계 최고 전문가',
-            image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-         },
-         status: 'open',
-         nextStartDate: '2025.03.12',
-      },
-      {
-         id: 'new-item',
-         title: '신아이템교육 과정',
-         subtitle: '신기술과 새로운 서비스 모델',
-         description: '최신 가전제품과 신기술을 활용한 새로운 서비스 모델을 학습하는 과정입니다. 시장 선도 기업이 되기 위한 혁신적 아이디어를 제공합니다.',
-         duration: '3주 (24시간)',
-         schedule: '주 2회 (토, 일) 10:00-14:00',
-         location: '인천 청라 한올평생교육원',
-         capacity: 25,
-         currentEnrollment: 12,
-         features: ['최신 트렌드 분석', '신기술 체험', '아이디어 워크숍', '시장 진출 전략'],
-         curriculum: [
-            { week: 1, topic: '신기술 동향', content: 'IoT 가전, 스마트홈 기술, AI 청소 로봇' },
-            { week: 2, topic: '신서비스 모델', content: '구독 서비스, 플랫폼 비즈니스, O2O 서비스' },
-            { week: 3, topic: '사업화 전략', content: '아이디어 구체화, 시장 검증, 투자 유치' },
-         ],
-         requirements: ['혁신적 사고를 가진 분', '새로운 도전을 원하는 분', '기술에 관심이 많은 분'],
-         benefits: ['신기술 교육 수료증', '스타트업 인큐베이팅 연계', '투자자 네트워킹', '특허 출원 지원'],
-         instructor: {
-            name: '박혁신',
-            career: '스타트업 CEO, 기술 혁신 전문가',
-            image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face',
-         },
-         status: 'upcoming',
-         nextStartDate: '2025.04.05',
-      },
-   ]
+   // 교육 과정 및 일정 조회
+   const fetchEducationData = async () => {
+      try {
+         setLoading(true)
+
+         // 교육 과정 목록 조회
+         const coursesResponse = await fetch('/api/education/courses')
+         const coursesData = await coursesResponse.json()
+         setCourses(coursesData.courses || [])
+
+         // 교육 일정 목록 조회
+         const schedulesResponse = await fetch('/api/education/schedules')
+         const schedulesData = await schedulesResponse.json()
+         setSchedules(schedulesData.schedules || [])
+      } catch (error) {
+         console.error('교육 데이터 조회 오류:', error)
+         setCourses([])
+         setSchedules([])
+      } finally {
+         setLoading(false)
+      }
+   }
+
+   useEffect(() => {
+      fetchEducationData()
+   }, [])
+
+   // 교육 과정과 일정 매핑
+   const getEducationPrograms = () => {
+      if (courses.length === 0) return []
+
+      return courses.map((course) => {
+         const courseSchedules = schedules.filter((schedule) => schedule.course_id === course.id)
+         const nextSchedule = courseSchedules.find((s) => new Date(s.start_date) > new Date()) || courseSchedules[0]
+
+         return {
+            id: course.id,
+            title: course.name,
+            subtitle: course.category,
+            description: course.description || '교육 과정에 대한 자세한 설명입니다.',
+            duration: `${course.duration_hours}시간`,
+            schedule: nextSchedule?.location || '교육장소 미정',
+            location: nextSchedule?.location || '교육장소 미정',
+            capacity: course.max_participants,
+            currentEnrollment: nextSchedule?.current_participants || 0,
+            features: course.materials_included ? course.materials_included.split(',').map((item: string) => item.trim()) : ['실무 중심 교육', '수료증 발급'],
+            curriculum: course.curriculum || [],
+            requirements: course.prerequisites ? course.prerequisites.split(',').map((item: string) => item.trim()) : ['교육 의지가 있는 분'],
+            benefits: ['수료증 발급', '전문 교육 이수', '기술 습득'],
+            instructor: {
+               name: course.instructor_name || '전문 강사',
+               career: course.instructor_bio || '해당 분야 전문가',
+               image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+            },
+            status: course.status === 'active' ? 'open' : course.status === 'closed' ? 'closed' : 'upcoming',
+            nextStartDate: nextSchedule?.start_date ? new Date(nextSchedule.start_date).toLocaleDateString() : '미정',
+         }
+      })
+   }
+
+   const programs = getEducationPrograms()
 
    const getStatusBadge = (status: string) => {
       switch (status) {
@@ -162,10 +157,10 @@ export default function EducationPage() {
                      창업부터 전문성 향상까지, 단계별 맞춤 교육을 제공합니다.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                     <Link href="/business" className="bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-4xl text-base sm:text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg whitespace-nowrap">
+                     <Link href="/business/education/apply" className="bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-4xl text-base sm:text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg whitespace-nowrap">
                         교육 신청하기
                      </Link>
-                     <Link href="/support" className="inline-flex items-center bg-emerald-600 text-white px-8 py-4 rounded-4xl text-lg font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                     <Link href="/support/inquiry" className="inline-flex items-center bg-emerald-600 text-white px-8 py-4 rounded-4xl text-lg font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                         교육 문의
                      </Link>
                   </div>
@@ -177,163 +172,148 @@ export default function EducationPage() {
                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="text-center mb-12">
                      <h2 className="text-3xl font-bold text-gray-900 mb-4">교육 과정 안내</h2>
-                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">수준별, 목적별로 구성된 3가지 교육과정을 통해 여러분의 목표를 달성하세요.</p>
+                     <p className="text-lg text-gray-600 max-w-2xl mx-auto">수준별, 목적별로 구성된 다양한 교육과정을 통해 여러분의 목표를 달성하세요.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                     {programs.map((program) => (
-                        <Card key={program.id} className="h-full">
-                           <div className="flex flex-col h-full">
-                              {/* 헤더 */}
-                              <div className="mb-6">
-                                 <div className="flex items-center justify-between mb-3">
-                                    <h3 className="text-xl font-bold text-gray-900">{program.title}</h3>
-                                    {getStatusBadge(program.status)}
+                  {loading ? (
+                     <div className="text-center py-12">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
+                        <p className="mt-2 text-gray-600">교육 과정을 불러오는 중입니다...</p>
+                     </div>
+                  ) : programs.length === 0 ? (
+                     <div className="text-center py-12">
+                        <p className="text-gray-500 mb-4">현재 진행 중인 교육 과정이 없습니다.</p>
+                        <Link href="/support/inquiry">
+                           <Button>교육 문의하기</Button>
+                        </Link>
+                     </div>
+                  ) : (
+                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {programs.map((program) => (
+                           <Card key={program.id} className="h-full">
+                              <div className="flex flex-col h-full">
+                                 {/* 헤더 */}
+                                 <div className="mb-6">
+                                    <div className="flex items-center justify-between mb-3">
+                                       <h3 className="text-xl font-bold text-gray-900">{program.title}</h3>
+                                       {getStatusBadge(program.status)}
+                                    </div>
+                                    <p className="text-emerald-600 font-medium mb-2">{program.subtitle}</p>
+                                    <p className="text-gray-600 text-sm">{program.description}</p>
                                  </div>
-                                 <p className="text-emerald-600 font-medium mb-2">{program.subtitle}</p>
-                                 <p className="text-gray-600 text-sm">{program.description}</p>
-                              </div>
 
-                              {/* 기본 정보 */}
-                              <div className="space-y-3 mb-6">
-                                 <div className="flex items-center text-sm">
-                                    <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span className="text-gray-600">기간: {program.duration}</span>
-                                 </div>
-                                 <div className="flex items-center text-sm">
-                                    <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h6m-6 0l-2 2m8-2l2 2m-2-2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V9" />
-                                    </svg>
-                                    <span className="text-gray-600">일정: {program.schedule}</span>
-                                 </div>
-                                 <div className="flex items-center text-sm">
-                                    <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <span className="text-gray-600">장소: {program.location}</span>
-                                 </div>
-                                 <div className="flex items-center text-sm">
-                                    <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                                    </svg>
-                                    <span className="text-gray-600">
-                                       정원: {program.currentEnrollment}/{program.capacity}명
-                                    </span>
-                                 </div>
-                              </div>
-
-                              {/* 특징 */}
-                              <div className="mb-6">
-                                 <h4 className="font-semibold text-gray-900 mb-2">주요 특징</h4>
-                                 <ul className="space-y-1">
-                                    {program.features.map((feature, index) => (
-                                       <li key={index} className="flex items-center text-sm text-gray-600">
-                                          <svg className="w-3 h-3 text-emerald-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                          </svg>
-                                          {feature}
-                                       </li>
-                                    ))}
-                                 </ul>
-                              </div>
-
-                              {/* 버튼 */}
-                              <div className="mt-auto">
-                                 <div className="flex items-center justify-between mb-4">
-                                    <div>
-                                       <p className="text-sm text-gray-500">다음 개강: {program.nextStartDate}</p>
+                                 {/* 기본 정보 */}
+                                 <div className="space-y-3 mb-6">
+                                    <div className="flex items-center text-sm">
+                                       <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                       </svg>
+                                       <span className="text-gray-600">기간: {program.duration}</span>
+                                    </div>
+                                    <div className="flex items-center text-sm">
+                                       <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h6m-6 0l-2 2m8-2l2 2m-2-2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V9" />
+                                       </svg>
+                                       <span className="text-gray-600">일정: {program.schedule}</span>
+                                    </div>
+                                    <div className="flex items-center text-sm">
+                                       <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                       </svg>
+                                       <span className="text-gray-600">장소: {program.location}</span>
+                                    </div>
+                                    <div className="flex items-center text-sm">
+                                       <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                                       </svg>
+                                       <span className="text-gray-600">
+                                          정원: {program.currentEnrollment}/{program.capacity}명
+                                       </span>
                                     </div>
                                  </div>
 
-                                 <div className="space-y-2">
-                                    <Button className="w-full" disabled={program.status === 'closed'}>
-                                       {program.status === 'open' ? '신청하기' : program.status === 'closed' ? '마감' : '사전신청'}
-                                    </Button>
-                                    <Button variant="outline" className="w-full" onClick={() => setSelectedProgram(selectedProgram === program.id ? null : program.id)}>
-                                       {selectedProgram === program.id ? '접기' : '자세히 보기'}
-                                    </Button>
+                                 {/* 특징 */}
+                                 <div className="mb-6">
+                                    <h4 className="font-semibold text-gray-900 mb-2">주요 특징</h4>
+                                    <ul className="space-y-1">
+                                       {program.features.map((feature, index) => (
+                                          <li key={index} className="flex items-center text-sm text-gray-600">
+                                             <svg className="w-3 h-3 text-emerald-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                             </svg>
+                                             {feature}
+                                          </li>
+                                       ))}
+                                    </ul>
+                                 </div>
+
+                                 {/* 버튼 */}
+                                 <div className="mt-auto">
+                                    <div className="flex items-center justify-between mb-4">
+                                       <div>
+                                          <p className="text-sm text-gray-500">다음 개강: {program.nextStartDate}</p>
+                                       </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                       {program.status === 'open' ? (
+                                          <Link href={`/business/education/${program.id}`}>
+                                             <Button className="w-full">신청하기</Button>
+                                          </Link>
+                                       ) : (
+                                          <Button className="w-full" disabled>
+                                             {program.status === 'closed' ? '마감' : '사전신청'}
+                                          </Button>
+                                       )}
+                                       <Button
+                                          variant="outline"
+                                          className="w-full"
+                                          onClick={() => {
+                                             setSelectedProgram(program.id)
+                                             setIsDetailOpen(true)
+                                          }}
+                                       >
+                                          자세히 보기
+                                       </Button>
+                                    </div>
                                  </div>
                               </div>
-                           </div>
-                        </Card>
-                     ))}
-                  </div>
+                           </Card>
+                        ))}
+                     </div>
+                  )}
                </div>
             </section>
 
-            {/* 상세 정보 */}
-            {selectedProgram && (
-               <section className="py-16">
-                  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                     {programs
-                        .filter((p) => p.id === selectedProgram)
-                        .map((program) => (
-                           <div key={program.id} className="space-y-8">
-                              {/* 강사 소개 */}
-                              <Card>
-                                 <h3 className="text-xl font-bold text-gray-900 mb-4">강사 소개</h3>
-                                 <div className="flex items-center gap-4">
-                                    <Image src={program.instructor.image} alt={program.instructor.name} width={64} height={64} className="w-16 h-16 rounded-full object-cover" />
-                                    <div>
-                                       <h4 className="font-semibold text-gray-900">{program.instructor.name}</h4>
-                                       <p className="text-gray-600">{program.instructor.career}</p>
-                                    </div>
-                                 </div>
-                              </Card>
-
-                              {/* 커리큘럼 */}
-                              <Card>
-                                 <h3 className="text-xl font-bold text-gray-900 mb-4">커리큘럼</h3>
-                                 <div className="space-y-4">
-                                    {program.curriculum.map((item) => (
-                                       <div key={item.week} className="border-l-4 border-emerald-500 pl-4">
-                                          <h4 className="font-semibold text-gray-900">
-                                             {item.week}주차: {item.topic}
-                                          </h4>
-                                          <p className="text-gray-600">{item.content}</p>
-                                       </div>
-                                    ))}
-                                 </div>
-                              </Card>
-
-                              {/* 수강 요건 및 혜택 */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                 <Card>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-4">수강 요건</h3>
-                                    <ul className="space-y-2">
-                                       {program.requirements.map((req, index) => (
-                                          <li key={index} className="flex items-center text-gray-600">
-                                             <svg className="w-4 h-4 text-emerald-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                             </svg>
-                                             {req}
-                                          </li>
-                                       ))}
-                                    </ul>
-                                 </Card>
-
-                                 <Card>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-4">수료 혜택</h3>
-                                    <ul className="space-y-2">
-                                       {program.benefits.map((benefit, index) => (
-                                          <li key={index} className="flex items-center text-gray-600">
-                                             <svg className="w-4 h-4 text-emerald-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                             </svg>
-                                             {benefit}
-                                          </li>
-                                       ))}
-                                    </ul>
-                                 </Card>
-                              </div>
+            {/* 상세 정보 모달: 수강 요건/수료 혜택만 표시 */}
+            <Modal isOpen={isDetailOpen} onClose={() => setIsDetailOpen(false)} title="상세 정보" size="md">
+               {selectedProgram &&
+                  programs
+                     .filter((p) => p.id === selectedProgram)
+                     .map((program) => (
+                        <div key={program.id} className="space-y-6">
+                           <div>
+                              <h3 className="text-lg font-bold text-gray-900 mb-3">수강 요건</h3>
+                              <ul className="space-y-2">
+                                 {program.requirements.map((req, index) => (
+                                    <li key={index} className="flex items-center text-gray-700">
+                                       <svg className="w-4 h-4 text-emerald-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                       </svg>
+                                       {req}
+                                    </li>
+                                 ))}
+                              </ul>
                            </div>
-                        ))}
-                  </div>
-               </section>
-            )}
+                           <div className="pt-2">
+                              <Button className="w-full" onClick={() => setIsDetailOpen(false)}>
+                                 닫기
+                              </Button>
+                           </div>
+                        </div>
+                     ))}
+            </Modal>
 
             {/* 교육 신청 안내 */}
             <section className="py-16 bg-emerald-50">
@@ -366,7 +346,7 @@ export default function EducationPage() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                     <Link href="/support/contact">
+                     <Link href="/support/inquiry">
                         <Button size="lg">교육 문의하기</Button>
                      </Link>
                      <Link href="/board/qna">

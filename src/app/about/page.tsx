@@ -1,6 +1,7 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
+import Map from '@/components/ui/Map'
 import { IMAGES } from '@/constants/images'
 
 export default function AboutPage() {
@@ -31,13 +32,27 @@ export default function AboutPage() {
                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                      <div>
-                        <h2 className="text-3xl font-bold text-gray-900 mb-6">회장 인사말</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-6">협회장 인사말</h2>
                         <div className="text-lg text-gray-600 space-y-4 leading-relaxed">
-                           <p>안녕하십니까. 한국생활가전유지관리협회 회장입니다.</p>
-                           <p>우리 협회는 생활가전제품 유지관리의 전문성 향상과 업계 발전을 위해 설립되었습니다. 체계적인 교육과 자격증 과정을 통해 전문가를 양성하고, 업계 표준화를 이끌어가고 있습니다.</p>
-                           <p>앞으로도 회원 여러분과 함께 생활가전 유지관리 분야의 발전을 위해 최선을 다하겠습니다. 많은 관심과 참여 부탁드립니다.</p>
+                           <p>존경하는 회원 여러분, 그리고 우리 협회를 찾아주신 모든 분들께 감사의 인사를 드립니다.</p>
+                           <p>
+                              우리의 삶에 있어 냉난방기, 세탁기, 에어컨 등 각종 생활가전은 쾌적한 실내환경과 생활의 편리함을 제공하는 필수 요소가 되었습니다. 생활수준의 향상과 더불어 가전제품의 보급률은 지속적으로 증가하고 있으며, 이에 따라 가전제품의 안전한 유지관리와 위생 관리의 중요성 또한 날로
+                              커지고 있습니다.
+                           </p>
+                           <p>그러나 여전히 많은 가정과 사업장에서 가전제품의 위생·에너지 효율 관리 수준은 낮은 상황입니다. 잘못된 관리로 인한 전기요금 상승, 위생 문제, 심지어 화재 위험까지 발생할 수 있기에 올바른 유지보수는 선택이 아닌 필수입니다.</p>
+                           <p>
+                              이에 한국가전유지관리협회는 산업통상자원부에 정식으로 등록된 민간자격증 발급기관으로서, 가전제품 유지보수 전문인력 양성을 위해 다양한 교육 프로그램을 운영하고 있습니다. 협회 산하 한올평생교육원에서는 실무 중심의 커리큘럼을 제공하며, 교육 이수 후에는 협회 인증 자격증을
+                              취득할 수 있습니다.
+                           </p>
+                           <p>
+                              또한 협회는 단순히 교육에 그치지 않고, 회원사 및 인증 전문가가 지속적인 역량 개발을 이어갈 수 있도록 매년 정기적인 재교육과 기술세미나를 개최하고 있습니다. 이를 통해 우리 협회는 ▲에너지 낭비 방지 ▲화재 예방 ▲생활환경 위생 향상에 앞장서고 있으며, 나아가 국민의 건강과
+                              안전에 기여하고자 합니다.
+                           </p>
+                           <p>앞으로도 한국가전유지관리협회는 가전산업 현장에서 꼭 필요한 전문 인력 양성의 허브가 되고, 협회 회원사가 안정적인 사업을 영위할 수 있도록 적극적인 지원을 이어가겠습니다.</p>
+                           <p>여러분의 지속적인 관심과 성원을 부탁드리며, 협회의 문은 언제나 열려 있습니다. 함께 성장하며, 우리 사회에 꼭 필요한 전문 인력으로 자리매김할 수 있도록 최선을 다하겠습니다.</p>
+                           <p>감사합니다.</p>
                            <div className="mt-6">
-                              <p className="font-semibold text-gray-900">한국생활가전유지관리협회 회장</p>
+                              <p className="font-semibold text-gray-900">사단법인 한국가전유지관리협회장</p>
                               <p className="text-blue-900 font-bold text-xl">김윤채</p>
                            </div>
                         </div>
@@ -177,9 +192,7 @@ export default function AboutPage() {
                      </Card>
 
                      <Card padding="none">
-                        <div className="h-80 bg-gray-200 rounded-xl flex items-center justify-center">
-                           <p className="text-gray-500">지도 영역 (Google Maps 또는 Naver Map 연동)</p>
-                        </div>
+                        <Map className="h-80" />
                      </Card>
                   </div>
                </div>

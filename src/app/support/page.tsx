@@ -22,7 +22,7 @@ export default function SupportPage() {
             </svg>
          ),
          features: ['실시간 상담', '빠른 답변', '전문가 지원'],
-         link: '/support/contact',
+         link: '/support/inquiry',
       },
       {
          id: 'resources',
@@ -35,18 +35,6 @@ export default function SupportPage() {
          ),
          features: ['시험 자료', '교육 자료', '신청 양식'],
          link: '/support/resources',
-      },
-      {
-         id: 'qna',
-         title: 'Q&A',
-         description: '자주 묻는 질문과 답변을 확인하고 새로운 질문을 등록하세요',
-         icon: (
-            <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-         ),
-         features: ['FAQ 검색', '질문 등록', '전문가 답변'],
-         link: '/board/qna',
       },
       {
          id: 'notice',
@@ -75,7 +63,7 @@ export default function SupportPage() {
 
    const quickLinks = [
       { title: '시험 신청', link: '/exam/apply', color: 'bg-blue-600 hover:bg-blue-700' },
-      { title: '합격자 조회', link: '/exam/results', color: 'bg-emerald-600 hover:bg-emerald-700' },
+      { title: '합격자 조회', link: '/exam/results/search', color: 'bg-emerald-600 hover:bg-emerald-700' },
       { title: '교육 프로그램', link: '/business/education', color: 'bg-orange-600 hover:bg-orange-700' },
       { title: '마이페이지', link: '/mypage', color: 'bg-purple-600 hover:bg-purple-700' },
    ]
@@ -103,22 +91,6 @@ export default function SupportPage() {
                      <br />
                      언제든지 편리하게 이용하세요.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                     <Button variant="secondary" size="lg">
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                           />
-                        </svg>
-                        바로 문의하기
-                     </Button>
-                     <Button variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-blue-900">
-                        자료실 바로가기
-                     </Button>
-                  </div>
                </div>
             </section>
 
@@ -130,7 +102,7 @@ export default function SupportPage() {
                      <p className="text-lg text-gray-600 max-w-2xl mx-auto">필요한 도움을 빠르게 찾을 수 있도록 다양한 지원 채널을 제공합니다.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                      {supportServices.map((service) => (
                         <Card key={service.id} className="text-center h-full">
                            <div className="flex flex-col h-full">

@@ -96,14 +96,7 @@ export default function AdminGalleryPage() {
                ...(filters.search && { search: filters.search }),
             })
 
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
             const response = await fetch(`/api/admin/gallery?${params}`, {
                headers,
@@ -174,8 +167,6 @@ export default function AdminGalleryPage() {
       try {
          setUploading(true)
 
-         const token = localStorage.getItem('admin-token')
-
          // FormData로 파일 업로드
          const formData = new FormData()
          formData.append('file', selectedFile)
@@ -186,9 +177,6 @@ export default function AdminGalleryPage() {
          formData.append('is_active', uploadForm.is_active.toString())
 
          const headers: Record<string, string> = {}
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
 
          const response = await fetch('/api/admin/gallery', {
             method: 'POST',
@@ -322,7 +310,23 @@ export default function AdminGalleryPage() {
                               >
                                  URL 복사
                               </Button>
-                              <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                              <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="text-red-600 hover:text-red-700"
+                                 onClick={async () => {
+                                    if (!confirm('해당 이미지를 삭제하시겠습니까? 되돌릴 수 없습니다.')) return
+                                    try {
+                                       const res = await fetch(`/api/admin/gallery/${image.id}`, { method: 'DELETE', credentials: 'include' })
+                                       const data = await res.json()
+                                       if (!res.ok) throw new Error(data.error || '삭제 실패')
+                                       alert('삭제되었습니다.')
+                                       loadImages(pagination.page)
+                                    } catch (e) {
+                                       alert(e instanceof Error ? e.message : '삭제 중 오류가 발생했습니다.')
+                                    }
+                                 }}
+                              >
                                  삭제
                               </Button>
                            </div>

@@ -24,14 +24,6 @@ export default function VercelAuthFix() {
       return
     }
 
-    // 어드민 토큰이 있는데 어드민 로그인 페이지에 있는 경우
-    const adminToken = localStorage.getItem('admin-token')
-    if (adminToken && pathname === '/admin/login') {
-      console.log('🚀 Vercel Fix: 어드민 토큰 있음, 강제 리다이렉트')
-      window.location.href = '/admin'
-      return
-    }
-
   }, [user, loading, pathname, router])
 
   return null

@@ -15,6 +15,7 @@ interface Member {
    birth_date: string
    gender: 'male' | 'female' | 'other'
    address: string
+   detail_address: string
    status: 'active' | 'inactive' | 'suspended'
    role: 'user' | 'admin' | 'super_admin'
    marketing_agreed: boolean
@@ -78,18 +79,7 @@ export default function AdminMembersPage() {
                ...(filters.search && { search: filters.search }),
             })
 
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
-
-            const response = await fetch(`/api/admin/members?${params}`, {
-               headers,
-            })
+            const response = await fetch(`/api/admin/members?${params}`)
 
             if (!response.ok) {
                throw new Error('회원 목록을 불러올 수 없습니다.')
@@ -212,6 +202,9 @@ export default function AdminMembersPage() {
                            연락처
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                           주소
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                            상태
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -228,13 +221,13 @@ export default function AdminMembersPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                      {loading ? (
                         <tr>
-                           <td colSpan={6} className="px-6 py-4 text-center">
+                           <td colSpan={7} className="px-6 py-4 text-center">
                               <LoadingSpinner />
                            </td>
                         </tr>
                      ) : members.length === 0 ? (
                         <tr>
-                           <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                           <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
                               회원이 없습니다.
                            </td>
                         </tr>
@@ -250,6 +243,12 @@ export default function AdminMembersPage() {
                                  <div className="text-sm text-gray-500">
                                     {member.birth_date} ({member.gender === 'male' ? '남' : member.gender === 'female' ? '여' : '기타'})
                                  </div>
+                              </td>
+                              <td className="px-6 py-4">
+                                 <div className="text-sm text-gray-900">{member.address}</div>
+                                 {member.detail_address && (
+                                    <div className="text-sm text-gray-500">{member.detail_address}</div>
+                                 )}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">{renderStatusBadge(member.status)}</td>
                               <td className="px-6 py-4 whitespace-nowrap">{renderRoleBadge(member.role)}</td>

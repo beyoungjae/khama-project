@@ -27,7 +27,7 @@ export default function SitemapPage() {
          children: [
             { title: '시험 신청', path: '/exam/apply' },
             { title: '시험 일정', path: '/exam/schedule' },
-            { title: '합격자 발표', path: '/exam/results' },
+            { title: '합격자 발표', path: '/exam/results/search' },
          ],
       },
       {
@@ -43,7 +43,7 @@ export default function SitemapPage() {
          title: '고객 지원',
          path: '/support',
          children: [
-            { title: '문의하기', path: '/support/contact' },
+            { title: '문의하기', path: '/support/inquiry' },
             { title: '자료실', path: '/support/resources' },
          ],
       },
@@ -149,7 +149,7 @@ export default function SitemapPage() {
                      <Link href="/board/notice" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
                         공지사항
                      </Link>
-                     <Link href="/support/contact" className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                     <Link href="/support/inquiry" className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
                         문의하기
                      </Link>
                      <Link href="/mypage" className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">

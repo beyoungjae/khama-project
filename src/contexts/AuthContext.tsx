@@ -78,74 +78,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
    }
 
-   // 초기 세션 확인
+   // 초기 세션 확인: iron-session 기반 API로 확인
    useEffect(() => {
-      const getSession = async () => {
+      const loadSession = async () => {
          try {
-            const {
-               data: { session },
-            } = await supabase.auth.getSession()
-            
-            console.log('세션 상태:', session ? '존재' : '없음', session?.user?.email)
-            setUser(session?.user ?? null)
-
-            if (session?.user) {
-               const profileData = await fetchProfile(session.user.id)
-               setProfile(profileData)
-               console.log('기존 세션 확인:', session.user.email, '프로필:', profileData)
+            const res = await fetch('/api/auth/session', { credentials: 'include' })
+            if (res.ok) {
+               const data = await res.json()
+               // iron-session의 사용자 정보를 클라이언트 상태로 반영
+               setUser((data.user || null) as User | null)
+               setProfile((data.profile || null) as UserProfile | null)
+               console.log('iron-session 세션 로드:', data.user?.email)
+            } else {
+               setUser(null)
+               setProfile(null)
+               console.log('iron-session 세션 없음')
             }
          } catch (error) {
             console.error('세션 확인 오류:', error)
+            setUser(null)
+            setProfile(null)
          } finally {
             setLoading(false)
          }
       }
 
-      getSession()
-
-      // 인증 상태 변경 리스너
-      const {
-         data: { subscription },
-      } = supabase.auth.onAuthStateChange(async (event, session) => {
-         console.log('인증 상태 변경:', event, session?.user?.email || '세션 없음')
-         setUser(session?.user ?? null)
-
-         if (session?.user) {
-            const profileData = await fetchProfile(session.user.id)
-            setProfile(profileData)
-            console.log('로그인 성공:', session.user.email, '프로필:', profileData)
-
-            // 로그인 시간 업데이트
-            if (event === 'SIGNED_IN') {
-               try {
-                  const response = await fetch('/api/profile', {
-                     method: 'PUT',
-                     headers: {
-                        'Content-Type': 'application/json',
-                     },
-                     body: JSON.stringify({
-                        userId: session.user.id,
-                        profileData: {
-                           last_login_at: new Date().toISOString(),
-                        },
-                     }),
-                  })
-
-                  if (!response.ok) {
-                     console.warn('로그인 시간 업데이트 실패:', await response.text())
-                  }
-               } catch (error) {
-                  console.warn('로그인 시간 업데이트 오류:', error)
-               }
-            }
-         } else {
-            setProfile(null)
-         }
-
-         setLoading(false)
-      })
-
-      return () => subscription.unsubscribe()
+      loadSession()
    }, [])
 
    // 회원가입
@@ -216,17 +174,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    // 로그인
    const signIn = async (email: string, password: string) => {
       try {
-         const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
+         console.log('AuthContext signIn 호출:', email)
+         
+         // iron-session을 사용하는 로그인 API 호출
+         const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            credentials: 'include', // 쿠키 포함
+            body: JSON.stringify({ email, password }),
          })
 
-         if (error) {
-            return { error: error.message }
+         const result = await response.json()
+
+         if (!response.ok) {
+            console.error('로그인 API 오류:', result.error)
+            return { error: result.error || '로그인에 실패했습니다.' }
+         }
+
+         console.log('로그인 API 성공:', result)
+
+         // 로그인 직후 iron-session 세션을 재조회하여 상태 동기화
+         try {
+            const res = await fetch('/api/auth/session', { credentials: 'include' })
+            if (res.ok) {
+               const data = await res.json()
+               setUser((data.user || null) as User | null)
+               setProfile((data.profile || null) as UserProfile | null)
+               console.log('iron-session 세션 동기화 완료:', data.user?.email)
+            }
+         } catch (e) {
+            // 무시하고 진행
          }
 
          return {}
       } catch (error: unknown) {
+         console.error('AuthContext signIn 오류:', error)
          return { error: error instanceof Error ? error.message : '로그인 중 오류가 발생했습니다.' }
       }
    }
@@ -234,7 +218,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    // 로그아웃
    const signOut = async () => {
       try {
+         console.log('AuthContext signOut 호출')
+         
+         // iron-session을 사용하는 로그아웃 API 호출
+         const response = await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include', // 쿠키 포함
+         })
+
+         if (!response.ok) {
+            console.error('로그아웃 API 오류:', await response.text())
+         }
+
+         // Supabase auth 상태도 정리
          await supabase.auth.signOut()
+         
+         // 로컬 상태 정리
+         setUser(null)
+         setProfile(null)
+         
+         console.log('로그아웃 완료')
       } catch (error) {
          console.error('로그아웃 오류:', error)
       }

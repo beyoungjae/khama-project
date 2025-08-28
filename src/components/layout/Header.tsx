@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { IMAGES } from '@/constants/images'
 import OptimizedImage from '@/components/ui/OptimizedImage'
 import { useAuth } from '@/contexts/AuthContext'
-import { useAdminCheck } from '@/hooks/useAdmin'
+import { useSafeAdminCheck } from '@/hooks/useSafeAdminCheck'
 
 export default function Header() {
    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -15,7 +15,7 @@ export default function Header() {
    const pathname = usePathname()
    const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
    const { user, signOut } = useAuth()
-   const { isAdmin } = useAdminCheck()
+   const { isAdmin } = useSafeAdminCheck()
 
    // 메뉴 데이터 구조화 (IA에 맞게)
    const menuItems = [
@@ -43,22 +43,23 @@ export default function Header() {
       {
          name: '자격 검정',
          path: '/exam',
-         subItems: [{ name: '자격시험 신청', path: '/exam/apply' }],
+         subItems: [
+            { name: '자격시험 신청', path: '/exam/apply' },
+            { name: '시험 일정', path: '/exam/schedule' },
+            { name: '합격자 조회', path: '/exam/results/search' },
+         ],
       },
       {
-         name: '온라인 서비스',
-         path: '/services',
-         subItems: [
-            { name: '마이페이지', path: '/mypage' },
-            { name: '공지사항', path: '/board/notice' },
-            { name: 'Q&A', path: '/board/qna' },
-         ],
+         name: '공지사항',
+         path: '/board/notice',
+         subItems: [],
       },
       {
          name: '고객 지원',
          path: '/support',
          subItems: [
-            { name: '문의하기', path: '/support/contact' },
+            { name: '마이페이지', path: '/mypage' },
+            { name: '1:1 문의', path: '/support/inquiry' },
             { name: '자료실', path: '/support/resources' },
          ],
       },
@@ -147,11 +148,6 @@ export default function Header() {
                            <Link href="/mypage" className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200">
                               마이페이지
                            </Link>
-                           {isAdmin && (
-                              <Link href="/admin" className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200">
-                                 관리자
-                              </Link>
-                           )}
                            <button onClick={handleSignOut} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200">
                               로그아웃
                            </button>
@@ -251,8 +247,7 @@ export default function Header() {
                   {/* 헤더와 같은 컨테이너 폭을 그대로 사용 */}
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                      {/* 이중 센터링 제거: max-w-6xl mx-auto 삭제 */}
-                     {/* 홈은 서브메뉴가 없으므로 5열 고정 */}
-                     <div className="grid grid-cols-5 gap-8">
+                     <div className="grid grid-cols-4 gap-4">
                         {menuItems
                            .filter((item) => item.subItems && item.subItems.length > 0)
                            .map((item) => (

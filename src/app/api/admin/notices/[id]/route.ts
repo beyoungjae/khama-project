@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { type Notice, type Updates } from '@/lib/supabase'
-import { verifyAdminToken } from '../../login/route'
+import { verifyAdminTokenFromRequest } from '@/utils/admin-auth'
 
 // 관리자용 공지사항 상세 조회
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -49,14 +49,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 // 관리자용 공지사항 수정
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
    try {
-      // 인증 확인
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.split(' ')[1]
-      const { valid } = verifyAdminToken(token)
+      // 인증 확인 (헤더 또는 쿠키)
+      const { valid } = await verifyAdminTokenFromRequest(request)
 
       if (!valid) {
          return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
@@ -116,14 +110,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 // 관리자용 공지사항 삭제
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
    try {
-      // 인증 확인
-      const authHeader = request.headers.get('authorization')
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.split(' ')[1]
-      const { valid } = verifyAdminToken(token)
+      // 인증 확인 (헤더 또는 쿠키)
+      const { valid } = await verifyAdminTokenFromRequest(request)
 
       if (!valid) {
          return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })

@@ -1,29 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
+import { getIronSession } from 'iron-session'
+import { cookies } from 'next/headers'
+import { userSessionOptions, type SessionData } from '@/lib/session'
 
 export async function GET(request: NextRequest) {
    try {
-      // Authorization 헤더에서 토큰 추출
-      const authHeader = request.headers.get('authorization')
-
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-         return NextResponse.json({ error: '인증 토큰이 필요합니다.' }, { status: 401 })
-      }
-
-      const token = authHeader.replace('Bearer ', '')
-
-      // Supabase에서 사용자 정보 조회
-      const {
-         data: { user },
-         error: userError,
-      } = await supabase.auth.getUser(token)
-
-      if (userError || !user) {
-         return NextResponse.json({ error: '유효하지 않은 토큰입니다.' }, { status: 401 })
+      console.log('사용자 세션 확인 API 호출')
+      
+      // iron-session에서 사용자 세션 확인 (App Router: cookies 사용; await 필요)
+      const cookieStore = await cookies()
+      const session = await getIronSession<SessionData>(cookieStore, userSessionOptions)
+      
+      console.log('현재 세션 상태:', { hasUser: !!session.user, userId: session.user?.id })
+      
+      if (!session.user) {
+         return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 })
       }
 
       // 프로필 정보 조회
-      const { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+      const { data: profile, error: profileError } = await supabaseAdmin
+         .from('profiles')
+         .select('*')
+         .eq('id', session.user.id)
+         .single()
 
       if (profileError) {
          console.error('프로필 조회 오류:', profileError)
@@ -44,11 +44,12 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
          user: {
-            id: user.id,
-            email: user.email,
-            email_confirmed: !!user.email_confirmed_at,
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.name,
          },
          profile,
+         session: session.user
       })
    } catch (error: unknown) {
       console.error('세션 조회 API 오류:', error)

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import AdminLayout from '@/components/layout/AdminLayout'
 import Button from '@/components/ui/Button'
+import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface NoticeForm {
    title: string
@@ -66,14 +67,7 @@ export default function AdminNoticeWritePage() {
       try {
          setLoading(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
          const response = await fetch('/api/admin/notices', {
             method: 'POST',
@@ -180,15 +174,13 @@ export default function AdminNoticeWritePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                      내용 <span className="text-red-500">*</span>
                   </label>
-                  <textarea
-                     value={form.content}
-                     onChange={(e) => setForm({ ...form, content: e.target.value })}
-                     placeholder="공지사항 내용을 입력하세요"
-                     rows={15}
-                     className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.content ? 'border-red-300' : 'border-gray-300'}`}
+                  <RichTextEditor
+                    value={form.content}
+                    onChange={(html) => setForm({ ...form, content: html })}
+                    placeholder="공지사항 내용을 입력하세요"
+                    height={400}
                   />
                   {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
-                  <p className="mt-1 text-sm text-gray-500">현재 {form.content.length}자 (최소 10자 이상)</p>
                </div>
 
                {/* 저장 버튼 */}

@@ -8,19 +8,6 @@ export default function ServicesPage() {
    const services = [
       {
          id: 1,
-         title: '마이페이지',
-         description: '개인 정보 관리, 시험 신청 내역, 보유 자격증 확인',
-         icon: (
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-         ),
-         href: '/mypage',
-         color: 'blue',
-         features: ['개인정보 수정', '시험 신청 내역', '자격증 관리', '교육 이력'],
-      },
-      {
-         id: 2,
          title: '공지사항',
          description: '협회의 최신 소식과 중요한 공지사항을 확인하세요',
          icon: (
@@ -31,19 +18,6 @@ export default function ServicesPage() {
          href: '/board/notice',
          color: 'emerald',
          features: ['시험 공지', '교육 안내', '협회 소식', '법령 변경'],
-      },
-      {
-         id: 3,
-         title: 'Q&A',
-         description: '궁금한 사항을 질문하고 전문가의 답변을 받아보세요',
-         icon: (
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-         ),
-         href: '/board/qna',
-         color: 'orange',
-         features: ['질문 작성', '전문가 답변', '검색 기능', '카테고리별 분류'],
       },
    ]
 
@@ -98,8 +72,7 @@ export default function ServicesPage() {
             >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">온라인 서비스</h1>
-                  <p className="text-xl text-blue-100 max-w-3xl mx-auto">KHAMA의 다양한 온라인 서비스를 통해 편리하게 자격증 관리와 정보를 확인하세요</p>
+                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">서비스 목록</h1>
                </div>
             </section>
 
@@ -111,7 +84,7 @@ export default function ServicesPage() {
                      <p className="text-xl text-gray-600 max-w-3xl mx-auto">회원님의 편의를 위한 다양한 온라인 서비스를 제공합니다</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
                      {services.map((service) => {
                         const colorClasses = getColorClasses(service.color)
                         return (
@@ -181,7 +154,7 @@ export default function ServicesPage() {
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-2">합격 조회</h3>
                         <p className="text-gray-600 text-sm mb-4">시험 결과 확인</p>
-                        <Button href="/exam/results" variant="secondary" size="sm" className="w-full">
+                        <Button href="/exam/results/search" variant="secondary" size="sm" className="w-full">
                            조회하기
                         </Button>
                      </Card>
@@ -194,7 +167,7 @@ export default function ServicesPage() {
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-2">문의하기</h3>
                         <p className="text-gray-600 text-sm mb-4">1:1 문의 및 상담</p>
-                        <Button href="/support/contact" variant="outline" size="sm" className="w-full">
+                        <Button href="/support/inquiry" variant="outline" size="sm" className="w-full">
                            문의하기
                         </Button>
                      </Card>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { verifyAdminToken } from '../../login/route'
+import { verifyAdminToken } from '@/utils/admin-auth'
 
 // 갤러리 이미지 수정
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

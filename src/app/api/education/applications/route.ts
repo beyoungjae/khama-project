@@ -25,20 +25,26 @@ export async function GET(request: NextRequest) {
       const offset = (page - 1) * limit
 
       let query = supabaseAdmin
-         .from('education_applications')
+         .from('user_education_enrollments')
          .select(
             `
-            *,
-            education_courses (
+            id,
+            enrollment_number,
+            enrollment_status,
+            payment_status,
+            created_at,
+            education_schedules:education_schedule_id (
                id,
-               title,
-               description,
-               category,
                start_date,
                end_date,
                location,
-               instructor_name,
-               cost
+               education_courses:course_id (
+                  id,
+                  name,
+                  description,
+                  category,
+                  course_fee
+               )
             )
          `,
             { count: 'exact' }
@@ -89,25 +95,30 @@ export async function PUT(request: NextRequest) {
       }
 
       // 권한 확인
-      const { data: application, error: fetchError } = await supabaseAdmin.from('education_applications').select('*, education_courses(current_students)').eq('id', applicationId).eq('user_id', userId).single()
+      const { data: application, error: fetchError } = await supabaseAdmin
+         .from('user_education_enrollments')
+         .select('*, education_schedules:education_schedule_id(current_participants)')
+         .eq('id', applicationId)
+         .eq('user_id', userId)
+         .single()
 
       if (fetchError || !application) {
          return NextResponse.json({ error: 'Unauthorized or application not found' }, { status: 403 })
       }
 
       // 취소 처리인 경우 신청 인원 감소
-      if (updateData.application_status === 'cancelled' && application.application_status !== 'cancelled') {
+      if (updateData.enrollment_status === 'cancelled' && application.enrollment_status !== 'cancelled') {
          await supabaseAdmin
-            .from('education_courses')
+            .from('education_schedules')
             .update({
-               current_students: Math.max(0, (application.education_courses?.current_students || 1) - 1),
+               current_participants: Math.max(0, (application.education_schedules?.current_participants || 1) - 1),
             })
-            .eq('id', application.course_id)
+            .eq('id', application.education_schedule_id)
       }
 
       // 신청 정보 업데이트
       const { data: updatedApplication, error } = await supabaseAdmin
-         .from('education_applications')
+         .from('user_education_enrollments')
          .update({
             ...updateData,
             updated_at: new Date().toISOString(),

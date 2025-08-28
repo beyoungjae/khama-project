@@ -12,6 +12,7 @@ interface Member {
    name: string | null
    phone: string | null
    address: string | null
+   detail_address: string | null
    role: string
    status: string
    created_at: string
@@ -49,6 +50,7 @@ export default function AdminMemberDetailPage() {
       name: '',
       phone: '',
       address: '',
+      detail_address: '',
       role: '',
       status: '',
    })
@@ -60,19 +62,7 @@ export default function AdminMemberDetailPage() {
          try {
             setLoading(true)
 
-            // 인증 헤더 추가
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
-
-            const response = await fetch(`/api/admin/members/${params.id}`, {
-               headers,
-            })
+            const response = await fetch(`/api/admin/members/${params.id}`)
 
             if (response.ok) {
                const data = await response.json()
@@ -81,6 +71,7 @@ export default function AdminMemberDetailPage() {
                   name: data.member.name || '',
                   phone: data.member.phone || '',
                   address: data.member.address || '',
+                  detail_address: data.member.detail_address || '',
                   role: data.member.role || '',
                   status: data.member.status || '',
                })
@@ -103,19 +94,9 @@ export default function AdminMemberDetailPage() {
       try {
          setSaving(true)
 
-         // 인증 헤더 추가
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
          const response = await fetch(`/api/admin/members/${params.id}`, {
             method: 'PATCH',
-            headers,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                userId: params.id,
                updates: editData,
@@ -182,19 +163,9 @@ export default function AdminMemberDetailPage() {
       try {
          setSaving(true)
 
-         // 인증 헤더 추가
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
          const response = await fetch(`/api/admin/members/${params.id}`, {
             method: 'PATCH',
-            headers,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                userId: params.id,
                updates: { status: newStatus },
@@ -223,19 +194,9 @@ export default function AdminMemberDetailPage() {
       try {
          setSaving(true)
 
-         // 인증 헤더 추가
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
-
          const response = await fetch(`/api/admin/members/${params.id}`, {
             method: 'PATCH',
-            headers,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                userId: params.id,
                updates: { role: newRole },
@@ -324,7 +285,11 @@ export default function AdminMemberDetailPage() {
                   </div>
                   <div>
                      <label className="block text-sm font-medium text-gray-700">주소</label>
-                     <input type="text" value={editData.address} onChange={(e) => setEditData({ ...editData, address: e.target.value })} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                     <input type="text" value={editData.address} onChange={(e) => setEditData({ ...editData, address: e.target.value })} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="기본 주소" />
+                  </div>
+                  <div>
+                     <label className="block text-sm font-medium text-gray-700">상세 주소</label>
+                     <input type="text" value={editData.detail_address} onChange={(e) => setEditData({ ...editData, detail_address: e.target.value })} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="상세 주소 (아파트/빌딩명, 동호수 등)" />
                   </div>
                   <div>
                      <label className="block text-sm font-medium text-gray-700">역할</label>

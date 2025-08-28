@@ -56,6 +56,7 @@ export default function AdminExamDetailPage() {
    const [schedule, setSchedule] = useState<ExamSchedule | null>(null)
    const [applications, setApplications] = useState<ExamApplication[]>([])
    const [loading, setLoading] = useState(true)
+   const [updating, setUpdating] = useState(false)
 
    useEffect(() => {
       if (!isAdmin || isChecking) return
@@ -64,20 +65,8 @@ export default function AdminExamDetailPage() {
          try {
             setLoading(true)
 
-            // 인증 헤더 추가
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
-
             // 시험 일정 상세 정보 및 신청자 목록 로드
-            const response = await fetch(`/api/admin/exams/${params.id}`, {
-               headers,
-            })
+            const response = await fetch(`/api/admin/exams/${params.id}`)
             const data = await response.json()
 
             if (response.ok) {
@@ -99,6 +88,46 @@ export default function AdminExamDetailPage() {
 
       loadData()
    }, [isAdmin, isChecking, params.id, router])
+
+   // 합격/불합격 설정
+   const handlePassStatusUpdate = async (applicationId: string, passStatus: boolean) => {
+      const statusText = passStatus ? '합격' : '불합격'
+      if (!confirm(`이 신청자를 ${statusText} 처리하시겠습니까?`)) {
+         return
+      }
+
+      try {
+         setUpdating(true)
+
+         const response = await fetch(`/api/admin/exam-applications/${applicationId}/pass-status`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pass_status: passStatus }),
+         })
+
+         const result = await response.json()
+
+         if (response.ok) {
+            alert(`${statusText} 처리가 완료되었습니다.`)
+            // 데이터 새로고침
+            const loadData = async () => {
+               const response = await fetch(`/api/admin/exams/${params.id}`)
+               const data = await response.json()
+               if (response.ok) {
+                  setApplications(data.applications || [])
+               }
+            }
+            loadData()
+         } else {
+            throw new Error(result.error || `${statusText} 처리 실패`)
+         }
+      } catch (error: unknown) {
+         console.error('합격/불합격 처리 오류:', error)
+         alert(error instanceof Error ? error.message : `${statusText} 처리 중 오류가 발생했습니다.`)
+      } finally {
+         setUpdating(false)
+      }
+   }
 
    const getStatusBadge = (status: string) => {
       switch (status) {
@@ -129,6 +158,7 @@ export default function AdminExamDetailPage() {
       switch (status) {
          case 'pending':
             return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">대기중</span>
+         case 'paid':
          case 'completed':
             return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">완료</span>
          case 'failed':
@@ -303,6 +333,9 @@ export default function AdminExamDetailPage() {
                                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     합격여부
                                  </th>
+                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    작업
+                                 </th>
                               </tr>
                            </thead>
                            <tbody className="bg-white divide-y divide-gray-200">
@@ -327,11 +360,40 @@ export default function AdminExamDetailPage() {
                                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">미정</span>
                                           )}
                                        </td>
+                                       <td className="px-6 py-4">
+                                          {application.pass_status === null && (application.application_status === 'payment_completed' || application.application_status === 'confirmed' || application.application_status === 'exam_taken') && (
+                                             <div className="flex space-x-2">
+                                                <button
+                                                   onClick={() => handlePassStatusUpdate(application.id, true)}
+                                                   disabled={updating}
+                                                   className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"
+                                                >
+                                                   합격
+                                                </button>
+                                                <button
+                                                   onClick={() => handlePassStatusUpdate(application.id, false)}
+                                                   disabled={updating}
+                                                   className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 disabled:opacity-50"
+                                                >
+                                                   불합격
+                                                </button>
+                                             </div>
+                                          )}
+                                          {application.pass_status !== null && (
+                                             <button
+                                                onClick={() => handlePassStatusUpdate(application.id, !application.pass_status)}
+                                                disabled={updating}
+                                                className="px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600 disabled:opacity-50"
+                                             >
+                                                변경
+                                             </button>
+                                          )}
+                                       </td>
                                     </tr>
                                  ))
                               ) : (
                                  <tr>
-                                    <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
+                                    <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500">
                                        신청자가 없습니다.
                                     </td>
                                  </tr>

@@ -48,14 +48,7 @@ export default function AdminNoticeEditPage() {
 
       const loadNotice = async () => {
          try {
-            const token = localStorage.getItem('admin-token')
-            const headers: Record<string, string> = {
-               'Content-Type': 'application/json',
-            }
-
-            if (token) {
-               headers['Authorization'] = `Bearer ${token}`
-            }
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
             const response = await fetch(`/api/admin/notices/${noticeId}`, {
                headers,
@@ -115,14 +108,7 @@ export default function AdminNoticeEditPage() {
       try {
          setSaving(true)
 
-         const token = localStorage.getItem('admin-token')
-         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-         }
-
-         if (token) {
-            headers['Authorization'] = `Bearer ${token}`
-         }
+         const headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
          const response = await fetch(`/api/admin/notices/${noticeId}`, {
             method: 'PUT',

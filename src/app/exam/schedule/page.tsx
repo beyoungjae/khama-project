@@ -303,7 +303,7 @@ export default function ExamSchedulePage() {
                            </div>
 
                            <div className="pt-4">
-                              <Button href="/support/contact" fullWidth>
+                              <Button href="/support/inquiry" fullWidth>
                                  온라인 문의하기
                               </Button>
                            </div>

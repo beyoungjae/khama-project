@@ -20,11 +20,13 @@ export async function GET(request: NextRequest) {
 
       const offset = (page - 1) * limit
 
-      // exam_results 테이블이 없으므로 exam_applications에서 결과를 가져오기
-      let query = supabaseAdmin.from('exam_applications').select(
-         `
+      // exam_applications 테이블에서 결과를 가져오기
+      let query = supabaseAdmin
+         .from('exam_applications')
+         .select(
+            `
             id,
-            application_number,
+            exam_number,
             written_score,
             practical_score,
             total_score,
@@ -44,8 +46,9 @@ export async function GET(request: NextRequest) {
                )
             )
          `,
-         { count: 'exact' }
-      ).not('total_score', 'is', null) // 결과가 있는 항목만
+            { count: 'exact' }
+         )
+         .not('total_score', 'is', null) // 결과가 있는 항목만
 
       // 사용자별 결과 조회
       if (userId) {
@@ -83,7 +86,7 @@ export async function GET(request: NextRequest) {
       const { data: results, count, error } = await query.order('created_at', { ascending: false }).range(offset, offset + limit - 1)
 
       // 데이터 구조를 result 형태로 변환
-      const transformedResults = (results || []).map(app => ({
+      const transformedResults = (results || []).map((app) => ({
          id: app.id,
          written_score: app.written_score,
          practical_score: app.practical_score,
@@ -92,14 +95,14 @@ export async function GET(request: NextRequest) {
          announced_at: app.exam_schedules?.result_announcement_date || app.exam_taken_at,
          exam_applications: {
             id: app.id,
-            application_number: app.application_number,
+            application_number: app.exam_number,
             exam_schedules: {
                exam_date: app.exam_schedules?.exam_date,
                certifications: {
-                  name: app.exam_schedules?.certifications?.name
-               }
-            }
-         }
+                  name: app.exam_schedules?.certifications?.name,
+               },
+            },
+         },
       }))
 
       if (error) {
@@ -143,31 +146,25 @@ export async function POST(request: NextRequest) {
          return NextResponse.json({ error: '시험 신청을 찾을 수 없습니다.' }, { status: 404 })
       }
 
-      // 중복 결과 확인
-      const { data: existingResult } = await supabaseAdmin.from('exam_results').select('id').eq('application_id', applicationId).single()
-
-      if (existingResult) {
+      // 이미 결과가 등록되었는지 확인
+      if (application.pass_status !== null) {
          return NextResponse.json({ error: '이미 등록된 결과가 있습니다.' }, { status: 400 })
       }
 
       // 합격/불합격 결정
-      const passStatus = scoreData.total_score >= (scoreData.pass_score || 60) ? 'pass' : 'fail'
+      const passStatus = scoreData.total_score >= (scoreData.pass_score || 60)
 
-      // 시험 결과 생성
+      // exam_applications 테이블에 결과 업데이트
       const { data: result, error } = await supabaseAdmin
-         .from('exam_results')
-         .insert({
-            application_id: applicationId,
-            user_id: userId,
+         .from('exam_applications')
+         .update({
             written_score: scoreData.written_score,
             practical_score: scoreData.practical_score,
             total_score: scoreData.total_score,
-            pass_score: scoreData.pass_score || 60,
-            result_status: status || passStatus,
-            certificate_issued: certificateIssued || false,
-            result_details: scoreData.details,
-            announced_at: new Date().toISOString(),
+            pass_status: passStatus,
+            exam_taken_at: new Date().toISOString(),
          })
+         .eq('id', applicationId)
          .select()
          .single()
 

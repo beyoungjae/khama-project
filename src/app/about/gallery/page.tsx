@@ -56,7 +56,7 @@ export default function GalleryPage() {
       association: '협회 활동',
       seminar: '세미나',
       facilities: '시설',
-      general: '기타'
+      general: '기타',
    }
 
    // 카테고리별 이미지 개수 계산
@@ -69,13 +69,7 @@ export default function GalleryPage() {
    }
 
    // 데이터베이스에서 가져온 이미지들의 카테고리를 기반으로 동적 생성
-   const availableCategories = Array.from(
-      new Set(
-         galleryImages
-            .map((img) => categoryMap[img.category] || img.category)
-            .filter(category => getCategoryCount(category) > 0)
-      )
-   ).sort()
+   const availableCategories = Array.from(new Set(galleryImages.map((img) => categoryMap[img.category] || img.category).filter((category) => getCategoryCount(category) > 0))).sort()
    const categories = ['전체', ...availableCategories]
 
    // 실제 DB 이미지와 폴백 이미지 결합
@@ -150,14 +144,6 @@ export default function GalleryPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                      {currentImages.map((image, index) => {
                         const mappedCategory = categoryMap[image.category] || image.category
-                        const formattedDate = new Date(image.created_at)
-                           .toLocaleDateString('ko-KR', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                           })
-                           .replace(/\. /g, '.')
-                           .replace(/\.$/, '')
 
                         return (
                            <div key={image.id} className="relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -169,11 +155,6 @@ export default function GalleryPage() {
                                  {/* 카테고리 배지 */}
                                  <div className="absolute top-4 left-4">
                                     <span className="px-3 py-1 bg-blue-600/90 text-white text-xs font-semibold rounded-full backdrop-blur-sm">{mappedCategory}</span>
-                                 </div>
-
-                                 {/* 날짜 */}
-                                 <div className="absolute top-4 right-4">
-                                    <span className="px-3 py-1 bg-black/50 text-white text-xs rounded-full backdrop-blur-sm">{formattedDate}</span>
                                  </div>
                               </div>
 
