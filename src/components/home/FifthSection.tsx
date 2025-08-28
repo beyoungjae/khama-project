@@ -5,7 +5,7 @@ export default function FifthSection() {
       <div className="relative h-screen flex items-center justify-center overflow-hidden">
          {/* 그라데이션 배경 */}
          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900" />
-         
+
          {/* 푸터 컨텐츠 */}
          <div className="relative z-10 w-full">
             <footer className="text-white">
@@ -27,7 +27,7 @@ export default function FifthSection() {
                         <div className="text-sm text-gray-300">
                            <p>주소: 인천광역시 서구 청라한내로72번길 13 (청라동) 203호</p>
                            <p>대표번호: 1566-3321</p>
-                           <p>사업자등록번호: 714-88-00785</p>
+                           <p>고유번호: 108-82-87006</p>
                            <p>대표자명: 김윤채</p>
                            <p>이메일: haan@hanallcompany.com</p>
                         </div>

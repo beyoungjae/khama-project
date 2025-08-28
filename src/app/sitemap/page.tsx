@@ -14,7 +14,7 @@ export default function SitemapPage() {
       {
          title: '협회 소개',
          path: '/about',
-         children: [],
+         children: [{ title: '갤러리', path: '/about/gallery' }],
       },
       {
          title: '주요 사업',
@@ -33,16 +33,13 @@ export default function SitemapPage() {
       {
          title: '온라인 서비스',
          path: '/services',
-         children: [
-            { title: '마이페이지', path: '/mypage' },
-            { title: '공지사항', path: '/board/notice' },
-            { title: 'Q&A', path: '/board/qna' },
-         ],
+         children: [{ title: '공지사항', path: '/board/notice' }],
       },
       {
          title: '고객 지원',
          path: '/support',
          children: [
+            { title: '마이페이지', path: '/mypage' },
             { title: '문의하기', path: '/support/inquiry' },
             { title: '자료실', path: '/support/resources' },
          ],

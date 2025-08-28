@@ -55,21 +55,15 @@ export default function Footer() {
                <div className="col-span-1 md:col-span-2">
                   <div className="flex items-center space-x-2 mb-4">
                      <div>
-                        <div className="text-xl font-bold">
-                           {settings?.association_name_en || 'KHAMA'}
-                        </div>
-                        <div className="text-sm text-gray-400">
-                           {settings?.association_name || '한국생활가전유지관리협회'}
-                        </div>
+                        <div className="text-xl font-bold">{settings?.association_name_en || 'KHAMA'}</div>
+                        <div className="text-sm text-gray-400">{settings?.association_name || '한국생활가전유지관리협회'}</div>
                      </div>
                   </div>
-                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-                     {settings?.description || '생활가전 유지관리 분야의 표준화 연구와 교육, 자문을 제공하는 협회입니다.'}
-                  </p>
+                  <p className="text-gray-400 text-sm mb-4 leading-relaxed">{settings?.description || '생활가전 유지관리 분야의 표준화 연구와 교육, 자문을 제공하는 협회입니다.'}</p>
                   <div className="text-sm text-gray-400">
                      <p>주소: {settings?.address || '인천광역시 서구 청라한내로72번길 13 (청라동) 203호'}</p>
                      <p>대표번호: {settings?.phone || '1566-3321'}</p>
-                     <p>사업자등록번호: {settings?.business_registration || '714-88-00785'}</p>
+                     <p>고유번호: {settings?.business_registration || '108-82-87006'}</p>
                      <p>대표자명: {settings?.representative_name || '김윤채'}</p>
                      <p>이메일: {settings?.email || 'haan@hanallcompany.com'}</p>
                   </div>
@@ -108,7 +102,9 @@ export default function Footer() {
                   <ul className="space-y-2 text-sm">
                      {certifications.length > 0 ? (
                         certifications.map((cert) => (
-                           <li key={cert.id} className="text-gray-400">{cert.name}</li>
+                           <li key={cert.id} className="text-gray-400">
+                              {cert.name}
+                           </li>
                         ))
                      ) : (
                         // 폴백 데이터

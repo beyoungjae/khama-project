@@ -52,7 +52,7 @@ export default function AboutPage() {
                            <p>여러분의 지속적인 관심과 성원을 부탁드리며, 협회의 문은 언제나 열려 있습니다. 함께 성장하며, 우리 사회에 꼭 필요한 전문 인력으로 자리매김할 수 있도록 최선을 다하겠습니다.</p>
                            <p>감사합니다.</p>
                            <div className="mt-6">
-                              <p className="font-semibold text-gray-900">사단법인 한국가전유지관리협회장</p>
+                              <p className="font-semibold text-gray-900">한국가전유지관리협회장</p>
                               <p className="text-blue-900 font-bold text-xl">김윤채</p>
                            </div>
                         </div>
@@ -166,8 +166,8 @@ export default function AboutPage() {
                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                               </svg>
                               <div>
-                                 <p className="font-medium text-gray-900">사업자등록번호</p>
-                                 <p className="text-gray-600">714-88-00785</p>
+                                 <p className="font-medium text-gray-900">고유번호</p>
+                                 <p className="text-gray-600">108-82-87006</p>
                               </div>
                            </div>
                            <div className="flex items-start">

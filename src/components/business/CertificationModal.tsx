@@ -128,7 +128,7 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                      </Badge>
                   </div>
                </div>
-               <p className="text-sm sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">{description}</p>
+               <p className="text-sm sm:text-md text-gray-600 leading-relaxed max-w-3xl mx-auto whitespace-pre-line">{description}</p>
             </div>
 
             {/* 자격 기본 정보 */}
@@ -532,7 +532,7 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                   </div>
                   <div className="mt-4 pt-4 border-t border-green-200 text-center">
                      <p className="text-sm sm:text-base text-green-800">
-                        📞 상세 비용 문의: <span className="font-semibold">1566-3321</span>
+                        계좌이체 안내 : <span className="font-semibold">국민은행 757301-00-321325</span>
                      </p>
                   </div>
                </div>

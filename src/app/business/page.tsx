@@ -295,7 +295,7 @@ export default function BusinessPage() {
                               </div>
 
                               <div className="space-y-4">
-                                 <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{cert.description}</p>
+                                 <p className="text-gray-600 text-sm leading-relaxed line-clamp-1">{cert.description}</p>
 
                                  {/* 주요 특징 */}
                                  <div>

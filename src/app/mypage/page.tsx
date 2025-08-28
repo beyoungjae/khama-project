@@ -163,16 +163,6 @@ export default function MyPage() {
       }
    }
 
-   const handleLogout = async () => {
-      try {
-         await fetch('/api/auth/logout', { method: 'POST' })
-         router.push('/')
-         router.refresh()
-      } catch (error) {
-         console.error('로그아웃 오류:', error)
-      }
-   }
-
    const getStatusBadge = (status: string) => {
       switch (status) {
          case 'draft':
@@ -231,85 +221,157 @@ export default function MyPage() {
    return (
       <div className="min-h-screen flex flex-col">
          <Header />
-         <main className="flex-grow bg-gray-50 py-8">
+         <main className="flex-grow bg-gradient-to-br from-gray-50 to-gray-100 py-8 mt-15">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-               <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-                  <div className="flex justify-between items-center mb-6">
-                     <h1 className="text-2xl font-bold text-gray-900">마이페이지</h1>
-                     <Button onClick={handleLogout} variant="outline">
-                        로그아웃
-                     </Button>
+               <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
+                     <h1 className="text-3xl font-bold text-gray-900 mb-4 md:mb-0">마이페이지</h1>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                     <div className="md:col-span-1">
-                        <Card>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                     <div className="lg:col-span-1">
+                        <Card className="h-full" padding="lg">
                            <div className="text-center">
-                              <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                                 <span className="text-2xl font-bold text-gray-600">{profile.name?.charAt(0) || 'U'}</span>
+                              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-emerald-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
+                                 <span className="text-3xl font-bold text-white">{profile.name?.charAt(0) || 'U'}</span>
                               </div>
-                              <h2 className="text-xl font-semibold text-gray-900">{profile.name || '이름 없음'}</h2>
-                              <p className="text-gray-600">{user.email}</p>
-                              <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                                 <Badge variant="secondary">{profile.role === 'admin' ? '관리자' : '일반회원'}</Badge>
-                                 <Badge variant={profile.status === 'active' ? 'success' : 'warning'}>{profile.status === 'active' ? '활성' : '비활성'}</Badge>
+                              <h2 className="text-2xl font-bold text-gray-900 mb-2">{profile.name || '이름 없음'}</h2>
+                              <p className="text-gray-600 mb-6">{user.email}</p>
+                              <div className="flex flex-wrap gap-3 justify-center mb-6">
+                                 <Badge variant={profile.role === 'admin' ? 'primary' : 'secondary'} size="md">
+                                    {profile.role === 'admin' ? '관리자' : '일반회원'}
+                                 </Badge>
+                                 <Badge variant={profile.status === 'active' ? 'success' : 'warning'} size="md">
+                                    {profile.status === 'active' ? '활성' : '비활성'}
+                                 </Badge>
                               </div>
+
+                              <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                                 <h3 className="font-semibold text-gray-900 mb-3">회원 정보</h3>
+                                 <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                       <span className="text-gray-500">회원 등급</span>
+                                       <span className="font-medium">일반 회원</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                       <span className="text-gray-500">가입일</span>
+                                       <span className="font-medium">
+                                          {profile.created_at
+                                             ? new Date(profile.created_at).toLocaleDateString('ko-KR', {
+                                                  year: 'numeric',
+                                                  month: 'long',
+                                                  day: 'numeric',
+                                               })
+                                             : '정보 없음'}
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <Button onClick={() => router.push('/mypage/certificates')} variant="secondary" className="w-full py-3 font-medium">
+                                 자격증 관리
+                              </Button>
                            </div>
                         </Card>
                      </div>
 
-                     <div className="md:col-span-2">
-                        <Card>
+                     <div className="lg:col-span-2">
+                        <Card padding="none">
                            <div className="border-b border-gray-200">
-                              <nav className="-mb-px flex space-x-8">
-                                 <button onClick={() => setActiveTab('applications')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'applications' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                              <nav className="flex overflow-x-auto py-2 px-2">
+                                 <button
+                                    onClick={() => setActiveTab('applications')}
+                                    className={`px-4 py-3 font-medium text-sm rounded-lg whitespace-nowrap transition-all duration-200 ${activeTab === 'applications' ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                                 >
                                     시험 신청 내역
                                  </button>
-                                 <button onClick={() => setActiveTab('education')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'education' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                 <button
+                                    onClick={() => setActiveTab('education')}
+                                    className={`px-4 py-3 font-medium text-sm rounded-lg whitespace-nowrap transition-all duration-200 ${activeTab === 'education' ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                                 >
                                     교육 신청 내역
                                  </button>
-                                 <button onClick={() => setActiveTab('certificates')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'certificates' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                 <button
+                                    onClick={() => setActiveTab('certificates')}
+                                    className={`px-4 py-3 font-medium text-sm rounded-lg whitespace-nowrap transition-all duration-200 ${activeTab === 'certificates' ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                                 >
                                     보유 자격증
                                  </button>
-                                 <button onClick={() => setActiveTab('inquiries')} className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'inquiries' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                                 <button
+                                    onClick={() => setActiveTab('inquiries')}
+                                    className={`px-4 py-3 font-medium text-sm rounded-lg whitespace-nowrap transition-all duration-200 ${activeTab === 'inquiries' ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                                 >
                                     1:1 문의 내역
                                  </button>
                               </nav>
                            </div>
 
-                           <div className="mt-6">
+                           <div className="p-6">
                               {loading ? (
-                                 <div className="flex justify-center py-8">
-                                    <LoadingSpinner />
+                                 <div className="flex justify-center py-12">
+                                    <LoadingSpinner size="large" />
                                  </div>
                               ) : activeTab === 'education' ? (
                                  <div className="space-y-4">
                                     {eduEnrollments.length > 0 ? (
                                        eduEnrollments.map((enr) => (
-                                          <div key={enr.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                                             <div className="flex justify-between items-start">
-                                                <div>
-                                                   <h3 className="font-medium text-gray-900">{enr.education_schedules?.education_courses?.name || '교육 과정'}</h3>
-                                                   <p className="text-sm text-gray-500">신청번호: {enr.enrollment_number}</p>
+                                          <div key={enr.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow duration-200">
+                                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                                                <div className="flex-1">
+                                                   <h3 className="font-bold text-gray-900 text-lg mb-1">{enr.education_schedules?.education_courses?.name || '교육 과정'}</h3>
+                                                   <p className="text-gray-600 text-sm mb-3">신청번호: {enr.enrollment_number}</p>
+
+                                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                                      <div className="flex items-center text-gray-600">
+                                                         <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                         </svg>
+                                                         <span>
+                                                            {enr.education_schedules?.start_date ? new Date(enr.education_schedules.start_date).toLocaleDateString('ko-KR') : ''} ~ {enr.education_schedules?.end_date ? new Date(enr.education_schedules.end_date).toLocaleDateString('ko-KR') : ''}
+                                                         </span>
+                                                      </div>
+                                                      <div className="flex items-center text-gray-600">
+                                                         <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                         </svg>
+                                                         <span>{enr.education_schedules?.location || '-'}</span>
+                                                      </div>
+                                                      <div className="flex items-center text-gray-600">
+                                                         <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                         </svg>
+                                                         <span>신청일: {enr.created_at ? new Date(enr.created_at).toLocaleDateString('ko-KR') : ''}</span>
+                                                      </div>
+                                                   </div>
                                                 </div>
-                                                {getEduStatusBadge(enr.enrollment_status)}
-                                             </div>
-                                             <div className="mt-2 text-sm text-gray-600">
-                                                <p>교육 기간: {enr.education_schedules?.start_date ? new Date(enr.education_schedules.start_date).toLocaleDateString('ko-KR') : ''} ~ {enr.education_schedules?.end_date ? new Date(enr.education_schedules.end_date).toLocaleDateString('ko-KR') : ''}</p>
-                                                <p>장소: {enr.education_schedules?.location || '-'}</p>
-                                                <p>신청일: {enr.created_at ? new Date(enr.created_at).toLocaleDateString('ko-KR') : ''}</p>
+                                                <div className="flex-shrink-0">{getEduStatusBadge(enr.enrollment_status)}</div>
                                              </div>
                                           </div>
                                        ))
                                     ) : (
-                                       <p className="text-gray-500 text-center py-4">교육 신청 내역이 없습니다.</p>
+                                       <div className="text-center py-12">
+                                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path
+                                                   strokeLinecap="round"
+                                                   strokeLinejoin="round"
+                                                   strokeWidth={2}
+                                                   d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                                />
+                                             </svg>
+                                          </div>
+                                          <h3 className="text-lg font-medium text-gray-900 mb-2">교육 신청 내역이 없습니다</h3>
+                                          <p className="text-gray-500 mb-4">관심 있는 교육 과정을 신청해보세요.</p>
+                                          <Button onClick={() => router.push('/business/education')}>교육 과정 보기</Button>
+                                       </div>
                                     )}
                                  </div>
                               ) : activeTab === 'certificates' ? (
                                  <div className="space-y-4">
                                     <div className="text-center py-8">
-                                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                          <svg className="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                              <path
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
@@ -318,59 +380,60 @@ export default function MyPage() {
                                              />
                                           </svg>
                                        </div>
-                                       <h3 className="text-lg font-medium text-gray-900 mb-2">보유 자격증</h3>
-                                       <p className="text-gray-500 mb-4">합격한 자격증의 PDF 파일을 다운로드 받으실 수 있습니다.</p>
-                                       <Button onClick={() => router.push('/mypage/certificates')}>자격증 관리 페이지로 이동</Button>
+                                       <h3 className="text-xl font-bold text-gray-900 mb-3">보유 자격증</h3>
+                                       <p className="text-gray-600 mb-6 max-w-md mx-auto">합격한 자격증의 PDF 파일을 다운로드 받으실 수 있습니다.</p>
+                                       <Button onClick={() => router.push('/mypage/certificates')} variant="secondary" size="lg" className="px-8 py-3 font-medium">
+                                          자격증 관리 페이지로 이동
+                                       </Button>
                                     </div>
                                  </div>
                               ) : activeTab === 'inquiries' ? (
                                  <div className="space-y-4">
                                     {inquiries.length > 0 ? (
                                        inquiries.map((inquiry) => (
-                                          <div key={inquiry.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                                             <div className="flex justify-between items-start">
+                                          <div key={inquiry.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow duration-200">
+                                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                                                 <div className="flex-1">
-                                                   <h3 className="font-medium text-gray-900">{inquiry.subject}</h3>
-                                                   <p className="text-sm text-gray-500 mt-1">
-                                                      {inquiry.category === 'exam'
-                                                         ? '시험 관련 문의'
-                                                         : inquiry.category === 'education'
-                                                           ? '교육 관련 문의'
-                                                           : inquiry.category === 'certificate'
-                                                             ? '자격증 관련 문의'
-                                                             : inquiry.category === 'payment'
-                                                               ? '결제 관련 문의'
-                                                               : inquiry.category === 'technical'
-                                                                 ? '기술적 문제'
-                                                                 : '기타 문의'}
-                                                   </p>
-                                                   <p className="text-sm text-gray-400 mt-1">문의일: {new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</p>
+                                                   <h3 className="font-bold text-gray-900 text-lg mb-1">{inquiry.subject}</h3>
+                                                   <div className="flex flex-wrap items-center gap-2 mb-3">
+                                                      <Badge variant={inquiry.category === 'exam' ? 'primary' : inquiry.category === 'education' ? 'secondary' : inquiry.category === 'certificate' ? 'success' : inquiry.category === 'payment' ? 'warning' : 'default'}>
+                                                         {inquiry.category === 'exam'
+                                                            ? '시험 관련 문의'
+                                                            : inquiry.category === 'education'
+                                                              ? '교육 관련 문의'
+                                                              : inquiry.category === 'certificate'
+                                                                ? '자격증 관련 문의'
+                                                                : inquiry.category === 'payment'
+                                                                  ? '결제 관련 문의'
+                                                                  : inquiry.category === 'technical'
+                                                                    ? '기술적 문제'
+                                                                    : '기타 문의'}
+                                                      </Badge>
+                                                      <span className="text-xs text-gray-400">{new Date(inquiry.created_at).toLocaleDateString('ko-KR')}</span>
+                                                   </div>
+                                                   <p className="text-gray-700 line-clamp-2 mb-4">{inquiry.content}</p>
+
+                                                   {inquiry.is_answered && inquiry.admin_response && (
+                                                      <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                                                         <div className="flex items-center mb-2">
+                                                            <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                            </svg>
+                                                            <span className="font-medium text-blue-900">관리자 답변</span>
+                                                            {inquiry.answered_at && <span className="text-xs text-blue-600 ml-2">({new Date(inquiry.answered_at).toLocaleDateString('ko-KR')})</span>}
+                                                         </div>
+                                                         <p className="text-blue-800">{inquiry.admin_response}</p>
+                                                      </div>
+                                                   )}
                                                 </div>
-                                                <div className="ml-4">
+                                                <div className="flex-shrink-0">
                                                    <Badge variant={inquiry.is_answered ? 'success' : 'warning'}>{inquiry.is_answered ? '답변완료' : '답변대기'}</Badge>
                                                 </div>
-                                             </div>
-
-                                             <div className="mt-3 pt-3 border-t border-gray-100">
-                                                <p className="text-sm text-gray-600 line-clamp-2">{inquiry.content}</p>
-
-                                                {inquiry.is_answered && inquiry.admin_response && (
-                                                   <div className="mt-3 bg-blue-50 p-3 rounded-lg">
-                                                      <div className="flex items-center mb-2">
-                                                         <svg className="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                                         </svg>
-                                                         <span className="text-sm font-medium text-blue-900">관리자 답변</span>
-                                                         {inquiry.answered_at && <span className="text-xs text-blue-600 ml-2">({new Date(inquiry.answered_at).toLocaleDateString('ko-KR')})</span>}
-                                                      </div>
-                                                      <p className="text-sm text-blue-800">{inquiry.admin_response}</p>
-                                                   </div>
-                                                )}
                                              </div>
                                           </div>
                                        ))
                                     ) : (
-                                       <div className="text-center py-8">
+                                       <div className="text-center py-12">
                                           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -392,33 +455,71 @@ export default function MyPage() {
                                           const examLocation = application.exam_schedules?.exam_location || '미정'
 
                                           return (
-                                             <div key={application.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                                                <div className="flex justify-between items-start">
-                                                   <div>
-                                                      <h3 className="font-medium text-gray-900">{certificationName}</h3>
+                                             <div key={application.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow duration-200">
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                                                   <div className="flex-1">
+                                                      <h3 className="font-bold text-gray-900 text-lg mb-1">{certificationName}</h3>
                                                       {application.exam_number ? (
                                                          <>
-                                                            <p className="text-sm text-gray-700">
-                                                               수험번호: <span className="font-medium">{application.exam_number}</span>
-                                                            </p>
-                                                            <p className="text-xs text-gray-500">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
+                                                            <div className="mb-3">
+                                                               <p className="text-gray-600 text-sm">수험번호</p>
+                                                               <div
+                                                                  className="mt-1 inline-flex items-center bg-gradient-to-r from-blue-500 to-emerald-600 text-white font-bold text-xl px-6 py-3 rounded-xl shadow-lg cursor-pointer hover:from-blue-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105"
+                                                                  onClick={(e) => {
+                                                                     navigator.clipboard.writeText(application.exam_number || '')
+                                                                     // 복사 완료 알림 (간단한 피드백)
+                                                                     const target = e.currentTarget
+                                                                     const originalText = target.innerText
+                                                                     target.innerHTML = '복사됨!'
+                                                                     setTimeout(() => {
+                                                                        target.innerHTML = originalText
+                                                                     }, 1000)
+                                                                  }}
+                                                               >
+                                                                  {application.exam_number}
+                                                                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                                  </svg>
+                                                               </div>
+                                                            </div>
+                                                            <p className="text-gray-600 text-sm">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
                                                          </>
                                                       ) : (
-                                                         <p className="text-sm text-gray-500">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
+                                                         <p className="text-gray-600 text-sm mb-3">신청번호: {application.application_number || application.id.slice(0, 8)}</p>
                                                       )}
+
+                                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                                         <div className="flex items-center text-gray-600">
+                                                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            </svg>
+                                                            <span>장소: {examLocation}</span>
+                                                         </div>
+                                                         <div className="flex items-center text-gray-600">
+                                                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                            <span>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</span>
+                                                         </div>
+                                                      </div>
                                                    </div>
-                                                   {getStatusBadge(application.application_status)}
-                                                </div>
-                                                <div className="mt-2 text-sm text-gray-600">
-                                                   <p>장소: {examLocation}</p>
-                                                   <br />
-                                                   <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>
+                                                   <div className="flex-shrink-0">{getStatusBadge(application.application_status)}</div>
                                                 </div>
                                              </div>
                                           )
                                        })
                                     ) : (
-                                       <p className="text-gray-500 text-center py-4">신청 내역이 없습니다.</p>
+                                       <div className="text-center py-12">
+                                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                             </svg>
+                                          </div>
+                                          <h3 className="text-lg font-medium text-gray-900 mb-2">시험 신청 내역이 없습니다</h3>
+                                          <p className="text-gray-500 mb-4">관심 있는 자격시험을 신청해보세요.</p>
+                                          <Button onClick={() => router.push('/exam/apply')}>시험 신청하기</Button>
+                                       </div>
                                     )}
                                  </div>
                               ) : (
@@ -432,24 +533,63 @@ export default function MyPage() {
                                           const resultStatus = result.result_status || result.pass_status
 
                                           return (
-                                             <div key={result.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                                                <div className="flex justify-between items-start">
-                                                   <div>
-                                                      <h3 className="font-medium text-gray-900">{certificationName}</h3>
-                                                      <p className="text-sm text-gray-500">신청번호: {applicationNumber}</p>
+                                             <div key={result.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow duration-200">
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                                                   <div className="flex-1">
+                                                      <h3 className="font-bold text-gray-900 text-lg mb-1">{certificationName}</h3>
+                                                      <p className="text-gray-600 text-sm mb-3">신청번호: {applicationNumber}</p>
+
+                                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                                         <div className="flex items-center text-gray-600">
+                                                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                            <span>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</span>
+                                                         </div>
+                                                         <div className="flex items-center text-gray-600">
+                                                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                               <path
+                                                                  strokeLinecap="round"
+                                                                  strokeLinejoin="round"
+                                                                  strokeWidth={2}
+                                                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                                                               />
+                                                            </svg>
+                                                            <span>총점: {result.total_score || 0}점</span>
+                                                         </div>
+                                                         <div className="flex items-center text-gray-600">
+                                                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                               <path
+                                                                  strokeLinecap="round"
+                                                                  strokeLinejoin="round"
+                                                                  strokeWidth={2}
+                                                                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                                                               />
+                                                            </svg>
+                                                            <span>결과발표일: {result.announced_at ? new Date(result.announced_at).toLocaleDateString('ko-KR') : '대기중'}</span>
+                                                         </div>
+                                                      </div>
                                                    </div>
-                                                   <Badge variant={resultStatus === 'pass' || resultStatus === 'passed' ? 'success' : 'error'}>{resultStatus === 'pass' || resultStatus === 'passed' ? '합격' : '불합격'}</Badge>
-                                                </div>
-                                                <div className="mt-2 text-sm text-gray-600">
-                                                   <p>시험일: {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미정'}</p>
-                                                   <p>총점: {result.total_score || 0}점</p>
-                                                   <p>결과발표일: {result.announced_at ? new Date(result.announced_at).toLocaleDateString('ko-KR') : '대기중'}</p>
+                                                   <div className="flex-shrink-0">
+                                                      <Badge variant={resultStatus === 'pass' || resultStatus === 'passed' ? 'success' : 'error'} size="md">
+                                                         {resultStatus === 'pass' || resultStatus === 'passed' ? '합격' : '불합격'}
+                                                      </Badge>
+                                                   </div>
                                                 </div>
                                              </div>
                                           )
                                        })
                                     ) : (
-                                       <p className="text-gray-500 text-center py-4">시험 결과가 없습니다.</p>
+                                       <div className="text-center py-12">
+                                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                             </svg>
+                                          </div>
+                                          <h3 className="text-lg font-medium text-gray-900 mb-2">시험 결과가 없습니다</h3>
+                                          <p className="text-gray-500 mb-4">시험 결과가 발표되면 여기에 표시됩니다.</p>
+                                          <Button onClick={() => router.push('/exam/results/search')}>합격자 조회하기</Button>
+                                       </div>
                                     )}
                                  </div>
                               )}

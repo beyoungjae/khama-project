@@ -349,11 +349,6 @@ export default function EducationPage() {
                      <Link href="/support/inquiry">
                         <Button size="lg">교육 문의하기</Button>
                      </Link>
-                     <Link href="/board/qna">
-                        <Button variant="outline" size="lg">
-                           자주 묻는 질문
-                        </Button>
-                     </Link>
                   </div>
                </div>
             </section>

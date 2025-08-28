@@ -28,14 +28,6 @@ export default function NoticeDetailPage() {
    const router = useRouter()
    const [notice, setNotice] = useState<NoticeDetail | null>(null)
    const [isLoading, setIsLoading] = useState(true)
-   const [relatedNotices, setRelatedNotices] = useState<
-      Array<{
-         id: string
-         title: string
-         created_at: string
-         category: string
-      }>
-   >([])
    const [error, setError] = useState<string | null>(null)
 
    useEffect(() => {
@@ -56,13 +48,6 @@ export default function NoticeDetailPage() {
 
             // 데이터 로드 완료 후 조회수 증가 (한 번만)
             fetch(`/api/board/notices/${params.id}?increment=true`).catch(console.error)
-
-            // 관련 공지사항 (임시 데이터)
-            setRelatedNotices([
-               { id: '2', title: '2024년 4분기 합격자 발표', created_at: '2024-12-20', category: '시험공지' },
-               { id: '3', title: '시험 접수 시 유의사항 안내', created_at: '2024-12-15', category: '시험공지' },
-               { id: '4', title: '교육 과정 개편 안내', created_at: '2024-12-10', category: '교육공지' },
-            ])
          } catch (error) {
             console.error('공지사항 로딩 실패:', error)
             setError(error instanceof Error ? error.message : '공지사항을 불러오는데 실패했습니다.')
@@ -184,24 +169,6 @@ export default function NoticeDetailPage() {
 
                   {/* 공지사항 내용 */}
                   <div className="prose prose-lg max-w-none whitespace-pre-line" dangerouslySetInnerHTML={{ __html: notice.content }} />
-               </Card>
-
-               {/* 관련 공지사항 */}
-               <Card>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">관련 공지사항</h3>
-                  <div className="space-y-3">
-                     {relatedNotices.map((item) => (
-                        <Link key={item.id} href={`/board/notice/${item.id}`} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                           <div className="flex items-center gap-3">
-                              <Badge variant="default" size="sm">
-                                 {item.category}
-                              </Badge>
-                              <span className="text-gray-900">{item.title}</span>
-                           </div>
-                           <span className="text-sm text-gray-500">{new Date(item.created_at).toLocaleDateString('ko-KR')}</span>
-                        </Link>
-                     ))}
-                  </div>
                </Card>
 
                {/* 하단 버튼 */}

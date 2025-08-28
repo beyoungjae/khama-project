@@ -135,7 +135,7 @@ export default function ApplicationForm() {
 
          if (response.ok) {
             // 신청 완료 메시지 표시
-            alert(`시험 신청이 완료되었습니다!\n\n계좌이체 안내:\n국민은행 805937-04-005684\n예금주: (주)한올컴퍼니\n\n입금 확인 후 신청이 최종 완료됩니다.`)
+            alert(`시험 신청이 완료되었습니다!\n\n계좌이체 안내:\n국민은행 757301-00-321325\n예금주: 한국생활가전유지관리협회\n\n입금 확인 후 신청이 최종 완료됩니다.`)
             router.push('/mypage')
          } else {
             alert(result.error || '신청 중 오류가 발생했습니다.')
@@ -268,8 +268,8 @@ export default function ApplicationForm() {
                   <h3 className="font-medium text-blue-900 mb-2">계좌이체 안내</h3>
                   <p className="text-sm text-blue-800 mb-2">아래 계좌로 정확한 금액을 입금해주세요.</p>
                   <div className="bg-white p-3 rounded border border-blue-100">
-                     <div className="font-mono text-lg font-bold text-blue-900">국민은행 805937-04-005684</div>
-                     <div className="text-sm text-gray-600 mt-1">예금주: (주)한올컴퍼니</div>
+                     <div className="font-mono text-lg font-bold text-blue-900">국민은행 757301-00-321325</div>
+                     <div className="text-sm text-gray-600 mt-1">예금주: 한국생활가전유지관리협회</div>
                   </div>
                   <p className="text-xs text-blue-700 mt-2">* 입금 확인 후 신청이 최종 완료됩니다. 관리자가 입금을 확인하면 시험 신청이 확정됩니다.</p>
                </div>
