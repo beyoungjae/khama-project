@@ -1,10 +1,19 @@
 import Link from 'next/link'
+import { IMAGES } from '@/constants/images'
 
 export default function FourthSection() {
    return (
       <div className="relative h-screen flex items-center justify-center overflow-hidden">
          {/* 배경 이미지 */}
-         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=1080&fit=crop)` }} />
+         <div
+            className="absolute inset-0"
+            style={{
+               backgroundImage: `url(${IMAGES.HERO.SLIDE4})`, // 실제 이미지로 교체 시 사용
+               backgroundSize: 'cover',
+               backgroundPosition: 'center',
+               backgroundRepeat: 'no-repeat',
+            }}
+         />
          <div className="absolute inset-0 bg-black/40" />
 
          {/* 컨텐츠 */}

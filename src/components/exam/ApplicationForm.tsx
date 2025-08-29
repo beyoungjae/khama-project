@@ -18,6 +18,7 @@ interface ExamSchedule {
    max_applicants: number
    current_applicants: number
    status: string
+   exam_instructions: string | null
    certifications: {
       id: string
       name: string
@@ -45,8 +46,8 @@ export default function ApplicationForm() {
    // 사용자 인증 확인
    useEffect(() => {
       if (!user) {
-               router.push('/login')
-               return
+         router.push('/login')
+         return
       }
    }, [user, router])
 
@@ -240,7 +241,7 @@ export default function ApplicationForm() {
                                  {schedule.current_applicants}/{schedule.max_applicants}명<div className="text-xs text-gray-500">잔여 {schedule.max_applicants - schedule.current_applicants}명</div>
                               </div>
                            </div>
-                           {schedule.certifications.description && <p className="mt-2 text-sm text-gray-600">{schedule.certifications.description}</p>}
+                           {schedule.exam_instructions && <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">{schedule.exam_instructions}</p>}
                         </div>
                         <div className="ml-4 text-right">
                            <div className="text-lg font-bold text-blue-600">{schedule.certifications.application_fee ? `${schedule.certifications.application_fee.toLocaleString()}원` : '별도문의'}</div>

@@ -103,7 +103,7 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
          <div className="space-y-6 sm:space-y-8">
             {/* Header */}
             <div className="text-center">
-               <div className="relative h-32 sm:h-48 rounded-xl overflow-hidden mb-4 sm:mb-6">
+               <div className="relative h-48 md:h-88 rounded-xl overflow-hidden mb-4 sm:mb-6">
                   {image ? (
                      <>
                         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }} />

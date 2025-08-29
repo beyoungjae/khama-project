@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { IMAGES } from '@/constants/images'
+import OptimizedImage from '@/components/ui/OptimizedImage'
 
 interface Settings {
    association_name: string
@@ -55,8 +57,15 @@ export default function Footer() {
                <div className="col-span-1 md:col-span-2">
                   <div className="flex items-center space-x-2 mb-4">
                      <div>
-                        <div className="text-xl font-bold">{settings?.association_name_en || 'KHAMA'}</div>
-                        <div className="text-sm text-gray-400">{settings?.association_name || '한국생활가전유지관리협회'}</div>
+                        <OptimizedImage
+                           src={IMAGES.LOGO.MAIN}
+                           alt="KHAMA 로고"
+                           width={168}
+                           height={30}
+                           fallbackSrc="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='30' viewBox='0 0 168 30'%3E%3Crect width='168' height='30' fill='%23003366'/%3E%3Ctext x='84' y='20' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='16' font-weight='bold'%3EKHAMA%3C/text%3E%3C/svg%3E"
+                           className="h-8 w-auto object-contain"
+                           priority
+                        />
                      </div>
                   </div>
                   <p className="text-gray-400 text-sm mb-4 leading-relaxed">{settings?.description || '생활가전 유지관리 분야의 표준화 연구와 교육, 자문을 제공하는 협회입니다.'}</p>

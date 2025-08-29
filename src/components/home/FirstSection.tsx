@@ -1,8 +1,18 @@
+import { IMAGES } from '@/constants/images'
+
 export default function FirstSection() {
    return (
       <div className="relative h-screen flex items-center justify-center overflow-hidden">
          {/* 배경 이미지 */}
-         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=1080&fit=crop)` }} />
+         <div
+            className="absolute inset-0"
+            style={{
+               backgroundImage: `url(${IMAGES.HERO.SLIDE1})`, // 실제 이미지로 교체 시 사용
+               backgroundSize: 'cover',
+               backgroundPosition: 'center',
+               backgroundRepeat: 'no-repeat',
+            }}
+         />
          <div className="absolute inset-0 bg-black/40" />
 
          {/* 컨텐츠 */}

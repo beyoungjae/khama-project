@@ -1,10 +1,19 @@
 import Link from 'next/link'
+import { IMAGES } from '@/constants/images'
 
 export default function ThirdSection() {
    return (
       <div className="relative h-screen flex items-center justify-center overflow-hidden">
          {/* 배경 이미지 */}
-         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=1080&fit=crop)` }} />
+         <div
+            className="absolute inset-0"
+            style={{
+               backgroundImage: `url(${IMAGES.HERO.SLIDE3})`, // 실제 이미지로 교체 시 사용
+               backgroundSize: 'cover',
+               backgroundPosition: 'center',
+               backgroundRepeat: 'no-repeat',
+            }}
+         />
          <div className="absolute inset-0 bg-black/40" />
 
          {/* 컨텐츠 */}

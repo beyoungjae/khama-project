@@ -123,18 +123,18 @@ export default function BusinessPage() {
          <main className="pt-16">
             {/* Hero Section */}
             <section
-               className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
+               className="relative py-35 bg-gradient-to-r from-blue-900 to-blue-700"
                style={{
                   backgroundImage: `url(${IMAGES.PAGES.BUSINESS})`,
                   backgroundSize: 'cover',
-                  backgroundPosition: 'center',
+                  backgroundPosition: 'top',
                   backgroundRepeat: 'no-repeat',
                }}
             >
                <div className="absolute inset-0 bg-black/20" />
-               <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">주요 사업</h1>
-                  <p className="text-xl text-blue-100 max-w-3xl mx-auto">KHAMA의 전문 자격증 과정과 교육 프로그램을 통해 생활가전 유지관리 전문가가 되세요</p>
+               <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center ">
+                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 ">주요 사업</h1>
+                  <p className="text-sm md:text-xl text-blue-100 max-w-3xl mx-auto bg-black/50 backdrop-blur-sm">KHAMA의 전문 자격증 과정과 교육 프로그램을 통해 생활가전 유지관리 전문가가 되세요</p>
                </div>
             </section>
 
@@ -272,7 +272,7 @@ export default function BusinessPage() {
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {certifications.map((cert) => (
                            <Card key={cert.id} hover className="group cursor-pointer" onClick={() => handleCertificationClick(cert)}>
-                              <div className="relative h-48 rounded-lg overflow-hidden mb-4">
+                              <div className="relative h-56 rounded-lg overflow-hidden mb-4">
                                  <div
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
                                     style={{ backgroundImage: `url(${cert.image_url || getImageForCert(cert) || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop'})` }}

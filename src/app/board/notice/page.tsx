@@ -116,7 +116,7 @@ export default function NoticePage() {
          <main className="pt-16">
             {/* Hero Section */}
             <section
-               className="relative py-12 bg-gradient-to-r from-blue-900 to-blue-700"
+               className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
                style={{
                   backgroundImage: `url(${IMAGES.PAGES.NOTICE})`,
                   backgroundSize: 'cover',

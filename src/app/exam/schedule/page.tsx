@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import { IMAGES } from '@/constants/images'
 
 interface Certification {
    id: string
@@ -148,11 +149,19 @@ export default function ExamSchedulePage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700">
+            <section
+               className="relative py-20 bg-gradient-to-r from-blue-900 to-blue-700"
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.EXAM2})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
+            >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">시험 일정</h1>
-                  <p className="text-xl text-blue-100 max-w-3xl mx-auto">2025년 자격시험 일정 및 시험장 정보를 확인하세요</p>
+                  <p className="text-xl text-blue-100 max-w-3xl mx-auto bg-black/50 backdrop-blur-sm">2025년 자격시험 일정 및 시험장 정보를 확인하세요</p>
                </div>
             </section>
 

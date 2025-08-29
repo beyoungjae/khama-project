@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Image from 'next/image'
+import { IMAGES } from '@/constants/images'
 
 interface GalleryImage {
    id: string
@@ -94,7 +95,15 @@ export default function GalleryPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-16 bg-gradient-to-r from-blue-900 to-blue-700">
+            <section
+               className="relative py-16 bg-gradient-to-r from-blue-900 to-blue-700"
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.GALLERY})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
+            >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <nav className="flex items-center justify-center space-x-2 text-blue-100 mb-6">

@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
           exam_location,
           exam_address,
           status,
+          exam_instructions,
           certifications (
             id,
             name,

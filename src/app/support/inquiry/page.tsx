@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import { useAuth } from '@/contexts/AuthContext'
+import { IMAGES } from '@/constants/images'
 
 export default function ContactPage() {
-  const router = useRouter()
-  const { user, profile, isLoading } = useAuth()
+   const router = useRouter()
+   const { user, profile, isLoading } = useAuth()
    const [isSubmitting, setIsSubmitting] = useState(false)
    const [userDataLoaded, setUserDataLoaded] = useState(false)
    const [formData, setFormData] = useState({
@@ -24,8 +24,8 @@ export default function ContactPage() {
       privacy: false,
    })
 
-  // AuthContext에서 사용자 정보 로드
-  useEffect(() => {
+   // AuthContext에서 사용자 정보 로드
+   useEffect(() => {
       // 비로그인 시, 로그인 페이지로 이동 (요청사항)
       if (!isLoading && !user) {
          router.replace('/login')
@@ -126,7 +126,15 @@ export default function ContactPage() {
 
          <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-12 bg-gradient-to-r from-blue-900 to-blue-700">
+            <section
+               className="relative py-12 bg-gradient-to-r from-blue-900 to-blue-700"
+               style={{
+                  backgroundImage: `url(${IMAGES.PAGES.CONTACT})`, // 실제 이미지로 교체 시 사용
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+               }}
+            >
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">문의하기</h1>

@@ -52,7 +52,7 @@ export default function ExamPage() {
                <div className="absolute inset-0 bg-black/20" />
                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">자격 검정</h1>
-                  <p className="text-xl text-blue-100 max-w-3xl mx-auto">KHAMA 자격증 시험에 신청하고 생활가전 유지관리 전문가가 되세요</p>
+                  <p className="text-xl text-blue-100 max-w-3xl mx-auto bg-black/50 backdrop-blur-sm">KHAMA 자격증 시험에 신청하고 생활가전 유지관리 전문가가 되세요</p>
                </div>
             </section>
 

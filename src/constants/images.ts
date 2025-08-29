@@ -12,41 +12,32 @@ export const IMAGES = {
 
    // 히어로 섹션 배경 이미지
    HERO: {
-      SLIDE1: '/images/hero/hero-bg-1.svg', // 첫 번째 슬라이드 배경 (전문성 & 신뢰성)
-      SLIDE2: '/images/hero/hero-bg-2.svg', // 두 번째 슬라이드 배경 (혁신 & 기술)
-      SLIDE3: '/images/hero/hero-bg-3.svg', // 세 번째 슬라이드 배경 (교육 & 성장)
+      SLIDE1: '/images/hero/firstsection.jpg', // 첫 번째 슬라이드 배경 (전문성 & 신뢰성)
+      SLIDE2: '/images/hero/secondsection.jpg', // 두 번째 슬라이드 배경 (혁신 & 기술)
+      SLIDE3: '/images/hero/thirdsection.jpg', // 세 번째 슬라이드 배경 (교육 & 성장)
+      SLIDE4: '/images/hero/fourthsection.jpg', // 네 번째 슬라이드 배경 ()
+      SLIDE5: '/images/hero/fifthsection.png', // 다섯 번째 슬라이드 배경 ()
    },
 
    // 페이지별 히어로 배경 (임시로 fallback 이미지 사용)
    PAGES: {
-      ABOUT: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1920&h=1080&fit=crop', // 협회 소개 페이지
-      BUSINESS: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1920&h=1080&fit=crop', // 주요 사업 페이지
-      EXAM: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1920&h=1080&fit=crop', // 자격 검정 페이지
-      EDUCATION: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&h=1080&fit=crop', // 교육 프로그램 페이지
+      ABOUT: '/images/association/education.jpg', // 협회 소개 페이지
+      GALLERY: '/images/association/gallery.png',
+      BUSINESS: '/images/business/business.jpg', // 주요 사업 페이지
+      EXAM: '/images/hero/banner-background2.jpg', // 자격 검정 페이지
+      EXAM2: '/images/hero/banner-background3.jpg', // 자격 검정 페이지
+      EDUCATION: '/images/education/hero.jpg', // 교육 프로그램 페이지
       SERVICES: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=1080&fit=crop', // 온라인 서비스 페이지
       SUPPORT: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop', // 고객 지원 페이지
-      NOTICE: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop', // 공지사항 페이지
+      NOTICE: '/images/board/notice.png', // 공지사항 페이지
       QNA: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=1080&fit=crop', // Q&A 페이지
-      LOGIN: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=1080&fit=crop', // 로그인 페이지
-      SIGNUP: 'https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?w=1920&h=1080&fit=crop', // 회원가입 페이지
+      LOGIN: '/images/login/login.jpg', // 로그인 페이지
+      SIGNUP: '/images/login/login.jpg', // 회원가입 페이지
       SITEMAP: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&h=1080&fit=crop', // 사이트맵 페이지
       MYPAGE: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1920&h=1080&fit=crop', // 마이페이지
       RESOURCES: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&h=1080&fit=crop', // 자료실 페이지
-      CONTACT: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop', // 문의하기 페이지
+      CONTACT: '/images/support/office01.jpg', // 문의하기 페이지
       ADMIN: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&h=1080&fit=crop', // 관리자 페이지
-   },
-
-   // 갤러리 이미지
-   GALLERY: {
-      EDUCATION1: '/images/gallery/education-1.jpg', // 교육 현장 1
-      EDUCATION2: '/images/gallery/education-2.jpg', // 교육 현장 2
-      EXAM1: '/images/gallery/exam-1.jpg', // 시험 현장 1
-      EXAM2: '/images/gallery/exam-2.jpg', // 시험 현장 2
-      PRACTICE1: '/images/gallery/practice-1.jpg', // 실습 현장 1
-      PRACTICE2: '/images/gallery/practice-2.jpg', // 실습 현장 2
-      CEREMONY: '/images/gallery/ceremony.jpg', // 수료식
-      ACTIVITY: '/images/gallery/activity.jpg', // 협회 활동
-      SEMINAR: '/images/gallery/seminar.jpg', // 세미나
    },
 
    // 교육 프로그램 이미지
@@ -65,7 +56,7 @@ export const IMAGES = {
 
    // 회장 및 임원 이미지
    EXECUTIVES: {
-      PRESIDENT: '/images/association/president.jpg', // 회장 사진
+      PRESIDENT: '/images/association/meet.png', // 회장 사진
       VICE_PRESIDENT: '/images/executives/vice-president.jpg', // 부회장 사진
    },
 
