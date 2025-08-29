@@ -10,8 +10,8 @@ import Button from '@/components/ui/Button'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function ContactPage() {
-   const router = useRouter()
-   const { user, profile, isLoading } = useAuth()
+  const router = useRouter()
+  const { user, profile, isLoading } = useAuth()
    const [isSubmitting, setIsSubmitting] = useState(false)
    const [userDataLoaded, setUserDataLoaded] = useState(false)
    const [formData, setFormData] = useState({
@@ -24,8 +24,14 @@ export default function ContactPage() {
       privacy: false,
    })
 
-   // AuthContext에서 사용자 정보 로드
-   useEffect(() => {
+  // AuthContext에서 사용자 정보 로드
+  useEffect(() => {
+      // 비로그인 시, 로그인 페이지로 이동 (요청사항)
+      if (!isLoading && !user) {
+         router.replace('/login')
+         return
+      }
+
       if (!isLoading) {
          console.log('AuthContext 데이터:', { user: user?.id, profile: profile?.name })
 

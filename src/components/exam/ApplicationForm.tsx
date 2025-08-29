@@ -45,8 +45,8 @@ export default function ApplicationForm() {
    // 사용자 인증 확인
    useEffect(() => {
       if (!user) {
-         router.push('/login?redirectTo=/exam/apply')
-         return
+               router.push('/login')
+               return
       }
    }, [user, router])
 

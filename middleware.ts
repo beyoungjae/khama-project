@@ -61,17 +61,12 @@ export async function middleware(request: NextRequest) {
       return response
    }
 
-   // 공개 경로 정의
+   // 공개/보호 경로 정의
    const publicPaths = ['/login', '/signup', '/forgot-password', '/reset-password', '/admin/login', '/api/admin/login', '/api/admin/verify-token', '/api/auth', '/', '/about', '/business', '/exam', '/services', '/support', '/board/notice', '/board/qna', '/terms', '/privacy', '/sitemap']
 
-   // 보호된 경로들
-   const protectedPaths = ['/mypage', '/exam/apply', '/board/qna/write']
+   // 보호된 경로들 (로그인이 필요)
+   const protectedPaths = ['/mypage', '/exam/apply', '/support/inquiry', '/board/qna/write']
    const adminPaths = ['/admin']
-
-   // 공개 경로는 인증 확인 없이 통과
-   if (publicPaths.some((path) => pathname.startsWith(path))) {
-      return response
-   }
 
    try {
       // 사용자 세션 새로고침 (쿠키가 자동으로 업데이트됨)
@@ -83,15 +78,20 @@ export async function middleware(request: NextRequest) {
       const hasIronUser = !!request.cookies.get('khama_user_session')?.value
       const isAuthenticated = !!user || hasIronUser
 
-      // 관리자 페이지는 클라이언트에서 인증 처리 (middleware에서는 통과)
-      // 단순히 정적 파일과 API만 필터링
-
       // 일반 보호된 경로에 접근하려는데 인증되지 않은 경우
       if (protectedPaths.some((path) => pathname.startsWith(path)) && !isAuthenticated) {
+         // 요구사항: redirectTo 없이 /login 으로만 이동
          const redirectUrl = new URL('/login', request.url)
-         redirectUrl.searchParams.set('redirectTo', pathname)
          return NextResponse.redirect(redirectUrl)
       }
+
+      // 공개 경로는 인증 확인 없이 통과
+      if (publicPaths.some((path) => pathname.startsWith(path))) {
+         return response
+      }
+
+      // 관리자 페이지는 클라이언트에서 인증 처리 (middleware에서는 통과)
+      // 단순히 정적 파일과 API만 필터링
 
       // 이미 로그인된 사용자가 로그인 페이지에 접근하려는 경우
       if (pathname === '/login' && isAuthenticated) {

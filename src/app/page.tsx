@@ -10,10 +10,10 @@ import FourthSection from '@/components/home/FourthSection'
 import FifthSection from '@/components/home/FifthSection'
 
 // fullpage.js 타입 임포트
-interface FullPageSection {
-   index: number
-   anchor?: string
-}
+// interface FullPageSection {
+//    index: number
+//    anchor?: string
+// }
 
 interface FullPageAPI {
    destroy: (mode: string) => void
@@ -88,14 +88,14 @@ export default function Home() {
                   enabled: false,
                },
 
-               // 콜백 함수들
-               onLeave: function (origin: FullPageSection, destination: FullPageSection) {
-                  console.log('Leaving section', origin.index, 'to', destination.index)
-               },
+               // // 콜백 함수들
+               // onLeave: function (origin: FullPageSection, destination: FullPageSection) {
+               //    console.log('Leaving section', origin.index, 'to', destination.index)
+               // },
 
-               afterLoad: function (_origin: FullPageSection, destination: FullPageSection) {
-                  console.log('Section', destination.index, 'loaded')
-               },
+               // afterLoad: function (_origin: FullPageSection, destination: FullPageSection) {
+               //    console.log('Section', destination.index, 'loaded')
+               // },
             })
 
             isInitialized.current = true

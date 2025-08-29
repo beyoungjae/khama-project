@@ -67,8 +67,11 @@ export default function AdminLoginPage() {
 
          if (response.ok) {
             console.log('관리자 로그인 성공!', result)
-            // 쿠키 설정 후 리다이렉트
-            router.replace('/admin')
+            // 쿠키가 세팅되는 시간을 고려해 약간의 로딩 후 강제 새로고침
+            setTimeout(() => {
+               // 요구사항: 강제 새로고침으로 대시보드 표시 보장
+               window.location.replace('/admin')
+            }, 300)
          } else {
             setErrors({ general: result.error || '로그인에 실패했습니다. 관리자 ID와 비밀번호를 확인해주세요.' })
             setIsLoading(false) // 로딩 상태 해제

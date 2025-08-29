@@ -12,6 +12,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
     const allowed = ['name','description','category','course_code','duration_hours','max_participants','course_fee','prerequisites','instructor_name','instructor_bio','materials_included','status']
     const body = Object.keys(updates).filter(k=>allowed.includes(k)).reduce((o,k)=>{ o[k]=updates[k]; return o }, {} as Record<string, any>)
+    // status 값 유효성 검사 (DB 체크 제약과 일치)
+    if (typeof body.status !== 'undefined') {
+      const courseStatusAllowed = ['active', 'inactive', 'draft']
+      if (!courseStatusAllowed.includes(body.status)) {
+        delete body.status
+      }
+    }
     body.updated_at = new Date().toISOString()
 
     const { data, error } = await supabaseAdmin
@@ -32,4 +39,3 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-

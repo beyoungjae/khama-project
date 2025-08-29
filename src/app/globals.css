@@ -130,7 +130,8 @@
 }
 
 /* 전체 페이지에서 가로 스크롤바 숨기기 및 레이아웃 시프트 방지 */
-html, body {
+html,
+body {
    overflow-x: hidden;
    overflow-y: scroll; /* 항상 세로 스크롤바 표시로 레이아웃 시프트 방지 */
 }
@@ -140,17 +141,21 @@ html, body {
    overflow: hidden;
 }
 
-/* Header가 fullpage.js 위에 fixed로 고정 */
-/* header {
-   position: fixed !important;
-   top: 0 !important;
-   left: 0 !important;
-   right: 0 !important;
-   z-index: 9999 !important;
-   background: rgba(255, 255, 255, 0.95) !important;
-   backdrop-filter: blur(10px) !important;
-   border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
-} */
+/* 헤더가 fullpage.js 네비게이션 툴팁 위에 표시되도록 z-index 조정 */
+header.fixed,
+.header-container {
+   z-index: 1000 !important;
+}
+
+/* fullpage.js 네비게이션 툴팁의 z-index 조정 */
+#fp-nav {
+   z-index: 999 !important; /* 헤더보다 낮은 z-index 설정 */
+}
+
+/* 원래 z-index가 높았던 fullpage 네비게이션 툴팁 위치 조정 */
+#fp-nav.right {
+   right: 20px !important;
+}
 
 /* fullpage 컨테이너에 헤더 높이만큼 여백 추가 */
 /* #fullpage {

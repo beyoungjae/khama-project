@@ -68,7 +68,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         derived = 'upcoming'
       }
 
-      return NextResponse.json({ course: { ...course, status: derived } })
+      // 주의: DB의 status(active/inactive/draft)는 그대로 두고,
+      // 파생 상태는 computed_status로 별도 제공하여 관리자 수정 시 제약 위반을 방지
+      return NextResponse.json({ course: { ...course, computed_status: derived } })
    } catch (error) {
       console.error('API 오류:', error)
       return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

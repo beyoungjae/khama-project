@@ -170,11 +170,11 @@ export default function MyPage() {
          case 'submitted':
             return <Badge variant="warning">제출됨</Badge>
          case 'payment_pending':
-            return <Badge variant="warning">입금대기</Badge>
+            return <Badge variant="warning">승인대기</Badge>
          case 'payment_completed':
-            return <Badge variant="primary">입금완료</Badge>
+            return <Badge variant="primary">승인완료</Badge>
          case 'confirmed':
-            return <Badge variant="success">승인됨</Badge>
+            return <Badge variant="success">승인완료</Badge>
          case 'exam_taken':
             return <Badge variant="secondary">시험응시</Badge>
          case 'passed':
@@ -194,7 +194,7 @@ export default function MyPage() {
          case 'pending':
             return <Badge variant="warning">대기중</Badge>
          case 'approved':
-            return <Badge variant="success">승인됨</Badge>
+            return <Badge variant="success">승인완료</Badge>
          case 'rejected':
             return <Badge variant="error">거절됨</Badge>
          case 'cancelled':

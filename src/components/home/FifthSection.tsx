@@ -9,34 +9,34 @@ export default function FifthSection() {
          {/* 푸터 컨텐츠 */}
          <div className="relative z-10 w-full">
             <footer className="text-white">
-               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-2 sm:gap-8">
                      {/* 협회 정보 */}
                      <div className="col-span-1 md:col-span-2">
-                        <div className="flex items-center space-x-2 mb-4">
+                        <div className="flex items-center space-x-2 mb-2 sm:mb-4">
                            <div>
-                              <div className="text-xl font-bold">KHAMA</div>
-                              <div className="text-sm text-gray-300">한국생활가전유지관리협회</div>
+                              <div className="text-base sm:text-xl font-bold">KHAMA</div>
+                              <div className="text-xs sm:text-sm text-gray-300">한국생활가전유지관리협회</div>
                            </div>
                         </div>
-                        <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                        <p className="text-gray-300 text-xs sm:text-sm mb-2 sm:mb-4 leading-tight sm:leading-relaxed">
                            생활가전 유지관리 분야의 표준화 연구와 교육, 자문을 제공하는 협회입니다.
-                           <br />
+                           <br className="hidden xs:block" />
                            전문가 양성 및 창업 지원을 통해 업계 발전에 기여하고 있습니다.
                         </p>
-                        <div className="text-sm text-gray-300">
+                        <div className="text-xs sm:text-sm text-gray-300 space-y-0.5 sm:space-y-1">
                            <p>주소: 인천광역시 서구 청라한내로72번길 13 (청라동) 203호</p>
                            <p>대표번호: 1566-3321</p>
                            <p>고유번호: 108-82-87006</p>
-                           <p>대표자명: 김윤채</p>
-                           <p>이메일: haan@hanallcompany.com</p>
+                           <p className="hidden sm:block">대표자명: 김윤채</p>
+                           <p className="hidden sm:block">이메일: haan@hanallcompany.com</p>
                         </div>
                      </div>
 
                      {/* 빠른 링크 */}
                      <div>
-                        <h3 className="text-lg font-semibold mb-4">빠른 링크</h3>
-                        <ul className="space-y-2 text-sm">
+                        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">빠른 링크</h3>
+                        <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
                            <li>
                               <Link href="/about" className="text-gray-300 hover:text-white transition-colors duration-200">
                                  협회 소개
@@ -62,8 +62,8 @@ export default function FifthSection() {
 
                      {/* 자격증 정보 */}
                      <div>
-                        <h3 className="text-lg font-semibold mb-4">자격증</h3>
-                        <ul className="space-y-2 text-sm">
+                        <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">자격증</h3>
+                        <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
                            <li className="text-gray-300">가전제품분해청소관리사</li>
                            <li className="text-gray-300">냉난방기세척서비스관리사</li>
                            <li className="text-gray-300">에어컨설치관리사</li>
@@ -73,10 +73,10 @@ export default function FifthSection() {
                   </div>
 
                   {/* 하단 정보 */}
-                  <div className="border-t border-white/20 mt-8 pt-8">
+                  <div className="border-t border-white/20 mt-4 sm:mt-8 pt-4 sm:pt-8">
                      <div className="flex flex-col md:flex-row justify-between items-center">
-                        <div className="text-sm text-gray-300 mb-4 md:mb-0">© 2025 한국생활가전유지관리협회(KHAMA). All rights reserved.</div>
-                        <div className="flex space-x-6 text-sm">
+                        <div className="text-xs sm:text-sm text-gray-300 mb-2 sm:mb-4 md:mb-0">© 2025 한국생활가전유지관리협회(KHAMA)</div>
+                        <div className="flex flex-wrap justify-center gap-4 text-xs sm:text-sm">
                            <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors duration-200">
                               개인정보처리방침
                            </Link>
