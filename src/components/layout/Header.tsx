@@ -30,6 +30,7 @@ export default function Header() {
          subItems: [
             { name: '협회 개요', path: '/about' },
             { name: '갤러리', path: '/about/gallery' },
+            { name: '공지사항', path: '/board/notice' },
          ],
       },
       {
@@ -48,11 +49,6 @@ export default function Header() {
             { name: '시험 일정', path: '/exam/schedule' },
             { name: '합격자 조회', path: '/exam/results/search' },
          ],
-      },
-      {
-         name: '공지사항',
-         path: '/board/notice',
-         subItems: [],
       },
       {
          name: '고객 지원',

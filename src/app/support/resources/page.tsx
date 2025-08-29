@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import Badge from '@/components/ui/Badge'
 import { useRouter } from 'next/navigation'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -38,6 +38,21 @@ export default function ResourcesPage() {
       { value: 'certificate', label: '자격증자료' },
       { value: 'general', label: '일반자료' },
    ]
+
+   const getCategoriesBadge = (category: string) => {
+      switch (category) {
+         case 'exam':
+            return <Badge variant="secondary">시험자료</Badge>
+         case 'education':
+            return <Badge variant="success">교육자료</Badge>
+         case 'certificate':
+            return <Badge variant="primary">자격증자료</Badge>
+         case 'general':
+            return <Badge variant="warning">일반자료</Badge>
+         default:
+            return <Badge variant="default">{category}</Badge>
+      }
+   }
 
    const [selectedCategory, setSelectedCategory] = useState('all')
 
@@ -192,10 +207,10 @@ export default function ResourcesPage() {
                                                       <h3 className="text-lg font-medium text-gray-900 truncate">{resource.title}</h3>
                                                       <p className="text-gray-600 text-sm mt-1 line-clamp-2">{resource.description}</p>
                                                       <div className="flex flex-wrap items-center mt-2 text-sm text-gray-500 gap-2">
-                                                         <span className="inline-flex items-center mr-2">{resource.category}</span>
+                                                         <span className="inline-flex items-center mr-2">{getCategoriesBadge(resource.category)}</span>
                                                          <span>{new Date(resource.created_at).toLocaleDateString()}</span>
                                                          <span>· {formatFileSize(resource.file_size)}</span>
-                                                         <span>· 조회 {resource.view_count}</span>
+                                                         <span>· 다운로드 수 {resource.view_count}</span>
                                                       </div>
                                                    </div>
                                                 </div>

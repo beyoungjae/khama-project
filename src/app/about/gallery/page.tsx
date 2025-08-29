@@ -148,7 +148,7 @@ export default function GalleryPage() {
                         return (
                            <div key={image.id} className="relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white" style={{ animationDelay: `${index * 0.1}s` }}>
                               {/* 이미지 */}
-                              <div className="relative h-64 overflow-hidden">
+                              <div className="relative h-80 overflow-hidden">
                                  <Image src={image.file_url} alt={image.title} layout="fill" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
@@ -156,12 +156,6 @@ export default function GalleryPage() {
                                  <div className="absolute top-4 left-4">
                                     <span className="px-3 py-1 bg-blue-600/90 text-white text-xs font-semibold rounded-full backdrop-blur-sm">{mappedCategory}</span>
                                  </div>
-                              </div>
-
-                              {/* 컨텐츠 */}
-                              <div className="p-6">
-                                 <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{image.title}</h3>
-                                 <p className="text-gray-600 text-sm leading-relaxed">{image.description || ''}</p>
                               </div>
 
                               {/* 호버 오버레이 */}

@@ -388,7 +388,7 @@ export default function QnaPage() {
                      </div>
                      <div className="border-b border-gray-200 pb-4">
                         <h4 className="font-semibold text-gray-900 mb-2">Q. 자격증 유효기간이 있나요?</h4>
-                        <p className="text-gray-600 text-sm">A. 발급된 자격증은 평생 유효합니다.</p>
+                        <p className="text-gray-600 text-sm">A. 발급된 자격증은 3년 유효합니다.</p>
                      </div>
                   </div>
                </Card>

@@ -128,7 +128,7 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                      </Badge>
                   </div>
                </div>
-               <p className="text-sm sm:text-md text-gray-600 leading-relaxed max-w-3xl mx-auto whitespace-pre-line">{description}</p>
+               <p className="text-md sm:text-md text-gray-600 leading-relaxed max-w-3xl mx-auto whitespace-pre-line">{description}</p>
             </div>
 
             {/* 자격 기본 정보 */}
@@ -155,7 +155,7 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                      </div>
                      <div>
                         <span className="font-medium text-blue-900">유효기간:</span>
-                        <span className="ml-2 text-gray-700">{certification.validity_period || '평생유효'}</span>
+                        <span className="ml-2 text-gray-700">{certification.validity_period || '3년 유효'}</span>
                      </div>
                   </div>
                </div>
@@ -464,7 +464,8 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
                      </div>
                   )}
                   <div className="mt-4 pt-4 border-t border-orange-200">
-                     <p className="text-sm sm:text-base text-orange-800 font-medium">✓ 필기시험과 실기시험 모두 합격 시 최종 합격</p>
+                     <p className="text-sm sm:text-base text-orange-800 font-medium">✓ 총점 기준으로만 합격 여부를 판단합니다.</p>
+                     <p className="text-sm sm:text-base text-orange-800 font-medium">✓ 특정 과목의 점수가 낮더라도 다른 과목에서 충분한 점수를 얻으면 합격할 수 있습니다.</p>
                   </div>
                </div>
             </div>
@@ -540,11 +541,8 @@ export default function CertificationModal({ isOpen, onClose, certification }: C
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-200">
-               <Button href="/exam" className="flex-1" size="lg">
+               <Button href="/exam/schedule" className="flex-1" size="lg">
                   시험 신청하기
-               </Button>
-               <Button href="/exam/schedule" variant="secondary" className="flex-1" size="lg">
-                  시험 일정 보기
                </Button>
             </div>
          </div>

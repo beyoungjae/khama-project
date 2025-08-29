@@ -22,11 +22,11 @@ export default function ThirdSection() {
                            window.fullpage_api.moveTo('contact')
                         }
                      }}
-                     className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium transition-all duration-300"
+                     className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-gray-900 rounded-4xl font-medium transition-all duration-300"
                   >
                      문의하기
                   </button>
-                  <Link href="/business/education/apply" className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-all duration-300">
+                  <Link href="/business/education/apply" className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-4xl font-medium transition-all duration-300">
                      교육 신청
                   </Link>
                </div>

@@ -223,7 +223,8 @@ export default function ExamSchedulePage() {
                                           {schedule.certifications && (
                                              <div className="mt-2 pt-2 border-t border-gray-200">
                                                 <div className="text-xs text-gray-500">
-                                                   신청비: {schedule.certifications.application_fee?.toLocaleString()}원 | 자격증 발급비: {schedule.certifications.certificate_fee?.toLocaleString()}원
+                                                   신청비: {schedule.certifications.application_fee === 0 ? '별도 문의' : `${schedule.certifications.application_fee?.toLocaleString()}원`} | 자격증 발급비:{' '}
+                                                   {schedule.certifications.certificate_fee === 0 ? '별도 문의' : `${schedule.certifications.certificate_fee?.toLocaleString()}원`}
                                                 </div>
                                              </div>
                                           )}

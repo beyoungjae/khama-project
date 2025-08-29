@@ -171,7 +171,7 @@ export default function AdminCertificationsPage() {
          qualification_type: '산업통상자원부',
          grade: '단일등급',
          eligibility: '교육 이수자',
-         validity_period: '평생유효',
+         validity_period: '3년 유효',
       })
       setExamSubjects([{ name: '', description: '' }])
       setExamMethods([{ type: '', questions: '', time: '', subjects: [] }])
@@ -203,7 +203,7 @@ export default function AdminCertificationsPage() {
          qualification_type: certification.qualification_type || '산업통상자원부',
          grade: certification.grade || '단일등급',
          eligibility: certification.eligibility || '교육 이수자',
-         validity_period: certification.validity_period || '평생유효',
+         validity_period: certification.validity_period || '3년 유효',
       })
 
       // 시험 과목 파싱
@@ -567,7 +567,7 @@ ${form.passing_criteria}`
                            등록번호
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                           자격종류
+                           주무부처
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                            응시료
@@ -806,7 +806,7 @@ ${form.passing_criteria}`
                                  value={form.validity_period || ''}
                                  onChange={handleChange}
                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                 placeholder="예: 평생유효"
+                                 placeholder="예: 3년 유효"
                               />
                            </div>
                         </div>

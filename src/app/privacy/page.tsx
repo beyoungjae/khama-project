@@ -198,13 +198,13 @@ export default function PrivacyPage() {
                         <h3>개인정보 보호책임자</h3>
                         <ul className="list-none">
                            <li>
-                              <strong>성명</strong>: 김개인
+                              <strong>성명</strong>: 김수경
                            </li>
                            <li>
                               <strong>직책</strong>: 사무국장
                            </li>
                            <li>
-                              <strong>연락처</strong>: 1566-3321, privacy@khama.or.kr
+                              <strong>연락처</strong>: 1566-3321, haan@hanallcompany
                            </li>
                         </ul>
                      </div>

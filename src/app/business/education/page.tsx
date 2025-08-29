@@ -157,10 +157,10 @@ export default function EducationPage() {
                      창업부터 전문성 향상까지, 단계별 맞춤 교육을 제공합니다.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                     <Link href="/business/education/apply" className="bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-4xl text-base sm:text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg whitespace-nowrap">
+                     <Link href="/business/education/apply" className="bg-blue-900 hover:bg-blue-800 text-white px-6 py-3 rounded-4xl text-base font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg text-center">
                         교육 신청하기
                      </Link>
-                     <Link href="/support/inquiry" className="inline-flex items-center bg-emerald-600 text-white px-8 py-4 rounded-4xl text-lg font-semibold hover:bg-emerald-700 transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                     <Link href="/support/inquiry" className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-4xl text-base font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg text-center">
                         교육 문의
                      </Link>
                   </div>
@@ -184,13 +184,13 @@ export default function EducationPage() {
                      <div className="text-center py-12">
                         <p className="text-gray-500 mb-4">현재 진행 중인 교육 과정이 없습니다.</p>
                         <Link href="/support/inquiry">
-                           <Button>교육 문의하기</Button>
+                           <Button variant="secondary">교육 문의하기</Button>
                         </Link>
                      </div>
                   ) : (
                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {programs.map((program) => (
-                           <Card key={program.id} className="h-full">
+                           <Card key={program.id} className="h-full hover:shadow-lg transition-all duration-300">
                               <div className="flex flex-col h-full">
                                  {/* 헤더 */}
                                  <div className="mb-6">
@@ -256,7 +256,7 @@ export default function EducationPage() {
                                        </div>
                                     </div>
 
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                        {program.status === 'open' ? (
                                           <Link href={`/business/education/${program.id}`}>
                                              <Button className="w-full">신청하기</Button>
@@ -266,16 +266,18 @@ export default function EducationPage() {
                                              {program.status === 'closed' ? '마감' : '사전신청'}
                                           </Button>
                                        )}
-                                       <Button
-                                          variant="outline"
-                                          className="w-full"
-                                          onClick={() => {
-                                             setSelectedProgram(program.id)
-                                             setIsDetailOpen(true)
-                                          }}
-                                       >
-                                          자세히 보기
-                                       </Button>
+                                       <div className="mt-2">
+                                          <Button
+                                             variant="outline"
+                                             className="w-full"
+                                             onClick={() => {
+                                                setSelectedProgram(program.id)
+                                                setIsDetailOpen(true)
+                                             }}
+                                          >
+                                             자세히 보기
+                                          </Button>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
@@ -316,29 +318,29 @@ export default function EducationPage() {
             </Modal>
 
             {/* 교육 신청 안내 */}
-            <section className="py-16 bg-emerald-50">
+            <section className="py-16 bg-gradient-to-br from-emerald-50 to-blue-50">
                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">교육 신청 안내</h2>
                   <p className="text-lg text-gray-600 mb-8">교육 신청은 온라인으로 간편하게 하실 수 있습니다.</p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                     <div className="text-center">
-                        <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                           <span className="text-white font-bold">1</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <span className="text-emerald-600 font-bold">1</span>
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-2">과정 선택</h3>
                         <p className="text-gray-600">원하는 교육과정을 선택하고 상세 정보를 확인하세요.</p>
                      </div>
-                     <div className="text-center">
-                        <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                           <span className="text-white font-bold">2</span>
+                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <span className="text-emerald-600 font-bold">2</span>
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-2">온라인 신청</h3>
                         <p className="text-gray-600">신청서를 작성하고 교육비를 결제합니다.</p>
                      </div>
-                     <div className="text-center">
-                        <div className="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                           <span className="text-white font-bold">3</span>
+                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                           <span className="text-emerald-600 font-bold">3</span>
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-2">교육 참여</h3>
                         <p className="text-gray-600">개강일에 교육장에 오셔서 교육을 받으세요.</p>
@@ -347,7 +349,9 @@ export default function EducationPage() {
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                      <Link href="/support/inquiry">
-                        <Button size="lg">교육 문의하기</Button>
+                        <Button variant="secondary" size="lg">
+                           교육 문의하기
+                        </Button>
                      </Link>
                   </div>
                </div>

@@ -20,12 +20,12 @@ export default function FourthSection() {
                      onClick={() => {
                         window.location.href = '/'
                      }}
-                     className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium transition-all duration-300"
+                     className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-gray-900 rounded-4xl font-medium transition-all duration-300"
                   >
                      처음으로
                   </button>
-                  <Link href="/support/inquiry" className="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-all duration-300">
-                     연락하기
+                  <Link href="/support/inquiry" className="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-4xl font-medium transition-all duration-300">
+                     문의하기
                   </Link>
                </div>
             </div>
